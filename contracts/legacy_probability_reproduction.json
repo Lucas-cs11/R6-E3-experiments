@@ -1,0 +1,156 @@
+[
+  {
+    "id": "Gamma_above_one",
+    "input": {
+      "q0": {
+        "low": "1/2",
+        "high": "1/2"
+      },
+      "q1": {
+        "low": "1/2",
+        "high": "1/2"
+      },
+      "v_c": "1",
+      "Pe": {
+        "low": "0",
+        "high": "1/8"
+      },
+      "Gamma": {
+        "low": "2",
+        "high": "3"
+      },
+      "pi0": "1/2",
+      "pi1": "1/2",
+      "epsilon": "1/4",
+      "delta": "1/4",
+      "gamma": "1/2"
+    },
+    "old_subject": {
+      "status": "DECIDED",
+      "contract": "AP41-R6-E1-R6-08-PROVISIONAL",
+      "contract_sha256": "e0f38ecac74cd250e53a7618193089d33063a405f933b750e052b4166eaa9c8b",
+      "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "a_P": "1",
+      "v_P": "1",
+      "branch": "ALL_POSITIVE_CONDITIONS_CERTIFIED",
+      "E_P": [
+        "COMPLETE_SUPPORT_CHECK",
+        "PE_UPPER_AT_MOST_EPSILON",
+        "GAMMA_LOWER_AT_LEAST_THRESHOLD"
+      ],
+      "U_P": [],
+      "reasons": []
+    },
+    "old_reference": {
+      "status": "DECIDED",
+      "contract": "AP41-R6-E1-R6-08-PROVISIONAL",
+      "contract_sha256": "e0f38ecac74cd250e53a7618193089d33063a405f933b750e052b4166eaa9c8b",
+      "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "a_P": "1",
+      "v_P": "1",
+      "branch": "ALL_POSITIVE_CONDITIONS_CERTIFIED"
+    }
+  },
+  {
+    "id": "Gamma_below_zero",
+    "input": {
+      "q0": {
+        "low": "1/2",
+        "high": "1/2"
+      },
+      "q1": {
+        "low": "1/2",
+        "high": "1/2"
+      },
+      "v_c": "1",
+      "Pe": {
+        "low": "0",
+        "high": "1/8"
+      },
+      "Gamma": {
+        "low": "-2",
+        "high": "-1"
+      },
+      "pi0": "1/2",
+      "pi1": "1/2",
+      "epsilon": "1/4",
+      "delta": "1/4",
+      "gamma": "1/2"
+    },
+    "old_subject": {
+      "status": "DECIDED",
+      "contract": "AP41-R6-E1-R6-08-PROVISIONAL",
+      "contract_sha256": "e0f38ecac74cd250e53a7618193089d33063a405f933b750e052b4166eaa9c8b",
+      "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "a_P": "1",
+      "v_P": "0",
+      "branch": "NEGATIVE_EVIDENCE_PRIORITY",
+      "E_P": [
+        "GAMMA_UPPER_STRICTLY_BELOW_THRESHOLD"
+      ],
+      "U_P": [],
+      "reasons": []
+    },
+    "old_reference": {
+      "status": "DECIDED",
+      "contract": "AP41-R6-E1-R6-08-PROVISIONAL",
+      "contract_sha256": "e0f38ecac74cd250e53a7618193089d33063a405f933b750e052b4166eaa9c8b",
+      "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "a_P": "1",
+      "v_P": "0",
+      "branch": "NEGATIVE_EVIDENCE_PRIORITY"
+    }
+  },
+  {
+    "id": "Pe_negative",
+    "input": {
+      "q0": {
+        "low": "1/2",
+        "high": "1/2"
+      },
+      "q1": {
+        "low": "1/2",
+        "high": "1/2"
+      },
+      "v_c": "1",
+      "Pe": {
+        "low": "-1/4",
+        "high": "-1/8"
+      },
+      "Gamma": {
+        "low": "3/4",
+        "high": "1"
+      },
+      "pi0": "1/2",
+      "pi1": "1/2",
+      "epsilon": "1/4",
+      "delta": "1/4",
+      "gamma": "1/2"
+    },
+    "old_subject": {
+      "status": "DECIDED",
+      "contract": "AP41-R6-E1-R6-08-PROVISIONAL",
+      "contract_sha256": "e0f38ecac74cd250e53a7618193089d33063a405f933b750e052b4166eaa9c8b",
+      "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "a_P": "1",
+      "v_P": "1",
+      "branch": "ALL_POSITIVE_CONDITIONS_CERTIFIED",
+      "E_P": [
+        "COMPLETE_SUPPORT_CHECK",
+        "PE_UPPER_AT_MOST_EPSILON",
+        "GAMMA_LOWER_AT_LEAST_THRESHOLD"
+      ],
+      "U_P": [],
+      "reasons": []
+    },
+    "old_reference": {
+      "status": "DECIDED",
+      "contract": "AP41-R6-E1-R6-08-PROVISIONAL",
+      "contract_sha256": "e0f38ecac74cd250e53a7618193089d33063a405f933b750e052b4166eaa9c8b",
+      "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "a_P": "1",
+      "v_P": "1",
+      "branch": "ALL_POSITIVE_CONDITIONS_CERTIFIED"
+    }
+  }
+]

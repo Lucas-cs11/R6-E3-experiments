@@ -22,7 +22,7 @@ def base():
 
 class LocalIntervalTests(unittest.TestCase):
     def test_legacy_shared_failures(self):
-        rows = json.loads((ROOT/'runs/math_p0/legacy_probability_reproduction.json').read_text())
+        rows = json.loads((ROOT/'contracts/legacy_probability_reproduction.json').read_text())
         self.assertEqual(len(rows), 3)
         for row in rows:
             with self.subTest(row=row['id']):

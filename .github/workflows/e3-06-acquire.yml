@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tool: [tina, prism, oris, sklearn]
+        tool: [tina, prism_gh, oris, sklearn]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +44,16 @@ jobs:
                       h.update(chunk)
               return h.hexdigest()
 
+          if tool == 'prism_gh':
+              r = subprocess.run(['gh', 'release', 'download', '--repo', 'prismmodelchecker/prism',
+                                  '--pattern', '*linux*', '-d', str(out), '--clobber'],
+                                 capture_output=True, text=True, timeout=600)
+              result['attempts'].append({'method': 'gh release download prismmodelchecker/prism',
+                                         'returncode': r.returncode, 'stderr_tail': r.stderr[-500:]})
+              files = [p for p in out.iterdir() if p.is_file() and p.name != 'acquisition.json']
+              if files:
+                  f = files[0]
+                  result.update(status='ACQUIRED', file=f.name, sha256=sha256(f), size=f.stat().st_size)
           if tool == 'sklearn':
               r = subprocess.run([sys.executable, '-m', 'pip', 'download', 'scikit-learn',
                                   '--no-deps', '-d', str(out)], capture_output=True, text=True, timeout=600)

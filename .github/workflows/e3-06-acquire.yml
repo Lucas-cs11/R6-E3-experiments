@@ -45,6 +45,8 @@ jobs:
               return h.hexdigest()
 
           if tool == 'prism_gh':
+              pass  # handled below, skips candidate-URL loop
+          if tool == 'prism_gh':
               r = subprocess.run(['gh', 'release', 'download', '--repo', 'prismmodelchecker/prism',
                                   '--pattern', '*linux*', '-d', str(out), '--clobber'],
                                  capture_output=True, text=True, timeout=600)
@@ -63,7 +65,7 @@ jobs:
               if wheels:
                   result.update(status='ACQUIRED', file=wheels[0].name, sha256=sha256(wheels[0]),
                                 size=wheels[0].stat().st_size)
-          else:
+          elif tool != 'prism_gh':
               for url in CANDIDATES[tool]:
                   dest = out / url.rsplit('/', 1)[-1].replace('.','_')[:60]
                   try:

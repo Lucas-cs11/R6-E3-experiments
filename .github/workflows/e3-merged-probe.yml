@@ -5,6 +5,9 @@ on:
       budget:
         description: Node expansion budget
         default: '20000000'
+      constraint_budget:
+        description: Total difference-constraint memory budget
+        default: '3000000'
 permissions:
   contents: read
 jobs:
@@ -39,8 +42,9 @@ jobs:
                                        repair_domain='standard')
           m = to_model(net, Fraction(str(H)))
           budget = int('${{ inputs.budget }}')
+          cbudget = int('${{ inputs.constraint_budget }}')
           t0 = time.time()
-          ex = explore_merged(m, budget)
+          ex = explore_merged(m, budget, constraint_budget=cbudget)
           rows = merged_completion_intervals(m, ex) if ex['status'] == 'EXHAUSTED_FOR_MODEL' else []
           v = omega_injectivity(rows, 'word')['status'] if rows else 'UNRESOLVED'
           out = {'candidate_id': cand, 'budget': budget, 'status': ex['status'],

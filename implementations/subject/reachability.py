@@ -217,7 +217,7 @@ def omega_injectivity(rows, mode):
         images.setdefault(word, row)
     return dict(status='INJECTIVE_ON_EXPLORED_SET' if rows else 'UNRESOLVED', images=len(images))
 
-def explore_merged(model, node_budget):
+def explore_merged(model, node_budget, constraint_budget=None):
     """Quotient exploration over (marking, per-transition activation age).
 
     States with identical marking and identical per-transition activation
@@ -227,6 +227,8 @@ def explore_merged(model, node_budget):
     """
     if type(node_budget) is not int or node_budget < 1:
         raise ValueError('positive integer node budget required')
+    if constraint_budget is not None and (type(constraint_budget) is not int or constraint_budget < 1):
+        raise ValueError('positive integer constraint budget required')
     hp, bc, ha, marking0, edges, goals = _validate(model)
     if _complete(marking0, goals):
         raise ValueError('initial completion outside explorer interface')
@@ -234,6 +236,8 @@ def explore_merged(model, node_budget):
     def enabled(marking):
         return {k for k, e in edges.items()
                 if all(marking.get(p, 0) >= w for p, w in e[0].items())}
+
+    total_constraints = [0]
 
     def key_of(marking, ages):
         return (tuple(sorted((p, v) for p, v in marking.items() if v)),
@@ -311,6 +315,18 @@ def explore_merged(model, node_budget):
                     fault=item['fault'] if item['fault'] is not None else (i if is_fault else None),
                     completed=i if is_completion else item['completed']))
                 payload_items += 1
+                total_constraints[0] += len(cons)
+                if constraint_budget is not None and total_constraints[0] > constraint_budget:
+                    pending = [dict(reason='CONSTRAINT_MEMORY_BUDGET',
+                                    total_constraints=total_constraints[0],
+                                    budget=constraint_budget,
+                                    unexpanded_nodes=len(order) + 1,
+                                    terminal='UNRESOLVED')]
+                    return dict(status='UNRESOLVED', expansions=expansions,
+                                abstract_states=len(nodes), payload_items=payload_items,
+                                total_constraints=total_constraints[0],
+                                terminals=terminals, pending=pending,
+                                node_budget=node_budget, constraint_budget=constraint_budget)
             node['expanded_upto'] = len(node['payload'])
             if child_key not in in_queue:
                 in_queue.add(child_key)
@@ -320,8 +336,9 @@ def explore_merged(model, node_budget):
                     reason='NODE_BUDGET') for k in pending_nodes]
     return dict(status='UNRESOLVED' if pending else 'EXHAUSTED_FOR_MODEL',
                 expansions=expansions, abstract_states=len(nodes),
-                payload_items=payload_items, terminals=terminals, pending=pending,
-                node_budget=node_budget)
+                payload_items=payload_items, total_constraints=total_constraints[0],
+                terminals=terminals, pending=pending,
+                node_budget=node_budget, constraint_budget=constraint_budget)
 
 
 def merged_completion_intervals(model, exploration):

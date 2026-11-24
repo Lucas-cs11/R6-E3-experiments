@@ -1,0 +1,60 @@
+name: E3 merged explorer probe
+on:
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: Node expansion budget
+        default: '20000000'
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Unpack frozen E2 workspace
+        run: |
+          unzip -q baseline_readonly/inputs/R6_E2_complete_workspace.zip -d baseline_readonly
+          mv baseline_readonly/R6_E2 baseline_readonly/e2
+          chmod -R u+w baseline_readonly/e2
+          printf '%s  %s\n' 'bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715' baseline_readonly/inputs/R6_E2_complete_workspace.zip | sha256sum -c -
+      - name: Run merged explorer on the 57-place model
+        run: |
+          python3 -B - <<'PY'
+          import sys, json, time
+          from fractions import Fraction
+          sys.path[:0] = ['tests', 'implementations/subject',
+                          'baseline_readonly/e2/implementations/generator_compat']
+          from src.benchmarks.rmt_fms_generator import generate_rmt_fms
+          from probe_scale import to_model
+          from reachability import explore_merged, merged_completion_intervals, omega_injectivity
+          cand = 'RMT_m3_j2_ops4_wip2_u0.3_f2_w1.0_a0.25'
+          p = dict(n_machines=3, n_parts=2, ops_per_part=4, wip_bound=2,
+                   unobservable_ratio=0.3, fault_locations=2, interval_width_factor=1.0,
+                   adjustable_ratio=0.25)
+          net, L, H = generate_rmt_fms(**p, seed=0, machine_capacity=1, n_configs=2,
+                                       repair_domain='standard')
+          m = to_model(net, Fraction(str(H)))
+          budget = int('${{ inputs.budget }}')
+          t0 = time.time()
+          ex = explore_merged(m, budget)
+          rows = merged_completion_intervals(m, ex) if ex['status'] == 'EXHAUSTED_FOR_MODEL' else []
+          v = omega_injectivity(rows, 'word')['status'] if rows else 'UNRESOLVED'
+          out = {'candidate_id': cand, 'budget': budget, 'status': ex['status'],
+                 'expansions': ex['expansions'], 'abstract_states': ex['abstract_states'],
+                 'payload_items': ex['payload_items'], 'completed': len(rows),
+                 'pending': len(ex['pending']), 'word_verdict': v,
+                 'seconds': round(time.time() - t0, 2)}
+          import pathlib
+          pathlib.Path('runs').mkdir(exist_ok=True)
+          pathlib.Path('runs/merged_probe.json').write_text(json.dumps(out, indent=2))
+          print(json.dumps(out))
+          PY
+      - name: Upload merged probe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-merged-probe
+          path: runs/merged_probe.json

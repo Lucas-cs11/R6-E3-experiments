@@ -1,0 +1,35 @@
+[
+  {
+    "test": "R604_semantic_value_changed_but_PASS",
+    "file": "runs/g2_r604/results.csv",
+    "field": "subject_outcome",
+    "original": "COMPLETED_IN_TIME",
+    "mutant": "VIOLATION",
+    "process_returncode": 0,
+    "verifier_status": "PASS",
+    "errors_count": 0,
+    "detection": false
+  },
+  {
+    "test": "TINA_strict_boundedness_flipped",
+    "file": "runs/tina_cloud_45192651608/merged_candidate_verdicts.csv",
+    "field": "status",
+    "original": "BOUNDED",
+    "mutant": "UNBOUNDED",
+    "process_returncode": 0,
+    "verifier_status": "PASS",
+    "errors_count": 0,
+    "detection": false
+  },
+  {
+    "test": "Unaccepted_probability_567_result_modified",
+    "file": "results/probability_567_full.csv",
+    "field": "Pe",
+    "original": "0.000000",
+    "mutant": "0.777777",
+    "process_returncode": 0,
+    "verifier_status": "PASS",
+    "errors_count": 0,
+    "detection": false
+  }
+]

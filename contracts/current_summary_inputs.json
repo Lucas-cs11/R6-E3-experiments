@@ -1,0 +1,5 @@
+{
+  "tina": "baseline_readonly/e2/runs/tina_cloud_45192651608/merged_candidate_verdicts.csv",
+  "universe": "baseline_readonly/e2/scope/generator_candidate_universe_full.csv",
+  "probability": "baseline_readonly/e2/results/probability_a4_21points.csv"
+}

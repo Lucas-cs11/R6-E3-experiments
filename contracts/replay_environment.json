@@ -1,0 +1,23 @@
+{
+  "os": "Darwin-25.2.0-arm64-arm-64bit-Mach-O",
+  "cpu": "arm64",
+  "cpu_count": 10,
+  "python": "3.15.2 (main, Oct 25 2026, 16:57:51) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "timezone": "CST",
+  "packages": [
+    [
+      "GDAL",
+      "3.13.3"
+    ],
+    [
+      "numpy",
+      "2.5.4"
+    ],
+    [
+      "pip",
+      "26.2.2"
+    ]
+  ],
+  "entry": "python3 -B tests/verify_authority_manifest.py",
+  "seed_source": "No E3 scientific domain or seeds approved yet"
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "test": "Gamma_above_one",
+    "subject": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    },
+    "oracle": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    }
+  },
+  {
+    "test": "Gamma_below_zero",
+    "subject": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "0",
+      "reason": null
+    },
+    "oracle": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "0",
+      "reason": null
+    }
+  },
+  {
+    "test": "Pe_negative",
+    "subject": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    },
+    "oracle": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    }
+  },
+  {
+    "test": "Pe_upper_unphysical",
+    "subject": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "PERP",
+      "reason": null
+    },
+    "oracle": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "PERP",
+      "reason": null
+    }
+  },
+  {
+    "test": "q0_negative_bounds",
+    "subject": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    },
+    "oracle": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    }
+  },
+  {
+    "test": "q0_upper_above_one",
+    "subject": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    },
+    "oracle": {
+      "status": "DECIDED",
+      "a_P": "1",
+      "v_P": "1",
+      "reason": null
+    }
+  },
+  {
+    "test": "completion_before_fault",
+    "subject": "COMPLETED_IN_TIME",
+    "oracle": "COMPLETED_IN_TIME"
+  },
+  {
+    "test": "completion_after_HA",
+    "subject": "COMPLETED_IN_TIME",
+    "oracle": "COMPLETED_IN_TIME"
+  },
+  {
+    "test": "negative_fault_time",
+    "subject": "COMPLETED_IN_TIME",
+    "oracle": "COMPLETED_IN_TIME"
+  },
+  {
+    "test": "zero_Bc",
+    "subject": "COMPLETED_IN_TIME",
+    "oracle": "COMPLETED_IN_TIME"
+  },
+  {
+    "test": "same_omega_two_paths_legal_injective_g",
+    "subject": "THEOREM_NOT_APPLICABLE",
+    "oracle": "THEOREM_NOT_APPLICABLE",
+    "subject_detail": {
+      "discrete_structure": true,
+      "fault_domain": true,
+      "persistent_support": true,
+      "completion_domain": true,
+      "external_completion": true,
+      "support_alignment": true,
+      "observation_injective": false,
+      "observation_projection": true,
+      "measurable_support": true,
+      "no_post_completion_information": true,
+      "no_hidden_internal_deadlock": true
+    }
+  }
+]

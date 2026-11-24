@@ -1,0 +1,280 @@
+{
+  "created_at": "2026-11-24T13:35:33.712922+08:00",
+  "overall_status": "PARTIAL_VALIDATED_NOT_CLOSED",
+  "complete_archive": {
+    "path": "R6_E2_complete_workspace.zip",
+    "sha256": "bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715",
+    "size": 77521416,
+    "members": 4004,
+    "crc_error": null
+  },
+  "portable_archive": {
+    "path": "R6_E2_portable_evidence.zip",
+    "sha256": "93572bde0ec70e19ddc8296b6b5872981a2fec8726bc7c2a9f54e8db81b2fbec",
+    "size": 62030457,
+    "members": 4002,
+    "crc_error": null,
+    "excluded_prefixes": [
+      "baseline_readonly/R6_E1_complete_workspace.zip",
+      "baseline_readonly/R6_E1_portable_evidence.zip"
+    ]
+  },
+  "complete_extracted_verifier": {
+    "exit_code": 0,
+    "stdout": "{\n  \"status\": \"PASS\",\n  \"scope\": \"EVIDENCE_INTEGRITY_ONLY_NOT_PHASE_GATE\",\n  \"errors\": [],\n  \"tex_sha256\": \"a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a\",\n  \"universe\": {\n    \"rows\": 143360,\n    \"valid\": 107520,\n    \"invalid\": 35840\n  },\n  \"generated\": {\n    \"rows\": 107520,\n    \"unique\": 107520,\n    \"hash_level\": \"REPLAYED_GENERATOR_HASH\"\n  },\n  \"pyscrew\": {\n    \"rows\": 5000,\n    \"workpieces\": 2500,\n    \"raw_level\": \"SOURCE_MANIFEST_AUDITED_NOT_RAW_VERIFIED\"\n  },\n  \"g1\": {\n    \"rows\": 20,\n    \"all_pass\": true\n  },\n  \"sensitivity\": {\n    \"rows\": 1620\n  },\n  \"baseline_adapter\": {\n    \"rows\": 52,\n    \"validated\": 36\n  },\n  \"probability_a4\": {\n    \"rows\": 21,\n    \"exact\": 0,\n    \"analytic\": 21\n  },\n  \"components\": {\n    \"g2_r601\": {\n      \"rows\": 3,\n      \"passed\": 3,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r602\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r603\": {\n      \"rows\": 3,\n      \"passed\": 3,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r604\": {\n      \"rows\": 6,\n      \"passed\": 6,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r605\": {\n      \"rows\": 3,\n      \"passed\": 3,\n      \"mutations\": 2,\n      \"detected\": 2\n    },\n    \"g2_r606\": {\n      \"rows\": 6,\n      \"passed\": 6,\n      \"mutations\": 2,\n      \"detected\": 2\n    },\n    \"g2_r607\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r608_module\": {\n      \"rows\": 10,\n      \"passed\": 10,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r609\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r610\": {\n      \"rows\": 8,\n      \"passed\": 8,\n      \"mutations\": 2,\n      \"detected\": 2\n    },\n    \"g2_r611\": {\n      \"rows\": 4,\n      \"passed\": 4,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r612\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r613\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    }\n  }\n}\n",
+    "stderr": ""
+  },
+  "portable_extracted_verifier": {
+    "exit_code": 0,
+    "stdout": "{\n  \"status\": \"PASS\",\n  \"scope\": \"EVIDENCE_INTEGRITY_ONLY_NOT_PHASE_GATE\",\n  \"errors\": [],\n  \"tex_sha256\": \"a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a\",\n  \"universe\": {\n    \"rows\": 143360,\n    \"valid\": 107520,\n    \"invalid\": 35840\n  },\n  \"generated\": {\n    \"rows\": 107520,\n    \"unique\": 107520,\n    \"hash_level\": \"REPLAYED_GENERATOR_HASH\"\n  },\n  \"pyscrew\": {\n    \"rows\": 5000,\n    \"workpieces\": 2500,\n    \"raw_level\": \"SOURCE_MANIFEST_AUDITED_NOT_RAW_VERIFIED\"\n  },\n  \"g1\": {\n    \"rows\": 20,\n    \"all_pass\": true\n  },\n  \"sensitivity\": {\n    \"rows\": 1620\n  },\n  \"baseline_adapter\": {\n    \"rows\": 52,\n    \"validated\": 36\n  },\n  \"probability_a4\": {\n    \"rows\": 21,\n    \"exact\": 0,\n    \"analytic\": 21\n  },\n  \"components\": {\n    \"g2_r601\": {\n      \"rows\": 3,\n      \"passed\": 3,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r602\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r603\": {\n      \"rows\": 3,\n      \"passed\": 3,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r604\": {\n      \"rows\": 6,\n      \"passed\": 6,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r605\": {\n      \"rows\": 3,\n      \"passed\": 3,\n      \"mutations\": 2,\n      \"detected\": 2\n    },\n    \"g2_r606\": {\n      \"rows\": 6,\n      \"passed\": 6,\n      \"mutations\": 2,\n      \"detected\": 2\n    },\n    \"g2_r607\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r608_module\": {\n      \"rows\": 10,\n      \"passed\": 10,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r609\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r610\": {\n      \"rows\": 8,\n      \"passed\": 8,\n      \"mutations\": 2,\n      \"detected\": 2\n    },\n    \"g2_r611\": {\n      \"rows\": 4,\n      \"passed\": 4,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r612\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    },\n    \"g2_r613\": {\n      \"rows\": 5,\n      \"passed\": 5,\n      \"mutations\": 3,\n      \"detected\": 3\n    }\n  }\n}\n",
+    "stderr": ""
+  },
+  "additional_delivery_checks": [
+    {
+      "archive": "R6_E2_complete_workspace.zip",
+      "manifest_file_count": 4003,
+      "manifest_all_match": true,
+      "crc_ok": true,
+      "clean_extraction_with_external_raw": {
+        "status": "PASS",
+        "scope": "EVIDENCE_INTEGRITY_ONLY_NOT_PHASE_GATE",
+        "errors": [],
+        "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+        "universe": {
+          "rows": 143360,
+          "valid": 107520,
+          "invalid": 35840
+        },
+        "generated": {
+          "rows": 107520,
+          "unique": 107520,
+          "hash_level": "REPLAYED_GENERATOR_HASH"
+        },
+        "pyscrew": {
+          "rows": 5000,
+          "workpieces": 2500,
+          "raw_level": "FULL_RAW_REPRODUCIBLE"
+        },
+        "g1": {
+          "rows": 20,
+          "all_pass": true
+        },
+        "sensitivity": {
+          "rows": 1620
+        },
+        "baseline_adapter": {
+          "rows": 52,
+          "validated": 36
+        },
+        "probability_a4": {
+          "rows": 21,
+          "exact": 0,
+          "analytic": 21
+        },
+        "components": {
+          "g2_r601": {
+            "rows": 3,
+            "passed": 3,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r602": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r603": {
+            "rows": 3,
+            "passed": 3,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r604": {
+            "rows": 6,
+            "passed": 6,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r605": {
+            "rows": 3,
+            "passed": 3,
+            "mutations": 2,
+            "detected": 2
+          },
+          "g2_r606": {
+            "rows": 6,
+            "passed": 6,
+            "mutations": 2,
+            "detected": 2
+          },
+          "g2_r607": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r608_module": {
+            "rows": 10,
+            "passed": 10,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r609": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r610": {
+            "rows": 8,
+            "passed": 8,
+            "mutations": 2,
+            "detected": 2
+          },
+          "g2_r611": {
+            "rows": 4,
+            "passed": 4,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r612": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r613": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          }
+        }
+      }
+    },
+    {
+      "archive": "R6_E2_portable_evidence.zip",
+      "manifest_file_count": 4001,
+      "manifest_all_match": true,
+      "crc_ok": true,
+      "clean_extraction_with_external_raw": {
+        "status": "PASS",
+        "scope": "EVIDENCE_INTEGRITY_ONLY_NOT_PHASE_GATE",
+        "errors": [],
+        "tex_sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+        "universe": {
+          "rows": 143360,
+          "valid": 107520,
+          "invalid": 35840
+        },
+        "generated": {
+          "rows": 107520,
+          "unique": 107520,
+          "hash_level": "REPLAYED_GENERATOR_HASH"
+        },
+        "pyscrew": {
+          "rows": 5000,
+          "workpieces": 2500,
+          "raw_level": "FULL_RAW_REPRODUCIBLE"
+        },
+        "g1": {
+          "rows": 20,
+          "all_pass": true
+        },
+        "sensitivity": {
+          "rows": 1620
+        },
+        "baseline_adapter": {
+          "rows": 52,
+          "validated": 36
+        },
+        "probability_a4": {
+          "rows": 21,
+          "exact": 0,
+          "analytic": 21
+        },
+        "components": {
+          "g2_r601": {
+            "rows": 3,
+            "passed": 3,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r602": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r603": {
+            "rows": 3,
+            "passed": 3,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r604": {
+            "rows": 6,
+            "passed": 6,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r605": {
+            "rows": 3,
+            "passed": 3,
+            "mutations": 2,
+            "detected": 2
+          },
+          "g2_r606": {
+            "rows": 6,
+            "passed": 6,
+            "mutations": 2,
+            "detected": 2
+          },
+          "g2_r607": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r608_module": {
+            "rows": 10,
+            "passed": 10,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r609": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r610": {
+            "rows": 8,
+            "passed": 8,
+            "mutations": 2,
+            "detected": 2
+          },
+          "g2_r611": {
+            "rows": 4,
+            "passed": 4,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r612": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          },
+          "g2_r613": {
+            "rows": 5,
+            "passed": 5,
+            "mutations": 3,
+            "detected": 3
+          }
+        }
+      }
+    }
+  ]
+}

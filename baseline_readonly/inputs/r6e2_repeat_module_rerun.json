@@ -1,0 +1,86 @@
+[
+  {
+    "script": "run_g1_r608.py",
+    "exit_code": 0,
+    "time_sec": 0.85,
+    "last_stdout": " via intersection; only lower>q upper is infeasible\",   \"note\": \"independent oracle uses separate linear feasibility path\" } "
+  },
+  {
+    "script": "run_g2_r601.py",
+    "exit_code": 0,
+    "time_sec": 0.65,
+    "last_stdout": "yed\"   ],   \"not_covered\": [     \"unbounded closure\",     \"general timed automata\",     \"full R6-01 13-boundary suite\"   ] } "
+  },
+  {
+    "script": "run_g2_r602.py",
+    "exit_code": 0,
+    "time_sec": 0.68,
+    "last_stdout": "e       }     }   ],   \"not_covered\": [     \"full SCG engine\",     \"mixed-state R6-05\",     \"general window B_c sweep\"   ] } "
+  },
+  {
+    "script": "run_g2_r603.py",
+    "exit_code": 0,
+    "time_sec": 0.77,
+    "last_stdout": "ot_covered\": [     \"general continuous propagation\",     \"H0/H1 fault-window split\",     \"unbounded immediate closure\"   ] } "
+  },
+  {
+    "script": "run_g2_r604.py",
+    "exit_code": 0,
+    "time_sec": 0.72,
+    "last_stdout": "pected\": \"COMPLETED_IN_TIME\"     }   ],   \"not_covered\": [     \"general H_A truncation sweep\",     \"mixed-state split\"   ] } "
+  },
+  {
+    "script": "run_g2_r605.py",
+    "exit_code": 0,
+    "time_sec": 0.69,
+    "last_stdout": "   \"not_covered\": [     \"general dimension polytope enumeration in independent oracle\",     \"general SCG construction\"   ] } "
+  },
+  {
+    "script": "run_g2_r606.py",
+    "exit_code": 0,
+    "time_sec": 0.61,
+    "last_stdout": "  ],   \"not_covered\": [     \"complete SCG construction\",     \"general non-prefix-compatible psi\",     \"deadline sweep\"   ] } "
+  },
+  {
+    "script": "run_g2_r607.py",
+    "exit_code": 0,
+    "time_sec": 0.65,
+    "last_stdout": "xpected\": \"RESET_NOT_CONSUMED\"     }   ],   \"not_covered\": [     \"general reset arc semantics\",     \"full R6-07 suite\"   ] } "
+  },
+  {
+    "script": "run_g2_r608_module.py",
+    "exit_code": 0,
+    "time_sec": 0.63,
+    "last_stdout": "O_METHOD\"     }   ],   \"not_covered\": [     \"full 13-boundary R6-08 suite\",     \"all error paths with real SCG traces\"   ] } "
+  },
+  {
+    "script": "run_g2_r609.py",
+    "exit_code": 0,
+    "time_sec": 0.64,
+    "last_stdout": "  ],   \"not_covered\": [     \"continuous emission\",     \"full R6-09 suite\",     \"general Bayes with continuous support\"   ] } "
+  },
+  {
+    "script": "run_g2_r610.py",
+    "exit_code": 0,
+    "time_sec": 0.66,
+    "last_stdout": "ered\": [     \"general measurable-support proof\",     \"automatic LSTPN extraction\",     \"theorem counterexample search\"   ] } "
+  },
+  {
+    "script": "run_g2_r611.py",
+    "exit_code": 0,
+    "time_sec": 0.68,
+    "last_stdout": "SENING_B\",       \"detected\": true     }   ],   \"not_covered\": [     \"continuous distributions\",     \"full R6-11 suite\"   ] } "
+  },
+  {
+    "script": "run_g2_r612.py",
+    "exit_code": 0,
+    "time_sec": 0.63,
+    "last_stdout": ",       \"expected\": \"OK\"     }   ],   \"not_covered\": [     \"general reconfiguration semantics\",     \"full R6-12 suite\"   ] } "
+  },
+  {
+    "script": "run_g2_r613.py",
+    "exit_code": 0,
+    "time_sec": 0.67,
+    "last_stdout": "AY_MISMATCH\",       \"expected\": \"OK\"     }   ],   \"not_covered\": [     \"general sensor fusion\",     \"full R6-13 suite\"   ] } "
+  }
+]

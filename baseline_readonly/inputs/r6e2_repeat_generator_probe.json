@@ -1,0 +1,24 @@
+{
+  "valid_rows": 107520,
+  "fault_locations_over_available": 3840,
+  "first_1000_distinct_network_bytes": 352,
+  "first_1000_repeated_net_rows": 648,
+  "sample": [
+    {
+      "candidate": "RMT_m2_j1_ops2_wip1_u0.1_f1_w0.5_a0.1",
+      "network_sha": "bc50fed183a117124fc59abce4af514eec059e1aec9d841b3a978eafc3804a2e"
+    },
+    {
+      "candidate": "RMT_m2_j1_ops2_wip1_u0.1_f1_w0.5_a0.25",
+      "network_sha": "bc50fed183a117124fc59abce4af514eec059e1aec9d841b3a978eafc3804a2e"
+    },
+    {
+      "candidate": "RMT_m2_j1_ops2_wip1_u0.1_f1_w0.5_a0.5",
+      "network_sha": "bc50fed183a117124fc59abce4af514eec059e1aec9d841b3a978eafc3804a2e"
+    },
+    {
+      "candidate": "RMT_m2_j1_ops2_wip1_u0.1_f1_w0.5_a0.75",
+      "network_sha": "bc50fed183a117124fc59abce4af514eec059e1aec9d841b3a978eafc3804a2e"
+    }
+  ]
+}

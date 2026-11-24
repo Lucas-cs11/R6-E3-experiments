@@ -1,0 +1,120 @@
+{
+  "frozen_at": "2026-11-24T15:07:23.595500+08:00",
+  "items": [
+    {
+      "source": "theory_validation/R6_E2_delivery_current/R6_E2_complete_workspace.zip",
+      "frozen": "baseline_readonly/inputs/R6_E2_complete_workspace.zip",
+      "sha256": "bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "theory_validation/R6_E2_delivery_current/R6_E2_portable_evidence.zip",
+      "frozen": "baseline_readonly/inputs/R6_E2_portable_evidence.zip",
+      "sha256": "93572bde0ec70e19ddc8296b6b5872981a2fec8726bc7c2a9f54e8db81b2fbec",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "theory_validation/R6_E2_delivery_current/R6_E2_delivery_readme.md",
+      "frozen": "baseline_readonly/inputs/R6_E2_delivery_readme.md",
+      "sha256": "fef4a93b1b9a720bf40e7418472f05c17dc6ecf7935602b1916a001f17557c76",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "theory_validation/R6_E2_delivery_current/R6_E2_archive_verification.txt",
+      "frozen": "baseline_readonly/inputs/R6_E2_archive_verification.txt",
+      "sha256": "4110ece7bf099ec6c49c263e70a035053b7eab728636415600d2b300fec8b19f",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "theory_validation/R6_E2_delivery_current/SHA256SUMS.release",
+      "frozen": "baseline_readonly/inputs/SHA256SUMS.release",
+      "sha256": "e8a8942f54493f87c8ffbbd5859bffde88316432551d2be9805a25b1525039ea",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "R6_E3_v3_E2全部未闭合任务逐项整改_实验Agent执行指令.md",
+      "frozen": "baseline_readonly/inputs/R6_E3_v3_E2全部未闭合任务逐项整改_实验Agent执行指令.md",
+      "sha256": "3f37800b9ea7817a7c79b4b0edcb2ab304777f4ad01e7d516ec684efcfbe04ab",
+      "version": "2026-11-24_v3",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "example_revised_theory_v2_theory_round6_candidate.tex",
+      "frozen": "baseline_readonly/inputs/example_revised_theory_v2_theory_round6_candidate.tex",
+      "sha256": "a4196145c95812ff19376a5985b6a6f2cf469d432c80836071cad1c8ac174c5a",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "R6_E3_v2_全量诊断与经典基线_数学P0整改_完整执行指令.md",
+      "frozen": "baseline_readonly/inputs/R6_E3_v2_全量诊断与经典基线_数学P0整改_完整执行指令.md",
+      "sha256": "5accfc3b31274bfb118eb0706f84d17257a74107eb883edf0aff749a83b718c4",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "R6_E2_再次交付_独立深度验收报告_20261124.md",
+      "frozen": "baseline_readonly/inputs/R6_E2_再次交付_独立深度验收报告_20261124.md",
+      "sha256": "33f6fdef0f2f58b97aedd9b4cf6d0337eea709e02c1e0b657e23d813fc444e4e",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "R6-E1_独立复验审计报告_20261122.md",
+      "frozen": "baseline_readonly/inputs/R6-E1_独立复验审计报告_20261122.md",
+      "sha256": "c52304687f39678e489971890b9da114f616d7dff40e1b93edf39d012769253e",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "R4_V1_5_complete_workspace.zip",
+      "frozen": "baseline_readonly/inputs/R4_V1_5_complete_workspace.zip",
+      "sha256": "78ecf89b43c5b38f4e5678f98225c44c6c447bcd9cd937f2f03c94a032546a51",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "R4_V1_5_portable_evidence.zip",
+      "frozen": "baseline_readonly/inputs/R4_V1_5_portable_evidence.zip",
+      "sha256": "7da2da4992ffc0194c0df0989a848a80e505a7d748d3b97180588a4f76b105cf",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "r6e2_repeat_generator_probe.json",
+      "frozen": "baseline_readonly/inputs/r6e2_repeat_generator_probe.json",
+      "sha256": "b3fef75db51489a8482c39ed8196aeb0deb892a27794a4046817504e6048ad99",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "r6e2_repeat_independent_probes.json",
+      "frozen": "baseline_readonly/inputs/r6e2_repeat_independent_probes.json",
+      "sha256": "5cd75539541482d9e64a8a110f044236d287de1d54eea275553c3d4237c86ad7",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "r6e2_repeat_module_rerun.json",
+      "frozen": "baseline_readonly/inputs/r6e2_repeat_module_rerun.json",
+      "sha256": "95e51a174b085987e5153a38e034ce260cd37609a29da522176adf2b1b3e922e",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    },
+    {
+      "source": "r6e2_repeat_tamper_probes.json",
+      "frozen": "baseline_readonly/inputs/r6e2_repeat_tamper_probes.json",
+      "sha256": "cb5df3d24851ca49ac2ec3ed055f1189c08224b9b43aaf2425438571ca2e914a",
+      "version": "source_by_digest",
+      "access": "read_only_copy"
+    }
+  ],
+  "missing_reference": [
+    "R6_E2_独立深度验收报告_20261123.md"
+  ]
+}

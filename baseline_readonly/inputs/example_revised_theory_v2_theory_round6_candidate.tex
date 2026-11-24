@@ -1,0 +1,3175 @@
+% !TEX program = xelatex
+% 使用 texlive 完整编译:
+% xelatex -> bibtex -> xelatex -> xelatex
+% SHNU-Thesis 上海师范大学研究生毕业论文 LaTeX 模板
+% 推荐最后编译使用 Windows 系统, 删掉 fontset=ubuntu
+% 项目写作约定：
+% 1. 中文正文中专业术语/缩写第一次出现时，采用“中文名称（英文全称，英文缩写）”；
+%    后文在语义明确时直接使用缩写。例如：离散事件系统（Discrete Event System, DES）。
+% 2. 英文摘要视为独立文本：其中的缩写第一次出现时仍需重新给出英文全称。
+% 3. 中文简称若需使用，也应在第一次出现时给出完整中文名称及简称，后文再使用简称。
+% 4. 全文缩写、符号和术语一经定义后保持一致，不在不同章节更换写法。
+% 5. 正文原则上不使用粗体、斜体等特殊字体进行语义强调；研究重点通过段落结构、
+%    逻辑连接、定义/定理/算法等规范环境和自然语言表述体现。仅模板或必要结构性元素例外。
+% 6. 行内公式优先：简单符号关系、短等式和短定义原则上放在正文行内。
+% 7. 预计超过单行版心宽度的公式必须拆分为多行并居中排版；所有行间公式均编号并用 \eqref{} 引用。
+% 8. 公式内部尽量使用数学符号表达条件，避免把较长中文说明直接放入公式环境。
+% 9. 正文表格统一使用 \textwidth 总宽度；内部列宽按内容长度分配，符号/编号等短列收窄，说明性长文本列加宽。
+% 10. 自第二章起，正式定义或理论结果出现前必须先由正文说明引入原因、所解决的问题及其后续用途，
+%     不允许在小节标题后无过渡地直接给出定义、引理、命题、定理或推论。
+% 11. 仅把具有独立理论价值、承担后续证明链关键作用的结论提升为引理、命题、定理或推论；
+%     由定义直接得到、证明过于直接或仅作说明的结果改为正文表述，避免为了形式化而形式化。
+% 12. 定义、假设、引理、命题、定理、推论分别采用全文连续的独立编号，不依赖章、节编号。
+% 13. 形式化环境属于结构性格式，可由模板统一显示标题；正文不再额外使用粗体或斜体强调结论。
+% 14. 正式算法采用“算法 章号.序号 + 输入/输出 + 带行号伪代码”格式；控制关键字用结构性粗体，
+%     算法环境允许自然跨页，不把算法拆成正文编号列表。
+% 15. 新概念必须先定义数学符号及其定义域、值域或取值含义；正文不得使用自创英文函数名、
+%     英文状态名或完整英文单词下标代替数学定义。领域通行缩写仅在首次给出中英文全称后使用。
+
+
+\documentclass[master,fontset=ubuntu]{shnuthesis}
+% master 硕士学位论文, 默认可省略
+% doctor 博士学位论文, 不能省略
+% arts 文科学位论文, 默认缺省为理科
+% print 用于打印, 封面等生成空白页
+% 提交给图书馆的电子版不要选 print
+
+%----- 论文标题、作者、导师、日期等相关信息 -----
+\title{基于时间 Petri 网的任务完成故障诊断方法研究}
+\author{陆~~杰}   % 作者姓名
+\date{二~~〇~~二~~七~~年~~三~~月 }  % 完成日期
+\institute{信~息~与~机~电~工~程~学~院}  % 学院名称
+\major{计~算~机~科~学~与~技~术}  % 专业名称
+\research{离~散~事~件~系~统~的~故~障~诊~断}  % 研究方向
+\studentID{242200762}  % 学号
+\shnucode{10270}  % 学校代码
+\advisor{ 杨~~茹~~~~副~教~授}  % 导师姓名
+
+%----- 设置英文字体 -----
+%\usepackage{newtxtext}  % New TX font for text
+%\setmainfont{TeX Gyre Termes}  % Times New Roman 的开源复刻版本
+%\setsansfont{TeX Gyre Heros}   % Helvetica 的开源复刻版本
+%\setmonofont{TeX Gyre Cursor}  % Courier New 的开源复刻版本
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+%\setmonofont{Courier New}
+
+%----- 设置数学字体 -----
+%\usepackage{newtxmath}
+%\usepackage{mathptmx}
+
+%----- 添加其他宏包 -----
+%\usepackage[notcite,notref]{showkeys}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{needspace}
+\usepackage{algpseudocode}
+\usepackage{longtable}
+
+%----- 取消链接颜色和方框 -----
+%\hypersetup{hidelinks}
+
+%----- 参考文献格式 -----
+%\bibliographystyle{plain} % abbrv, unsrt, siam
+\bibliographystyle{shnuthesis-numeric}
+%\bibliographystyle{shnuthesis-author-year}
+
+%----- 参考文献引用格式 -----
+\citestyle{numbers}
+%\citestyle{super}
+%\citestyle{authoryear}
+
+%----- 调整列表项的间距 -----
+%\setlength{\itemsep}{3pt}
+
+%----- 调整页面避免出现过大空白 -----
+%\raggedbottom
+
+%----- 定义符号描述命令  -----
+\newcommand{\nameditem}[3][]{
+\noindent\hspace{2em}\makebox[0.2\textwidth][l]{#2}{{#3}
+\hfill\makebox[0.2\textwidth][l]{#1}\hspace*{2em}}\par}
+
+%----- 微分算子 -----
+\newcommand*{\dif}{\mathop{}\!\mathrm{d}}
+
+%----- 自定义命令 -----
+\newcommand{\CC}{\ensuremath{\mathbb{C}}}
+\newcommand{\RR}{\ensuremath{\mathbb{R}}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\ii}{\mathrm{i}\mkern1mu}
+\newcommand{\abs}[1]{\lvert#1\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\dx}[1][x]{\mathop{}\!\mathrm{d}#1}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+%----- 诊断判定值 -----
+% 逻辑层和概率层均以 1、0、\perp 表示已证明成立、已证明不成立和尚未判定；
+% 判定变量分别写为 v_L 与 v_P，状态宏只排版其取值。
+\DeclareRobustCommand{\logicstatus}[1]{\ensuremath{#1}}
+\DeclareRobustCommand{\probstatus}[1]{\ensuremath{#1}}
+
+%----- 定义、定理、引理、命题、推论与证明环境 -----
+% 各类形式化环境分别采用全文连续编号，不依赖章、节编号，也不共享计数器。
+% 正文采用直立字体；环境标题的格式由 amsthm 统一处理。
+\theoremstyle{definition}
+\newtheorem{thesisdefinition}{定义}
+\newtheorem{thesisassumption}{假设}
+\newtheorem{thesislemma}{引理}
+\newtheorem{thesisproposition}{命题}
+\newtheorem{thesistheorem}{定理}
+\newtheorem{thesiscorollary}{推论}
+\renewcommand{\proofname}{证明}
+
+%----- 算法环境 -----
+% 算法按章编号为“算法 3.1”“算法 4.1”等；环境不使用浮动体，
+% 允许较长伪代码自然跨页，版式接近参考论文中的算法排版。
+\newcounter{thesisalgorithm}[chapter]
+\renewcommand{\thethesisalgorithm}{\thechapter.\arabic{thesisalgorithm}}
+\newenvironment{thesisalgorithm}[1]{%
+  \refstepcounter{thesisalgorithm}%
+  \par\addvspace{0.8\baselineskip}%
+  \noindent\textbf{算法 \thethesisalgorithm\quad #1}\par
+  \vspace{0.35\baselineskip}%
+}{%
+  \par\addvspace{0.8\baselineskip}%
+}
+\algrenewcommand\algorithmicrequire{\textbf{输入：}}
+\algrenewcommand\algorithmicensure{\textbf{输出：}}
+\algrenewcommand\algorithmicreturn{\textbf{return}}
+\algrenewcommand\alglinenumber[1]{\bfseries #1}
+
+
+
+
+\begin{filecontents*}{reference_revised_localadditions.bib}
+@misc{WestDeuse2025PyScrewDataset,
+  author       = {West, Nils and Deuse, Jochen},
+  title        = {Screw Driving Dataset -- s04\_variations-in-assembly-conditions-2},
+  year         = {2025},
+  howpublished = {Zenodo},
+  doi          = {10.5281/zenodo.16031381},
+  note         = {Version 1.2.3, CC BY 4.0}
+}
+
+@inproceedings{WestDeuse2024HICSS,
+  author    = {West, Nils and Deuse, Jochen},
+  title     = {A Comparative Study of Machine Learning Approaches for Anomaly Detection in Industrial Screw Driving Data},
+  booktitle = {Proceedings of the Hawaii International Conference on System Sciences},
+  year      = {2024},
+  doi       = {10.24251/HICSS.2024.126}
+}
+\end{filecontents*}
+
+\begin{document}
+
+% 生成封面页
+\maketitle
+% 也可以插入封面 cover.pdf 替换原始封面
+%\insertcover{cover.pdf}
+
+% 生成独创性与授权声明页, 此页可以放在最后
+\makestatement
+% 将签字扫描的声明页 statement.pdf 替换原始页面
+%\makestatement[file=statement.pdf]
+
+%=============== 摘要 =================%
+
+% 关闭章节编号, 页码使用罗马数字
+\frontmatter
+
+% 中文摘要内容和关键字
+
+\begin{cnabstract}
+时间信息和任务完成约束广泛存在于制造系统、装配过程和自动化作业中，传统离散事件系统故障诊断方法通常侧重故障是否最终可辨识，而较少直接刻画“在任务完成时刻能否依据有限观测可靠判断故障”的问题。针对这一不足，本文围绕时间 Petri 网模型，研究面向任务完成的故障诊断方法，并进一步讨论随机加工时间条件下的风险认证问题。
+
+首先，本文在时间 Petri 网语义下定义了任务完成故障诊断问题，给出了有限观察长度与完成时间边界约束下的分析域，区分了可验证可诊断、存在歧义和计算未完成三种判定状态。在此基础上，构造了保持时间语义的同步状态类搜索方法，并结合同步筛选、时间包围筛选和精确确认机制，实现了面向任务完成的逻辑诊断算法。该方法能够在不改变判定语义的前提下减少精确求解负担，从而提高分析效率。
+
+其次，本文将任务完成诊断扩展到随机时间模型，利用保留活动计时器联合状态的互斥路径事件描述历史条件下的概率传播，并定义模型条件下的 Bayes 错误与可靠诊断覆盖率。针对具有有理分段多项式时间密度和有限离散观测的受限子类，给出可构造的类别概率计算方式；对更一般的连续观测，则在局部数值界有效的条件下构造保守风险区间。适用性未知和性质未决分别保留，不能由有限计算预算直接得出确定的诊断结论。
+
+最后，本文在逻辑基准模型、闭式并行模型和实际加工记录上验证了所提方法。逻辑部分在 52 个时间 Petri 网基准模型上比较了四种实现，结果表明它们的最终判定完全一致，其中本文方法将耦合线性规划调用总数由 60 次降至 11 次。概率部分在闭式模型上验证了风险指标、历史保持和年龄语义的必要性；在 PyScrew 实际加工记录构成的 32 个工况上，历史实验记录给出了 3 个满足规格、25 个违反规格、3 个尚未判明以及 1 个标定样本不足的工况分类。该分类尚须按本文修订后的联合传播和严格数值外包围条件重新核验，当前不把其直接视为全部完成复验的风险证书。进一步地，在 1413 条四种方法均获得有效外层预测的共同样本上，本文概率模型的受试者工作特征曲线下面积（Area Under the Receiver Operating Characteristic Curve, AUROC）为 0.8499，Brier 分数为 0.1569，负对数似然（Negative Log-Likelihood, NLL）为 0.4733。其中 AUROC 越高表示排序区分能力越强，Brier 分数和 NLL 越低表示概率预测质量越好；本文方法在这三项指标上均为四种方法中的最佳结果，平衡准确率则与随机森林接近。
+
+综上，本文建立了一个面向任务完成的时间 Petri 网逻辑—概率统一诊断框架，在保持时间语义与任务完成约束的同时，兼顾了可解释的逻辑判定与严格的风险认证，为实际制造场景中的完成后故障诊断提供了理论基础和方法支持。
+
+\cnkeywords{时间 Petri 网；任务完成故障诊断；可诊断性；风险认证；选择性分类；工业加工记录}
+\end{cnabstract}
+
+% 英文摘要内容和关键字
+
+\begin{enabstract}
+Temporal information and task-completion constraints are pervasive in manufacturing systems, assembly processes, and automated operations. Conventional fault diagnosis methods for Discrete Event Systems (DESs) mainly focus on whether faults are eventually distinguishable, but pay less attention to whether a fault can be diagnosed reliably at the moment of task completion from finite observations. To address this gap, this thesis studies task-completion-oriented fault diagnosis for Time Petri Nets (TPNs) and further investigates risk certification under stochastic processing times.
+
+First, under the semantics of TPNs, the task-completion fault diagnosis problem is formally defined over a bounded analysis domain determined by the observation length and the task completion time window. Three outcomes are distinguished: verifiable diagnosability, ambiguity, and incomplete computation. On this basis, a synchronous state-class search method that preserves temporal semantics is developed. By combining synchronous filtering, time-bounding filtering, and exact confirmation, a logical diagnosis algorithm for task completion is obtained. The proposed method reduces the burden of exact solving without changing the underlying decision semantics, thereby improving computational efficiency.
+
+Second, the framework is extended to stochastic-time models. Mutually exclusive path events retain the joint state of active timers, so that probability propagation accounts for the full execution history rather than assuming conditional independence of residual timers. Model-conditional Bayes error and reliable diagnosis coverage are defined. A constructive calculation is specified for a restricted class with rational piecewise-polynomial timing densities and finite discrete observations; more general continuous observations require independently validated numerical enclosures. Unknown applicability is distinguished from an inconclusive property verdict.
+
+Finally, the proposed methods are validated on logical benchmark models, a closed-form parallel model, and real machining records. For the logical part, four implementations are compared on 52 TPN benchmark models and are shown to yield identical final decisions, while the proposed method reduces the total number of coupled linear-programming calls from 60 to 11. For the probabilistic part, the closed-form model confirms the necessity of the risk metrics, history preservation, and age semantics. For the 32 operating conditions constructed from the PyScrew industrial records, archived experiment records report 3 conditions meeting the stated specifications, 25 violating at least one specification, 3 remaining inconclusive, and 1 lacking sufficient calibration data. These archived classifications require independent revalidation against the revised joint propagation and certified numerical enclosure assumptions before they can be described as fully reverified risk certificates. Furthermore, on the 1,413 records for which all four methods provide valid out-of-fold predictions, the proposed probabilistic model attains an area under the receiver operating characteristic curve (AUROC) of 0.8499, a Brier score of 0.1569, and a negative log-likelihood (NLL) of 0.4733. A higher AUROC indicates stronger ranking discrimination, whereas lower Brier score and NLL indicate better probabilistic prediction quality. The proposed method achieves the best values among the four methods on these three metrics, while its balanced accuracy remains close to that of the random forest baseline.
+
+In summary, this thesis establishes a unified logical--probabilistic diagnosis framework for task completion in TPNs. By preserving temporal semantics and task-completion constraints, the framework combines interpretable logical diagnosis with rigorous risk certification, and provides a theoretical and methodological foundation for post-completion fault diagnosis in practical manufacturing scenarios.
+
+\enkeywords{Time Petri nets; task-completion fault diagnosis; diagnosability; risk certification; selective classification; industrial machining records}
+\end{enabstract}
+
+
+%=============== 目录 =================%
+
+% 生成目录
+\maketoc
+
+% 生成插图清单, 如不需要可以注释
+\makelof
+
+% 生成表格清单, 如不需要可以注释
+\makelot
+
+%=====================================%
+
+%=============== 主要符号表 ================%
+
+\chapter{主要符号表}
+
+\noindent\textbf{Petri 网与时间语义}\par
+\vspace{0.4em}
+
+\nameditem{$N$}{标号时间 Petri 网（TPN）}
+\nameditem{$N^{\mathrm{s}}$}{标号随机时间 Petri 网（LSTPN）}
+\nameditem{$P$}{库所集合}
+\nameditem{$T$}{变迁集合}
+\nameditem{$T_o,\,T_u$}{可观变迁集合与不可观变迁集合}
+\nameditem{$T_d,\,T_0$}{随机时间模型中的时间变迁集合与即时变迁集合}
+\nameditem{$T_f$}{指定故障变迁集合}
+\nameditem{$T_c$}{任务完成变迁集合}
+\nameditem{$W^-,\,W^+$}{Petri 网输入关联映射与输出关联映射}
+\nameditem{$M,\,M_0$}{系统标识与初始标识}
+\nameditem{$\mathcal M_c$}{任务完成标识集合}
+\nameditem{$\Sigma$}{可观测字母表}
+\nameditem{$\ell$}{变迁标号函数}
+\nameditem{$\varepsilon$}{静默标号}
+\nameditem{$I(t)=[a_t,b_t]$}{变迁 $t$ 的静态发射时间区间}
+\nameditem{$F_t$}{随机时间变迁 $t$ 的原始发射时间分布}
+\nameditem{$w_t$}{即时变迁 $t$ 的冲突权重}
+\nameditem{$\mathcal E(M)$}{标识 $M$ 下的使能变迁集合}
+\nameditem{$\alpha_t,\,\boldsymbol{\alpha}$}{变迁 $t$ 的使能年龄及使能年龄向量}
+
+\vspace{0.8em}
+\noindent\textbf{任务完成运行与逻辑诊断}\par
+\vspace{0.4em}
+
+\nameditem{$\rho$}{有限时间运行}
+\nameditem{$\mathcal R(N)$}{模型 $N$ 的有限时间运行集合}
+\nameditem{$\rho'\prec\rho$}{运行 $\rho$ 的严格前缀关系}
+\nameditem{$\sigma_\rho$}{运行 $\rho$ 对应的发射序列}
+\nameditem{$\lambda(\rho)$}{运行 $\rho$ 的可观测事件词}
+\nameditem{$\tau(\rho)$}{运行 $\rho$ 的总持续时间}
+\nameditem{$\chi_f(\rho)$}{运行 $\rho$ 的故障历史类别}
+\nameditem{$\mathfrak T=(T_f,\mathcal M_c,T_c)$}{故障集合、完成标识与完成变迁组成的任务规格}
+\nameditem{$L$}{逻辑诊断中的可观测词长度上界}
+\nameditem{$H$}{逻辑诊断中的任务完成时间上界}
+\nameditem{$\mathcal R^c_{L,H}(N,\mathfrak T)$}{满足词长与完成时间界的首次完成运行集合}
+\nameditem{$\omega_c(\rho)$}{完成边界上的逻辑观测，一般由事件词与总完成时间组成}
+\nameditem{$\mathcal T_{L,H}^{N,\mathfrak T}(\sigma)$}{发射序列 $\sigma$ 在时间界 $H$ 内的可行完成时间集合}
+\nameditem{$\kappa$}{有界任务完成临界运行对}
+\nameditem{$\mathcal K_{L,H}(N,\mathfrak T)$}{网络 $N$ 的 $(L,H)$ 有界临界运行对集合}
+\nameditem{$G_{\mathrm{SCG}}$}{规范化状态类图}
+\nameditem{$G_c$}{首次完成截断后的任务完成状态类图}
+\nameditem{$S_o$}{观测同步器}
+\nameditem{$\widehat\Phi_L(N,\mathfrak T)$}{长度不超过 $L$ 的候选观测词集合}
+\nameditem{$J_b$}{路径记录对应的保守完成时长包围区间}
+\nameditem{$\mathcal{P}^{N}_{H}(\sigma)$}{序列 $\sigma$ 的有界路径可行域}
+\nameditem{$\mathcal A_L$}{有界任务完成逻辑验证算法接口}
+\nameditem{$\mathfrak B_L$}{逻辑验证的有限计算界}
+\nameditem{$v_L$}{逻辑验证结果，取 $1$、$0$ 或 $\perp$}
+\nameditem{$\mathcal E_L,\mathcal U_L$}{逻辑验证的见证/可核查记录与未解析集合}
+
+\vspace{0.8em}
+\noindent\textbf{概率诊断与风险量化}\par
+\vspace{0.4em}
+
+\nameditem{$H_0,\,H_1$}{故障窗口内的无指定故障假设与指定故障假设}
+\nameditem{$H_{\psi}$}{故障假设分类截止时刻}
+\nameditem{$B_c$}{故障发生后允许的最大任务完成延迟}
+\nameditem{$B_d$}{任务完成后的附加观测时长}
+\nameditem{$H_A$}{概率诊断的有限分析时域，$H_A=H_{\psi}+B_c+B_d$}
+\nameditem{$\mathcal Z=\{z_c,z_e,z_d,z_h\}$}{完成、正常终止、死锁与数学时域终止类型集合}
+\nameditem{$\Omega_{H_A}$}{有限分析时域内的概率运行样本空间}
+\nameditem{$\tau_f(\rho)$}{运行 $\rho$ 中指定故障首次发生时刻}
+\nameditem{$\tau_c(\rho)$}{运行 $\rho$ 中故障后的首次任务完成时刻}
+\nameditem{$\psi$}{概率诊断观测映射}
+\nameditem{$Y$}{由观测映射 $\psi$ 诱导的诊断观测随机变量}
+\nameditem{$\mathcal{K}(B_c,B_d,\psi)$}{概率诊断支持层的有界临界运行对集合}
+\nameditem{$\xi$}{受监视状态类}
+\nameditem{$b_f,\,b_c,\,b_{\mathrm{done}}$}{受监视状态类中的窗口内故障、故障后完成及首次完成标志}
+\nameditem{$\theta_f,\,\theta$}{故障后计时器与全局时间变量}
+\nameditem{$\upsilon(\xi)$}{受监视状态类的完成约束违反示性量}
+\nameditem{$Z$}{状态类中的规范差分约束域（DBM 域）}
+\nameditem{$\xi^{\times}$}{正常/故障支持同步的定时验证器状态}
+\nameditem{$\Omega_h$}{索引为 $h$ 的互斥路径事件}
+\nameditem{$\nu_h$}{路径事件 $\Omega_h$ 对应的次概率测度}
+\nameditem{$Q_i^{Y}$}{假设 $H_i$ 与观测 $Y$ 的联合测度}
+\nameditem{$q_i$}{模型诱导的假设概率，$q_i=\Pr(H_i)$}
+\nameditem{$P_i^{Y}$}{给定假设 $H_i$ 的条件观测分布}
+\nameditem{$\mu$}{支配两类条件观测分布的测度}
+\nameditem{$p_i$}{Radon--Nikodym 密度 $p_i=\mathrm{d}P_i^{Y}/\mathrm{d}\mu$}
+\nameditem{$f_i$}{连续观测分量相对于 Lebesgue 测度的普通密度}
+\nameditem{$\boldsymbol{\pi}=(\pi_0,\pi_1)$}{诊断决策先验向量}
+\nameditem{$\eta_{\boldsymbol{\pi}}(y)$}{给定观测 $y$ 的后验故障概率}
+\nameditem{$C_{\delta}$}{后验错误不超过 $\delta$ 的可靠观测集合}
+\nameditem{$P_e^{\star}$}{最小 Bayes 错误概率}
+\nameditem{$\Gamma_{\delta}$}{后验错误上限为 $\delta$ 时的可靠诊断覆盖率}
+\nameditem{$\varepsilon$}{Bayes 错误概率允许上限}
+\nameditem{$\delta$}{单次可靠诊断允许的后验错误上限}
+\nameditem{$\gamma$}{可靠诊断覆盖率要求下限}
+\nameditem{$\Theta$}{风险有界任务完成诊断规格参数组}
+\nameditem{$\mathcal A_P$}{风险有界任务完成概率验证算法接口}
+\nameditem{$\mathfrak P,\mathfrak B_P$}{概率计算规则与有限计算界}
+\nameditem{$a_P$}{概率诊断问题适用性，取 $1$ 或 $0$}
+\nameditem{$v_P$}{概率验证结果，适用时取 $1$、$0$ 或 $\perp$}
+\nameditem{$\mathcal E_P,\mathcal U_P$}{概率验证的违反见证/风险区间依据与未解析集合}
+
+\vspace{0.8em}
+\noindent\textbf{常用缩略语}\par
+\vspace{0.4em}
+
+\nameditem{DES}{离散事件系统（Discrete Event System）}
+\nameditem{PN}{Petri 网（Petri Net）}
+\nameditem{TPN}{时间 Petri 网（Time Petri Net）}
+\nameditem{LSTPN}{标号随机时间 Petri 网（Labeled Stochastic Time Petri Net）}
+\nameditem{SCG}{状态类图（State-Class Graph）}
+\nameditem{TCSCG}{任务完成状态类图（Task-Completion State-Class Graph）}
+\nameditem{DBM}{差分约束矩阵（Difference-Bound Matrix）}
+\nameditem{LP}{线性规划（Linear Programming）}
+
+%=============================================%
+
+%============== 正文部分 ==============%
+
+% 开启章节编号, 页码使用阿拉伯数字
+\mainmatter
+
+% 第1章 绪论
+\chapter{绪论}
+
+\section{研究背景与意义}
+
+随着智能制造、柔性制造和工业信息化程度不断提高，现代生产系统逐渐由固定的串行流程演化为由多设备、多控制器、多任务以及共享资源共同构成的复杂动态系统。设备重构、工艺切换、并行加工和资源竞争提升了系统对多品种、小批量与动态生产需求的适应能力，同时也使运行过程表现出更明显的离散性、并发性与部分可观测性。对于此类系统，故障并不一定直接对应一个能够被传感器捕获的异常信号，它也可能体现为不可观的内部事件，或者在返工、恢复和替代路径作用下被后续正常行为所掩盖。传统基于连续信号和解析模型的故障诊断已经形成较为成熟的技术体系，但面向事件驱动系统时，诊断问题还需要处理事件顺序、不可观行为和状态跳变所形成的离散结构\cite{Gao2015,Zaytoon2013}。
+
+对于由事件发生驱动、状态在离散时刻发生跃迁的系统，离散事件系统（Discrete Event System, DES）提供了一类自然的建模与分析框架。DES 故障诊断的核心并非直接测量故障变量，而是根据可观测事件推断系统内部是否曾经发生指定故障。Lin 从观测等价角度研究了 DES 的可诊断性及其应用\cite{Lin1994}；Sampath 等建立了经典的 DES 可诊断性理论，将故障发生后的系统行为与无故障行为在观测映射下进行比较，并通过诊断器判断故障是否能够在有限观测延迟内被确定\cite{Sampath1995}。这一研究范式把故障诊断从“当前状态是否异常”进一步转化为“正常行为与故障行为能否由有限观测加以区分”，为部分可观测系统中的故障检测、隔离和可诊断性验证奠定了理论基础。
+
+复杂制造与自动化系统普遍具有并发、同步、互斥和资源共享等结构特征。Petri 网（Petri Net, PN）能够利用库所、变迁和标识描述离散状态以及事件之间的因果关系，是研究这类 DES 的重要工具\cite{Murata1989}。然而，普通 PN 主要刻画事件的逻辑关系，难以直接描述等待、超时以及不同任务分支之间的持续时间约束。时间 Petri 网（Time Petri Net, TPN）通过在变迁上附加发射时间区间，将离散事件结构与连续时间约束结合起来，使并发任务中的使能、等待、竞争和时限能够在统一模型中得到描述\cite{Berthomieu1991}。因此，当故障历史既与事件路径有关，又与任务执行时间有关时，TPN 为分析逻辑行为与时间行为之间的耦合关系提供了合适的形式化基础。
+
+时间信息能够提高部分可观测系统的故障区分能力，但能够获得何种时间信息取决于具体的数据记录方式。已有时间诊断研究常利用带时间事件词、事件发生时刻或其他逐事件时间约束来区分正常与故障行为\cite{Basile2017,Basilio2025}。在本文关注的任务执行场景中，中间事件的精确时间戳并非总能可靠获得，而任务释放时刻、任务完成时刻以及两者之间的总持续时间却往往能够在工单、批次或过程日志中稳定保留。若只采用无时间事件词进行诊断，会丢弃已有的总完成时间信息；若假定全部中间时间戳均可获得，又会提高对观测数据的要求。由此产生一个介于“纯事件观测”和“完整时间观测”之间的问题：当任务首次到达指定完成边界时，能否仅依据有限的可观测事件顺序和任务总完成时间判断故障是否曾经发生。本文将这一问题称为任务完成故障诊断问题。
+
+从逻辑层面看，如果一条正常完成运行和一条故障完成运行能够产生完全相同的事件顺序，并且二者还能够具有相同的总完成时间，则在当前观测条件下存在真实的诊断歧义。反之，如果所有正常与故障完成运行在事件或总时间上均能被区分，则任务完成边界本身已经提供了足够的诊断信息。然而，逻辑上的“存在歧义”只能说明某种等观测行为在模型中可行，并不能说明这种歧义在实际随机运行中具有多大的概率意义。对于具有连续发射时间分布的模型，两个支持集合甚至可能只在一个端点上接触，此时支持层仍然存在公共观测，但公共区域可能具有零概率质量。
+
+为进一步刻画这种差异，需要在 TPN 的时间支持之上引入随机时间信息。标号随机时间 Petri 网（Labeled Stochastic Time Petri Net, LSTPN）在保持并发结构和时间约束的同时，为时间变迁赋予概率分布，从而能够同时回答“哪些运行在时间上可行”和“这些运行具有多大概率质量”两个问题。随机状态类及非马尔可夫定时模型的相关研究已经表明，可以在符号时间域上描述一般分布计时器的概率演化\cite{Carnevali2009,Vicario2009}；面向随机定时系统的概率可诊断性研究则进一步说明，支持可行性与概率意义上的诊断性能应当区分处理\cite{Lefebvre2023}。因此，任务完成诊断需要从单纯的二值可区分性进一步扩展到错误风险及可靠诊断范围的定量分析。
+
+基于上述背景，本文从支持层和概率层两个相互关联但不能相互替代的层次研究任务完成故障诊断。支持层关注正常完成运行与故障完成运行是否可能产生相同的任务完成观测，目标是给出严格的可行性判定以及能够复核的歧义见证；概率层在给定随机时间模型和决策先验的条件下，进一步构造故障与无故障假设下的条件观测分布，评价最小 Bayes 错误以及满足指定后验可靠度的诊断覆盖范围。两层分析共享故障语义、时间语义和任务完成边界，又分别回答“混淆是否可能”和“混淆具有多大的概率重要性”。围绕这一统一对象展开研究，有助于补充部分可观测时间 DES 在任务完成边界上的故障诊断理论，也为只保留有限事件记录和完成时间的离线诊断、任务复核与异常追溯提供形式化分析依据。
+
+\section{国内外研究现状}
+
+任务完成故障诊断处于经典 DES 可诊断性、PN 故障诊断、时间系统可诊断性以及随机模型概率分析等研究方向的交叉位置。为了明确本文所研究问题与既有工作的联系和区别，下面分别从四个方面梳理国内外代表性成果，并在此基础上总结现有研究对本文问题的支撑及其尚未覆盖的内容。
+
+\subsection{离散事件系统故障诊断研究现状}
+
+DES 故障诊断的基本任务是根据系统可观测行为推断不可观故障是否发生。Lin 将可诊断性与观测映射联系起来，研究了故障行为能否根据有限观测得到区分\cite{Lin1994}。Sampath 等进一步建立了被广泛采用的诊断器框架，并给出了经典可诊断性的必要充分条件\cite{Sampath1995}。在这一框架下，如果故障发生之后仍存在能够无限延续且与正常运行具有相同观测的行为，则系统无法保证在有限延迟内确定故障。由此形成的“正常行为--故障行为观测等价”思想，成为后续故障诊断与可诊断性验证的共同基础。
+
+随着系统状态空间扩大，研究重点逐渐由直接构造指数规模的诊断器转向更高效的可诊断性判定。Jiang 等通过构造用于同步正常与故障行为的验证结构，给出了 DES 可诊断性的多项式时间检验方法\cite{Jiang2001}；Yoo 和 Lafortune 针对部分可观测 DES 提出了多项式时间验证方法\cite{Yoo2002}。Cassez 和 Tripakis 从静态与动态观察器的角度研究故障诊断，并讨论了观测选择对诊断能力的影响\cite{Cassez2008}。Zaytoon 和 Lafortune 对 DES 故障诊断方法进行了系统综述，指出模型表示、诊断器结构、传感器配置和故障推断是该领域长期关注的主要问题\cite{Zaytoon2013}。这些研究奠定了基于语言、观察器和验证器分析不可区分行为的基本技术路线。
+
+在经典可诊断性基础上，近年来 DES 故障诊断仍在向分布式、鲁棒性以及计算复杂度等方向扩展。Hamada 和 Takai 针对分散式故障诊断中的信息缺失问题研究了可靠单层推断诊断条件\cite{Hamada2024}；Miao 等从复杂度理论角度重新讨论自动机和 PN 中强、弱可诊断性验证的计算界限，说明可诊断性判定算法的复杂度仍是持续研究的问题\cite{Miao2026}。国内研究也从单故障诊断扩展到模式故障和安全诊断。刘富春等针对由事件模式构成的故障研究了 DES 的安全可诊断性\cite{LiuTang2020}，阙蔡雄等利用 Petri 网诊断器开展了模式故障的在线诊断研究\cite{Que2020}，伦浩怀和刘富春则进一步讨论了模糊 DES 中的弱可诊断性\cite{Lun2023}。这些工作表明，故障对象、观测结构和诊断目标正在不断丰富，但其共同出发点仍是比较不同内部行为在观测上的可区分程度。
+
+总体而言，经典 DES 理论能够严格回答事件观测条件下故障是否可以被确定，并为后续所有形式化诊断方法提供了理论基础。但这类模型通常把事件出现次数或事件序列作为主要诊断信息，时间并非问题定义中的核心变量。当实际日志还包含任务持续时间时，仅在语言层分析正常与故障行为会忽略可用于区分二者的时间信息。因此，如何在保持部分可观测结构的同时利用有限时间信息，是从经典 DES 可诊断性走向本文任务完成诊断问题的第一步。
+
+\subsection{基于 Petri 网的故障诊断与可诊断性研究现状}
+
+PN 能够紧凑表示并发、同步、冲突和资源共享关系，在制造、通信及软件系统等 DES 的建模和分析中具有明显优势\cite{Murata1989}。针对故障诊断问题，PN 方法通常将不可观故障建模为不可观变迁，并通过可达行为、基础标识、观察图或验证器等结构推断故障是否与当前观测一致。与直接展开有限状态自动机相比，PN 可以利用网结构和状态方程保留系统的并发特征，并在一定条件下减少显式状态枚举。
+
+Cabasino 等针对含不可观变迁的 PN 提出了基于基础标识和解释序列的故障检测方法\cite{Cabasino2010}，并进一步构造验证器网，将正常行为与故障行为置于共同观测下进行同步比较，从而给出有界与无界标号 PN 的可诊断性判定条件\cite{Cabasino2012}。随后，Cabasino 等系统研究了标号 PN 的可诊断性分析\cite{Cabasino2014}；Lefebvre 和 Leclercq 采用观察图研究 PN 可诊断性\cite{Lefebvre2016}；Ran 等将问题扩展到多个局部观测点下的协同可诊断性\cite{Ran2018}；Ma 等则从标识可诊断性出发，研究指定内部状态是否能够根据后续观测被确定\cite{Ma2021}。上述工作说明，通过构造能够同时追踪正常与故障演化的信息结构，可以把抽象的可诊断性定义转化为图结构上的可验证条件。
+
+与“给定传感器后验证是否可诊断”相对应，另一类研究关注通过重新配置观测或施加控制使系统满足可诊断性要求。Cabasino 等将传感器选择建模为保证标号 PN 可诊断性的优化问题\cite{Cabasino2013}；Ran 等研究了通过最优传感器选择实现标号 PN 可诊断性增强的方法\cite{Ran2019}。近年来，这一方向仍在持续发展：Hu 等提出面向标号 PN 可诊断性增强的最优传感器选择方法\cite{HuSensor2024}，另有研究通过监督控制实现异步可诊断性增强\cite{HuSupervisor2024}。Chouchane 和 Ghazel 从部分可观 PN 的代数方法出发讨论故障可预测性、有限步预测和预测诊断\cite{Chouchane2024}；Li 等则针对永久观测丢失研究了标号 PN 的鲁棒故障诊断问题\cite{LiRobust2026}。这些新近成果表明，PN 故障诊断研究已经由基本的“能否诊断”逐步延伸到传感器设计、控制增强、预测和观测退化等更复杂条件。
+
+国内基于 PN 的故障诊断研究同样经历了从结构建模、规则推理到部分可观测形式化诊断的演进。与早期主要利用 PN 表达故障传播和知识规则不同，近年来研究更加关注不可观行为、观测序列与形式化验证之间的关系。阙蔡雄等采用 Petri 网诊断器处理 DES 模式故障在线诊断问题\cite{Que2020}，说明基于 PN 的同步诊断结构能够服务于更复杂的故障模式。总体来看，PN 为本文处理并发结构和不可观故障提供了重要方法基础，但普通 PN 缺少连续时间语义，无法直接描述发射时间区间、持续使能年龄以及任务总完成时间。若要进一步利用完成时长排除逻辑上不可区分的路径，需要引入具有显式时间约束的 TPN。
+
+\subsection{时间 Petri 网故障诊断与时间信息利用研究现状}
+
+TPN 在 PN 结构上为变迁附加发射时间区间，使系统既保留离散事件的因果关系，又能够描述稠密时间约束。Berthomieu 和 D\'iaz 对 TPN 的时间状态及验证方法进行了系统研究，为后续状态类方法奠定了基础\cite{Berthomieu1991}。与 TPN 平行发展的时间自动机理论则以实值时钟描述事件发生时间，并形成了稠密时间系统的经典形式化分析框架\cite{Alur1994}。在 TPN 中，由于状态同时包含离散标识与连续时钟域，不能直接逐点枚举连续时间，因此状态类图（State-Class Graph, SCG）及其变体成为表示可达时间行为的重要符号结构。
+
+时间信息用于故障诊断的核心价值，在于它能够区分事件顺序相同但时间可行域不同的运行。Jiroveanu 和 Boel 基于 TPN 研究分布式故障检测与诊断，利用时间约束刻画故障行为与正常行为之间的差异\cite{Jiroveanu2006}。Basile 等将整数线性规划用于 PN 的有限步可诊断性分析\cite{Basile2012}，随后在标号 TPN 中构造修正状态类图（Modified State Class Graph, MSCG），结合时间观测与线性规划（Linear Programming, LP）进行状态估计和故障诊断\cite{Basile2015}。He 等指出了相关 MSCG 构造在特定条件下可能出现的无穷性问题，并对其适用条件进行了进一步讨论\cite{He2019}。Basile 等在此基础上系统研究了标号 TPN 的 $K$-可诊断性和时间界可诊断性，为同时利用事件计数与时间延迟提供了形式化判据\cite{Basile2017}。
+
+除状态类与线性约束方法外，时间系统故障诊断还发展出模型检验和时序逻辑等路线。Pencol\'e 和 Subias 将复杂事件模式的可诊断性转化为安全标号 TPN 上的模型检验问题\cite{Pencole2022}；Tuxi 等利用线性时序逻辑（Linear Temporal Logic, LTL）进行可诊断性验证\cite{Tuxi2022}。这些方法从不同角度说明，时间系统中的故障诊断不仅需要考虑事件标签的一致性，还需要考虑同一观测下不同内部路径的时间可行性。
+
+国内针对部分可观 TPN 的研究与上述方向具有较强关联。刘久富等针对双组元推进系统提出基于部分可观 TPN 和 MSCG 的故障诊断方法，根据可观事件序列及时间信息分析不可观故障\cite{Liu2018}。邓明喜等进一步研究了基于改进 MSCG 的标号 TPN 故障诊断，通过求解路径时间约束构成的 LP 判定与观测一致的有效路径\cite{Deng2022}。李雅琼和黎良面向部分可观标号 TPN 的最小代价变迁序列估计，利用观测修正状态类图和 LP 同时处理逻辑一致性与时间一致性\cite{LiYaqiong2024}。这些工作说明，SCG/MSCG 与线性约束相结合，是国内外时间 PN 处理部分观测和路径时间一致性问题的一条重要技术路线。
+
+近三年的相关研究进一步显示，时间信息的利用正在从状态估计扩展到路径检测、模式可诊断性以及主动诊断。Qin 等针对时间标号 PN 研究路径可检测性，利用修正状态类结构判断同一实时观测下路径是否可区分\cite{Qin2025}；Miao 等针对时间区间自动机研究主动诊断，通过时间区间与逻辑控制共同增强可诊断性\cite{Miao2025}；Liang 等给出了定时 DES 模式可诊断性的多项式时间验证方法\cite{Liang2025}；Basilio 等则研究了时间区间自动机模型下的故障诊断与可诊断性验证\cite{Basilio2025}。这些成果表明，如何有效利用时间信息仍是当前故障诊断研究的活跃方向。
+
+不过，现有代表性时间诊断方法通常使用逐事件发生时刻、带时间事件词、实时观测序列或其他较丰富的时间约束。本文所考虑的信息条件更为特定：逻辑诊断阶段保留可观测事件的先后顺序，但不要求获得每个中间事件的可靠时间戳；时间侧主要使用任务从开始到首次完成的总持续时间。因此，该问题既不同于完全忽略时间的事件词可诊断性，也不同于具有完整中间时间信息的 timed-word 类诊断。同时，本文将首次进入任务完成集合设为诊断边界，需要在状态类构造中阻止完成后的行为继续影响当前诊断记录。如何在这一较弱但具有实际意义的时间观测条件下，既保持候选筛选的完备性，又避免对全部运行进行无差别精确求解，是本文逻辑诊断方法需要重点解决的问题。
+
+\subsection{随机时间模型中的概率故障诊断与风险量化研究现状}
+
+当时间变迁不仅具有可行发射区间，而且具有随机发射分布时，系统分析由“某条运行是否可能发生”进一步扩展为“某类运行具有多大的概率质量”。对于一般分布计时器，传统基于指数分布无记忆性的马尔可夫分析并不充分。Carnevali 等在差分约束矩阵（Difference-Bound Matrix, DBM）域上研究状态密度函数，为非马尔可夫时间模型中的概率传播提供了符号分析基础\cite{Carnevali2009}；Vicario 等提出随机状态类方法，在稠密时间反应系统中同时表示时间支持和概率密度\cite{Vicario2009}；Horv\'ath 等进一步利用随机状态类研究非马尔可夫模型的瞬态分析\cite{Horvath2012}。这些方法说明，在并发的一般分布时间模型中，概率计算必须显式考虑不同计时器的年龄、剩余寿命和竞争关系。
+
+随机时间模型在故障诊断中的应用逐渐从故障概率估计发展到概率可诊断性分析。Ammour 等面向部分可观随机 PN 研究故障预测，根据带时间测量轨迹计算未来时间区间内的故障概率\cite{Ammour2018}。Lefebvre 等针对有界非马尔可夫随机 PN 研究结构故障与时间故障诊断\cite{Lefebvre2020}；随后又在标号随机 PN 中研究故障模式的可诊断性，分别构造逻辑和概率验证结构\cite{Lefebvre2022}。Lefebvre 和 Hadjicostis 进一步针对一类定时随机系统研究概率可诊断性的验证问题\cite{Lefebvre2023}。Leemans 等则从含静默变迁的随机 PN 出发分析随机行为，强调不可观行为存在时概率计算与路径结构处理的复杂性\cite{Leemans2024}。这些研究为本文从支持可行性走向概率风险评价提供了直接的理论背景。
+
+国内相关研究也逐步将时间、部分观测与概率推断结合起来。张信哲等针对部分可观 TPN 中仅凭时间可诊断性仍存在不确定结论的情形，引入贝叶斯估计进一步判断不可观故障状态\cite{Zhang2020}；刘久富等利用量子贝叶斯 Petri 网对部分可观 PN 中的故障概率进行推断\cite{LiuQuantum2022}。黄泽辉和刘富春研究了分布式随机 DES 中模式故障的安全诊断问题\cite{Huang2024}；程琰和刘富春进一步基于概率标号 Petri 网研究随机 DES 的故障预测，并通过验证器给出相应的可预测性判定\cite{Cheng2025}。这些成果体现了国内研究从确定性可诊断性向概率化故障分析拓展的趋势。
+
+概率模型能够得到观测条件分布后，还需要选择与诊断目标相匹配的决策指标。Chow 在分类拒绝问题中研究了识别错误率与拒绝率之间的最优权衡\cite{Chow1970}。El-Yaniv 和 Wiener 将这一思想系统化为选择性分类（selective classification）中的风险--覆盖关系，即允许对不确定样本拒绝判决，以更高的置信度换取较低的判决覆盖比例\cite{ElYaniv2010}。这一思想对任务完成概率诊断具有重要启发：平均错误概率只能描述总体判错风险，不能说明有多大比例的观测能够达到规定的后验可靠度。因此，在允许对高不确定观测不作强制判断时，需要同时考察最小 Bayes 错误和可靠诊断覆盖率。
+
+然而，随机状态类分析、概率故障诊断和 Bayes 决策指标之间不能简单拼接。首先，持续使能的时间变迁在其他变迁发射之后会保留已经积累的使能年龄，其剩余发射规律必须由条件分布确定，而不能无条件重新采样；其次，符号状态类允许不同执行历史在相同状态域重汇合，但概率计算要求被直接相加的事件保持互斥，若在合并后的支持图上简单累计路径概率，可能造成重复计数；再次，支持集合存在公共点只说明观测等价行为在模型上可行，不意味着公共区域一定具有正概率质量。因此，本文概率诊断需要把“支持可行性分析”和“概率质量传播”明确分离：先确定哪些正常/故障运行能够产生相同观测，再在保持执行历史互斥性的路径事件上构造条件观测分布，并对概率指标给出可验证的数值范围。
+
+\subsection{研究现状总结}
+
+综合上述研究，现有故障诊断理论已经形成由事件逻辑、并发结构、时间约束和概率信息逐层扩展的清晰脉络。经典 DES 可诊断性研究解决了部分观测条件下正常行为与故障行为能否由有限事件观测区分的问题，并发展出诊断器、观察器和验证器等基本工具；PN 研究利用网结构表达并发、同步和不可观行为，形成了基础标识、观察图和验证器网等符号分析方法；TPN 与其他定时 DES 研究进一步利用事件发生时间、时间区间或时间状态类增强故障区分能力；随机 PN、非马尔可夫状态类和概率可诊断性研究则把分析对象由行为支持扩展到概率质量，为风险量化提供了基础。
+
+从现有代表性工作可以看到，相关研究分别解决了本文问题所需的若干组成部分，但这些组成部分的研究目标和观测条件并不完全一致。第一，经典事件可诊断性主要关心故障能否在后续有限观测中被识别，而本文把诊断边界固定在任务首次完成，并使用任务完成记录作为最终观测。第二，时间可诊断性研究通常利用逐事件时间戳、实时观测或完整时间词；本文逻辑层只额外使用一个总完成时间，需要在较弱时间观测下重新建立不可区分关系。第三，支持层可诊断性回答的是等观测正常/故障运行是否存在，无法直接反映该等观测区域的概率质量。第四，随机模型能够传播概率，但状态类合并并不天然保证概率事件互斥，仍需要专门处理持续使能年龄和历史重汇合。第五，Bayes 错误和风险--覆盖准则可以评价决策性能，但它们以正确的条件观测分布为前提，而这一分布在并发非马尔可夫时间模型中本身就是需要解决的问题。
+
+因此，本文并非简单把“时间诊断”和“概率诊断”并列使用，而是围绕同一任务完成边界组织为两个递进层次：支持层首先回答正常完成运行与故障完成运行在现有观测下是否可能混淆；概率层在相同任务语义上进一步回答这种混淆承载多大的概率质量，以及给定风险和覆盖要求能否得到认证。两层之间还需要明确哪些结论可以相互推出、哪些不能。基于这一认识，本文将研究问题进一步聚焦为任务完成逻辑诊断、任务完成概率风险诊断及二者关系三个方面。
+
+\section{现有研究不足与问题提出}
+
+本文所称的任务完成故障诊断，是指针对具有明确任务完成边界的部分可观测离散事件任务，根据执行过程中保留的事件信息和时间信息，在任务首次完成时或规定的完成观测窗口内判断指定故障是否曾经发生。与经典无限时间可诊断性相比，本文固定任务完成边界和有限分析范围；与完整时间观测诊断相比，逻辑层只要求可观测事件顺序和总完成时间，概率层则在统一完成语义上允许给定相应的完成观测映射。具体运行、故障、完成和观测语义将在第二章形式化。
+
+基于前述研究现状，本文首先需要解决任务完成边界上的支持层可区分性问题。正常完成运行与故障完成运行可能经过不同内部路径，却留下相同事件词并具有公共可行完成时间。为避免对全部路径进行无差别精确求解，需要在保证不漏失真实歧义的前提下，依次利用结构同步、时间包围和路径级精确约束完成分层验证，并在发现歧义时给出可复核见证。
+
+其次需要解决随机时间条件下的诊断风险量化问题。支持重叠只能说明等观测行为可行，不能说明其概率重要性；同时，持续使能年龄、随机竞争和符号路径重汇合使概率质量不能直接在合并后的状态类图上进行简单路径乘积与求和。因此，需要保持互斥执行历史，正确构造两类故障假设下的条件观测分布，并对最小 Bayes 错误和可靠诊断覆盖率给出可认证的数值范围。
+
+最后需要明确逻辑歧义与概率风险之间的关系。逻辑无歧义在适当语义对齐条件下应当能够推出概率意义上的完美区分，但其逆向并不一般成立，因为连续时间支持可能只在零概率边界接触；当公共区域承载正概率质量时，风险还受到分布形状、决策先验和可靠性阈值影响。因此，本文把逻辑诊断、概率风险诊断及二者关系作为同一任务完成诊断问题由“可行性”到“概率重要性”的三个递进层次。
+
+\section{主要研究内容与创新点}
+
+围绕上述三个研究问题，本文以 TPN 及其随机扩展为统一建模基础，按照“共同语义建立---逻辑支持验证---概率风险量化---两层关系分析---实验验证”的路线开展研究。主要研究内容如下。
+
+\begin{enumerate}
+  \item 建立任务完成故障诊断的共同语义基础。统一描述故障历史、持续使能时间语义、首次任务完成边界和完成观测机制，并分别形式化有界任务完成逻辑诊断与风险有界任务完成概率诊断问题。
+
+  \item 研究有界任务完成的逻辑故障诊断方法。围绕正常与故障完成运行是否能够产生相同“事件顺序--总完成时间”观测，构造任务完成状态类图和观测同步器进行结构筛选，利用完成时长包围进行安全剪枝，并通过耦合 LP 精确确认临界运行对。
+
+  \item 研究任务完成概率故障诊断与风险认证方法。在 LSTPN 中保留持续使能年龄、活动随机计时器的联合测度及执行历史，分别完成支持验证、互斥路径事件概率传播与条件观测分布构造；对有限可计算子类给出明确的概率计算规则，并在局部区间有效时对最小 Bayes 错误与可靠诊断覆盖率形成保守界。
+
+  \item 分析逻辑诊断与概率诊断之间的关系并开展实验验证。在两层语义对齐条件下研究逻辑无歧义到概率完美诊断的充分关系及其非对称性，并通过基准模型、关键语义消融、闭式概率案例和实际加工记录检验各层方法。
+\end{enumerate}
+
+上述工作中的状态类、同步器、线性规划、持续计时器的联合密度分析和 Bayes 决策均有相关研究基础\cite{Basile2017,Carnevali2009,Vicario2009,Lefebvre2023,Chow1970,Blackwell1953}。下列贡献仅指围绕本文指定的首次完成诊断问题、较弱时间观测、严格风险规格以及跨层语义对齐所作的模型化、方法组合和相应证明；不主张这些基础数学工具本身由本文首次提出。在尚未取得完整参考书目并逐篇核对之前，相关“首次”或“优于所有已有方法”的优先权判断不作出。
+
+在上述研究内容基础上，本文的主要研究贡献概括如下。
+
+\begin{enumerate}
+  \item 面向任务首次完成边界，构建同时利用可观测事件顺序与总完成时间的有界逻辑诊断框架。本文以正常--故障临界运行对刻画任务完成观测歧义，将结构候选筛选、保守完成时长包围和路径级耦合 LP 组成分层验证过程，使支持层歧义既能够被显式见证，又能够在精确求解之前进行安全剪枝。
+
+  \item 构建支持分析与概率传播相分离的任务完成风险诊断方法。针对持续使能年龄及符号路径重汇合带来的概率相关性，本文在互斥路径事件上限制并推送活动计时器的联合测度，避免不加证明地对剩余时长作独立乘积。有限有理分段多项式模型与离散观测提供了明确的可计算子类；在有效概率界可得时，再利用未解析质量构造 Bayes 错误及可靠覆盖率的保守区间，区分已证明成立、不成立与尚未判明。
+
+  \item 从统一任务完成语义出发刻画逻辑歧义与概率风险之间的层次关系。本文区分支持层“是否存在等观测正常--故障运行”与概率层“等观测区域承载多少概率质量”，建立无支持临界对到条件观测分布分离的充分联系，并利用连续时间分布中的零概率边界说明其逆向关系一般不成立。
+\end{enumerate}
+
+\section{论文组织结构}
+
+全文围绕任务完成故障诊断的支持层判定和概率层风险量化展开，共分为七章。
+
+第一章为绪论，介绍研究背景，梳理 DES、PN、TPN 及随机时间模型中的故障诊断研究，提出本文需要解决的问题并概括主要研究内容和创新点。
+
+第二章建立全文共享的模型与语义基础，形式化有界任务完成逻辑诊断和风险有界任务完成概率诊断问题，并给出贯穿全文的并行任务示例。
+
+第三章研究有界任务完成逻辑诊断，依次完成任务完成状态类构造、观测同步、路径展开、时间包围和耦合 LP 精确验证，并分析算法正确性、终止条件与复杂度。
+
+第四章研究任务完成概率诊断，通过年龄保持状态类和定时验证器完成支持分析，在互斥历史路径事件上进行概率传播，并构造 Bayes 错误与可靠诊断覆盖率的保守认证方法。
+
+第五章研究逻辑诊断与概率诊断的理论接口，给出两层语义对齐条件，分析逻辑无歧义到概率完美诊断的充分关系、逆向非等价性以及观测粗化对风险和覆盖的影响。
+
+第六章开展实验验证与实际加工记录分析，通过基准模型、时间筛选消融、有限完成查询对照、闭式概率案例、关键语义敏感性和 PyScrew 加工记录检验前述方法。
+
+第七章总结全文研究工作与主要结论，归纳模型、计算和数据验证方面的局限，并讨论后续研究方向。
+
+% 第2章 理论基础与任务完成诊断问题描述
+\chapter{理论基础与任务完成诊断问题描述}
+
+\section{引言}
+
+第一章从离散事件系统故障诊断、Petri 网建模、时间信息利用以及随机时间模型中的风险量化等方面说明了任务完成故障诊断的研究背景。后续第三章和第四章分别研究逻辑层面的有界任务完成可诊断性验证与概率层面的风险有界任务完成诊断，但两类问题并非建立在彼此独立的模型上。二者都需要描述并发任务的离散结构、持续使能条件下的时间演化、不可观故障的历史保持以及任务完成边界，仅在故障分类窗口、观测映射和概率测度等方面存在进一步差异。因此，本章首先建立后续章节共享的模型与语义，再分别给出两类任务完成诊断问题的形式化定义。
+
+本文首先采用标号 TPN 描述部分可观测任务中的离散事件结构与时间约束。在这一层次中，系统运行是否可行由变迁使能条件、发射时间区间以及强时间语义共同决定，诊断问题关注正常完成运行与故障完成运行是否可能产生相同的任务完成观测。随后，在相同的持续使能语义上进一步引入随机发射时间分布和即时冲突权重，形成 LSTPN。概率层并不改变“某条运行是否属于时间支持”的基本语义，而是在可行运行空间上赋予概率质量，使诊断分析能够由支持层的可区分性进一步扩展到条件观测分布、Bayes 错误和可靠诊断覆盖率。
+
+需要说明的是，本文所谓逻辑层与概率层的统一，并不意味着两类问题的所有定义完全相同。逻辑层以一条首次完成运行中是否曾出现指定故障作为历史分类依据，并通过可观测事件顺序与总完成时间构造任务完成观测；概率层则引入故障假设分类截止时刻，将运行划分为无故障假设与故障假设，并允许通过一般观测映射保留、量化或忽略不同时间信息。正是这些差异构成第五章进一步讨论两层语义对齐与理论关系的基础。
+
+本章首先介绍标号 PN、TPN 及其随机时间扩展；随后统一给出故障事件、首次任务完成边界与观测语义；在此基础上分别形式化有界任务完成逻辑诊断问题与风险有界任务完成概率诊断问题，并给出后续方法所依赖的基本性质及证明；最后构造一个贯穿全文的并行任务示例，用于说明支持重叠、概率质量以及持续使能语义之间的联系。
+
+\section{Petri 网及时间语义基础}
+
+\subsection{标号 Petri 网与部分可观测行为}
+
+Petri 网能够同时表示 DES 中的状态、事件以及并发、同步和冲突关系，是后续时间模型的结构基础\cite{Murata1989}。本文只保留与故障诊断直接相关的基本概念。
+
+\begin{thesisdefinition}
+\label{def:lpn}
+标号 Petri 网记为 \(N_{\mathrm{PN}}=(P,T,W^-,W^+,M_0,\Sigma,\ell)\)。其中，\(P\) 和 \(T\) 分别为有限库所集合和有限变迁集合；\(W^-,W^+:P\times T\rightarrow\mathbb N\) 为输入和输出关联映射；\(M_0\) 为初始标识；\(\Sigma\) 为有限可观测字母表；\(\ell:T\rightarrow\Sigma\cup\{\varepsilon\}\) 为标号映射，\(\varepsilon\) 表示静默标号。
+\end{thesisdefinition}
+
+对任意标识 \(M:P\rightarrow\mathbb N\)，若 \(M\geq W^-(\cdot,t)\)，则变迁 \(t\) 在 \(M\) 下使能；其发射后得到 \(M'=M-W^-(\cdot,t)+W^+(\cdot,t)\)。由定义~\ref{def:lpn} 可得可观变迁集合 \(T_o=\{t\in T:\ell(t)\in\Sigma\}\) 与不可观变迁集合 \(T_u=\{t\in T:\ell(t)=\varepsilon\}\)。本文逻辑诊断部分采用不可直接观测的指定故障集合 \(T_f\subseteq T_u\)，这一设定与经典 DES 和标号 PN 可诊断性研究中通过观测等价关系识别不可观故障的基本框架一致\cite{Sampath1995,Cabasino2012,Cabasino2014}。
+
+对于发射序列 \(\sigma=t_1t_2\cdots t_n\)，其可观测事件词由删除所有静默变迁并依次保留其余标号得到，记为 \(\lambda(\sigma)\)。不同内部发射序列可以具有相同可观测词。例如，一条正常路径和一条包含故障及恢复行为的路径可以在内部具有不同的变迁序列，但当这些差异均发生在不可观部分时，二者对外部诊断器可能留下相同事件记录。后续时间诊断正是在这一部分可观测基础上继续判断这些路径能否同时满足相同的任务完成时间。
+
+\subsection{时间 Petri 网及强时间语义}
+
+普通 PN 只表示事件的逻辑可行性，不能区分同一发射序列在不同时间约束下是否能够实际发生。为此，本文在定义~\ref{def:lpn} 的结构基础上采用 TPN 描述任务执行过程中的时间限制\cite{Berthomieu1991,Basile2017}。
+
+\begin{thesisdefinition}
+\label{def:tpn}
+标号 TPN 记为 \(N=(P,T,W^-,W^+,M_0,\Sigma,\ell,I)\)。除定义~\ref{def:lpn} 中的离散结构外，\(I\) 为静态发射时间区间映射；对每个 \(t\in T\)，有 \(I(t)=[a_t,b_t]\)，其中 \(0\leq a_t\leq b_t\leq+\infty\)。
+\end{thesisdefinition}
+
+设 \(M\) 为当前标识，\(\mathcal E(M)\) 为当前使能变迁集合。对每个 \(t\in\mathcal E(M)\)，以 \(\alpha_t\) 表示其自最近一次新使能以来累计的时间，并以 \(\boldsymbol{\alpha}\) 表示全部当前使能变迁的年龄向量。一个时间状态写为 $(M,\boldsymbol{\alpha})$。本文采用单服务器、持续使能的强时间语义：每个使能变迁至多对应一个活动时钟；是否保留旧年龄不仅取决于发射前后是否使能，还取决于消费输入令牌后的中间标识；本次实际发射的变迁即使随后仍使能，其时钟也必须重新启动。
+
+\begin{thesisdefinition}
+\label{def:strong-time}
+在时间状态 \((M,\boldsymbol{\alpha})\) 下，若经过延迟 \(d\geq0\) 后发射 \(t\in\mathcal E(M)\)，则延迟与发射必须满足式~\eqref{eq:tpn-delay-fire}。
+\begin{equation}
+\left\{
+\begin{aligned}
+\alpha_u+d &\leq b_u,
+&&u\in\mathcal E(M),\ b_u<+\infty,\\
+a_t &\leq \alpha_t+d\leq b_t.
+\end{aligned}
+\right.
+\label{eq:tpn-delay-fire}
+\end{equation}
+发射后，真正持续使能的其他变迁保留累计年龄；新使能变迁（包括本次发射后仍使能的变迁）的年龄重置为零。
+\end{thesisdefinition}
+
+式~\eqref{eq:tpn-delay-fire} 的第一行限制时间不能越过任一当前使能变迁的有限最晚发射界，第二行保证实际发射变迁在自身允许区间内发生。为使后续路径 LP、状态类和随机计时器使用完全相同的时钟生命周期规则，记发射前标识为 $M$，消费输入令牌但尚未产生输出令牌的中间标识为 $M^-=M-W^-(\cdot,t)$，发射后标识为 $M'=M^-+W^+(\cdot,t)$，规定
+\begin{equation}
+\begin{aligned}
+E^p(M,t)&=\bigl(\mathcal E(M)\cap\mathcal E(M^-)\cap\mathcal E(M')\bigr)\setminus\{t\},\\
+E^n(M,t)&=\mathcal E(M')\setminus E^p(M,t).
+\end{aligned}
+\label{eq:postfire-enabling-partition}
+\end{equation}
+$E^p$ 只包含在令牌消费的中间阶段仍使能、且在发射前后持续使能的\emph{其他}变迁；$E^n$ 包含本次发射后仍使能的 $t$ 以及所有曾短暂失能或新使能的变迁。前者保留发射前的年龄并加上本次延迟，后者一律从零重新计时；对随机模型，后者对应重新抽取独立时延。中间标识只用于确定时钟是否重置，并不表示发生了额外的正时间推进。第 3、4 章均以式~\eqref{eq:postfire-enabling-partition} 为唯一时钟集合划分依据。
+
+记模型 \(N\) 的全部有限时间运行为 \(\mathcal R(N)\)。任意 \(\rho\in\mathcal R(N)\) 写为 \(\rho=(d_1,t_1)(d_2,t_2)\cdots(d_n,t_n)\)，其发射序列为 \(\sigma_\rho=t_1t_2\cdots t_n\)。定义总持续时间映射 \(\tau:\mathcal R(N)\rightarrow\mathbb R_{\geq0}\) 与可观测投影 \(\lambda:T^*\rightarrow\Sigma^*\)，使 \(\tau(\rho)=\sum_{i=1}^{n}d_i\) 且 \(\lambda(\rho)=\lambda(\sigma_\rho)\)。第 \(j\) 次发射对应的绝对时刻记为 \(\tau_j=\sum_{i=1}^{j}d_i\)。若 \(\rho'\) 由删去 \(\rho\) 末尾至少一个延迟--变迁对得到，则记 \(\rho'\prec\rho\)，并称 \(\rho'\) 为 \(\rho\) 的严格前缀。
+
+强时间语义对后续诊断具有两方面影响。其一，同一发射序列的可行总持续时间并非各变迁静态区间的独立相加，因为持续使能关系会引入时间相关约束；其二，一条并发支路发射以后，另一条仍持续使能的支路必须保留已有年龄。因此，第三章建立路径线性约束时需要显式保存年龄持续与重置关系，第四章构造随机剩余时间分布时也不能把持续使能变迁视为重新开始。
+
+\subsection{标号随机时间 Petri 网及概率语义}
+
+逻辑 TPN 只规定变迁何时允许发射，并不区分同一可行时间区域内部不同时间取值出现的概率。为对任务完成观测的概率质量进行分析，本文进一步采用 LSTPN。
+
+\begin{thesisdefinition}
+\label{def:lstpn}
+LSTPN 的模型组成写为
+\begin{equation}
+\begin{aligned}
+N^{\mathrm{s}}=\bigl(&P,T_d,T_0,W^-,W^+,M_0,\Sigma,\ell,I,F,w\bigr).
+\end{aligned}
+\label{eq:lstpn-tuple}
+\end{equation}
+式~\eqref{eq:lstpn-tuple} 中，\(T=T_d\uplus T_0\)，其中 \(T_d\) 与 \(T_0\) 分别为时间变迁集合和即时变迁集合；\(\Sigma\) 为可观测字母表，\(\ell:T\to\Sigma\cup\{\varepsilon\}\) 为标号映射，\(W^-,W^+,M_0\) 与定义~\ref{def:lpn} 相同。对 \(t\in T_d\)，取 \(0\leq a_t<b_t\leq+\infty\)，\(F_t\) 为支撑集恰为 \(I(t)=[a_t,b_t]\) 的绝对连续发射时间分布；对 \(t\in T_0\)，规定 \(I(t)=[0,0]\) 且 \(w_t>0\) 为即时冲突权重。此处以 \(F=(F_t)_{t\in T_d}\) 和 \(w=(w_t)_{t\in T_0}\) 分别表示时间分布族和即时权重族。因而，非零时间的确定性发射变迁不属于当前 LSTPN 的概率建模范围；逻辑 TPN 仍允许退化发射区间。指定故障集合与任务完成边界由后文任务规格 \(\mathfrak T\) 给出。
+\end{thesisdefinition}
+
+当多个即时变迁同时使能时，其局部选择概率由正权重归一化确定；只要存在已使能即时变迁，即时行为优先于时间变迁并阻止正时间推进。LSTPN 沿用定义~\ref{def:strong-time} 的持续使能年龄语义。时间变迁 \(t\) 新使能时从 \(F_t\) 对应的原始发射延迟中抽取一个样本；若其他变迁先行发射而 \(t\) 保持持续使能，则该样本不会重新抽取，已累积年龄也不会归零。
+
+持续使能语义进入概率层以后，还需要明确一个直接但重要的问题：变迁已经等待了一段时间后，其后续等待时间应如何计算。本文采用条件剩余时间，而不是在其他变迁发射后重新从原始分布抽样。设时间变迁 \(t\) 的分布函数为 \(F_t\)，生存函数为 \(S_t=1-F_t\)，密度为 \(f_t\)。若 \(t\) 已持续使能 \(\alpha_t\) 时间且 \(S_t(\alpha_t)>0\)，则剩余等待时间的生存函数与密度满足式~\eqref{eq:residual-law}。
+\begin{equation}
+\begin{aligned}
+S_t^{\alpha_t}(d)
+&=
+\frac{S_t(\alpha_t+d)}{S_t(\alpha_t)},\\
+f_t^{\alpha_t}(d)
+&=
+\frac{f_t(\alpha_t+d)}{S_t(\alpha_t)},
+\qquad d\geq0.
+\end{aligned}
+\label{eq:residual-law}
+\end{equation}
+式~\eqref{eq:residual-law} 由条件概率直接得到：在已知 \(X_t>\alpha_t\) 的条件下，剩余等待时间大于 \(d\) 等价于 \(X_t>\alpha_t+d\)；再利用 \(F_t\) 的绝对连续性即可得到相应密度。这里不把这一标准条件分布关系单独提升为引理，因为它的作用是明确后续随机时间语义，而不是形成本文独立的理论结论。该关系同时表明，年龄保持不仅意味着保存一个计时变量，还会改变后续竞争中的条件剩余分布。
+
+除了年龄保持外，第四章的有限时域概率验证还需要明确状态空间与随机展开能够完整分析的基本条件。为避免把这些算法适用条件混入模型定义，本文集中列出如下假设。
+
+\begin{thesisassumption}[概率模型的有限分析条件]
+\label{ass:probability-domain}
+本文第四章的概率分析采用以下条件：LSTPN 为 \(k\)-有界；从任一可达标识出发的即时发射序列均有限，并且对任一有限分析时域存在有限的时间变迁发射深度上界；不同新使能事件对应的原始发射延迟相互独立。
+\end{thesisassumption}
+
+假设~\ref{ass:probability-domain} 中第二项是支持层面的有限深度条件，而不只是随机意义下的几乎处处不爆炸条件。所有时间变迁具有严格正的最早发射时间可以保证该条件成立，但并非必要条件。第三项仅保证各次新使能事件中抽取的原始时延独立；在固定完整路径历史以后，多个未发射计时器可能受到共同的时间不等式约束，因而不能仅由当前年龄向量推断其剩余时长条件独立。第四章将保留尚未发射计时器的联合测度，在能够另外证明条件独立的情形下才使用剩余生存函数的乘积公式\cite{Carnevali2009,Vicario2009,Lefebvre2023}。
+
+需要区分模型支持与概率质量。定义~\ref{def:tpn} 中的发射区间决定一条时间运行是否可行，而定义~\ref{def:lstpn} 中的 \(F_t\) 与 \(w_t\) 决定可行运行空间中的概率质量。一个观测值即使位于正常和故障运行的公共支持中，也可能只对应连续分布下的零测度边界事件。因此，概率诊断不能把支持重叠直接解释为正概率错误。
+
+\section{任务完成、故障与观测语义}
+
+\subsection{故障事件与任务完成边界}
+
+本文诊断的是“任务执行过程中是否曾经发生指定故障”，因此故障分类采用历史发生语义，而不是仅依据完成时的最终标识判断系统是否处于故障状态。
+
+\begin{thesisdefinition}
+\label{def:fault-history}
+对有限时间运行 \(\rho\)，其故障历史类别 \(\chi_f(\rho)\) 由式~\eqref{eq:fault-class} 定义。
+\begin{equation}
+\chi_f(\rho)=
+\begin{cases}
+\mathrm{F}, &
+\iota(\sigma_\rho)\cap T_f\neq\varnothing,\\
+\mathrm{N}, &
+\iota(\sigma_\rho)\cap T_f=\varnothing.
+\end{cases}
+\label{eq:fault-class}
+\end{equation}
+其中 \(\iota(\sigma)\) 表示发射序列 \(\sigma\) 中实际出现过的变迁集合。对固定发射序列 \(\sigma\)，本文同样使用 \(\chi_f(\sigma)\) 表示按相同规则得到的故障类别。
+\end{thesisdefinition}
+
+由式~\eqref{eq:fault-class} 可知，一旦故障已经出现在运行历史中，即使后续恢复变迁使系统重新到达正常路径也可达的标识，该运行仍保持故障类别 \(\mathrm F\)。这保证后续方法识别的是故障发生历史，而不是完成时刻的瞬时状态。
+
+在故障历史确定以后，还必须明确一次任务记录在何处结束。若不规定首次完成边界，同一条长运行可能在任务已经完成后继续延伸，从而产生重复或与当前任务无关的诊断记录。为此，把故障集合、完成标识与完成变迁合并为同一任务规格。
+
+\begin{thesisdefinition}
+\label{def:task-specification}
+任务规格记为 \(\mathfrak T=(T_f,\mathcal M_c,T_c)\)，其中 \(T_f\subseteq T_u\) 为指定故障变迁集合，非空集合 \(\mathcal M_c\) 为完成标识集合，\(T_c\subseteq T\) 为完成变迁集合。本文讨论的任务在初始时尚未完成，即 \(M_0\notin\mathcal M_c\)。对任意可达的 \(M\notin\mathcal M_c\) 及发射关系 \(M[t\rangle M'\)，要求式~\eqref{eq:completion-boundary-consistency} 成立。
+\begin{equation}
+M'\in\mathcal M_c
+\quad\Longleftrightarrow\quad
+t\in T_c.
+\label{eq:completion-boundary-consistency}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:completion-boundary-consistency} 保证逻辑层的完成标识与概率层的完成发射描述同一边界。若原模型不满足该条件，应先检查是否存在与原系统运行行为保持一致的完成事件标记扩展；只有实际证明扩展的投影与原运行在相关时间和故障语义下等价，才能在扩展模型上使用后续两层对齐结论。
+
+\begin{thesisdefinition}
+\label{def:first-completion}
+给定模型 \(N\) 与任务规格 \(\mathfrak T\)。若有限运行 \(\rho\in\mathcal R(N)\) 的终止标识属于 \(\mathcal M_c\)，且对任意 \(\rho'\prec\rho\)，\(\rho'\) 的终止标识均不属于 \(\mathcal M_c\)，则称 \(\rho\) 为关于 \(\mathfrak T\) 的首次任务完成运行。
+\end{thesisdefinition}
+
+定义~\ref{def:first-completion} 规定任务在第一次进入完成集合时立即形成当前诊断记录，完成后的维护、搬运或其他行为不再属于同一次任务完成诊断。由式~\eqref{eq:completion-boundary-consistency}，首次进入 \(\mathcal M_c\) 与首次发射 \(T_c\) 中的完成变迁是同一事件，而不是两个需要事后比对的完成定义。
+
+\subsection{首次完成运行与观测映射}
+
+任务完成诊断还取决于诊断器能够获得哪些外部信息。第三章采用的逻辑观测只包含首次完成前的可观测事件顺序与从任务开始到首次完成的总持续时间。
+
+\begin{thesisdefinition}
+\label{def:logical-observation}
+对首次完成运行 \(\rho\)，定义任务完成观测为
+\(\omega_c(\rho)=(\lambda(\rho),\tau(\rho))\)。
+\end{thesisdefinition}
+
+定义~\ref{def:logical-observation} 假定任务起始时刻与首次完成时刻可由外部任务监控记录，因此两者之差可作为总完成时间；即使完成变迁本身为静默变迁，也需要独立的任务完成时间记录，否则不适用此逻辑观测定义。该观测不保留中间可观事件的独立时间戳。两条运行只有在可观测词和总完成时间均相同时，才在此观测下不可区分。
+
+与逻辑层固定使用“事件顺序加总完成时间”不同，概率层需要兼容时间戳量化、终止状态保留等不同观测方式。因此，在进入概率诊断指标之前先给出一般观测映射。
+
+\begin{thesisdefinition}
+\label{def:probability-observation}
+定义语义终止类型集合 $\mathcal Z=\{z_c,z_e,z_d,z_h\}$，依次表示首次任务完成、正常终止、死锁与到达数学分析时域。$z(\rho)\in\mathcal Z$ 只用于分析器内部的互斥分类，并非自动可见的传感量。记外部传感记录中真实可获取的终止指示为 $z_{\mathrm{ext}}^{\mathrm{obs}}(\rho)$；没有相应终止检测通道时取不可用标记 $\varnothing$。若系统具有独立的任务完成时间记录，记该外部记录为 $\tau_{\mathrm{comp}}^{\mathrm{obs}}(\rho)$，否则同样取 $\varnothing$。对有限分析时域内的运行 $\rho$，以 $\mathbf t(\rho)$ 记可观事件的绝对时间戳序列，原始外部观测与诊断观测定义为
+\begin{equation}
+\bar\omega(\rho)
+=\bigl(\lambda(\rho),\mathbf t(\rho),\tau_{\mathrm{comp}}^{\mathrm{obs}}(\rho),z_{\mathrm{ext}}^{\mathrm{obs}}(\rho)\bigr),
+\qquad
+Y(\rho)=\psi\!\left(\bar\omega(\rho)\right).
+\label{eq:probability-observation}
+\end{equation}
+外部完成信号可以由实际任务监视记录提供，但不得从分析器的内部 $b_{\mathrm{done}}$、$z_c$ 或其他不可观测状态自动生成。
+\end{thesisdefinition}
+
+定义~\ref{def:probability-observation} 允许 $\psi$ 保留真实可获取的时间戳、对时间量化，或读取已经由外部检测通道提供的终止标记；仅在 $\tau_{\mathrm{comp}}^{\mathrm{obs}}\neq\varnothing$ 时才允许提取总完成时间。内部 $z(\rho)$ 的四类终止结果仅用于事件分割与质量守恒，不得由 $\psi$ 直接读取。概率路径探索因计算资源耗尽而停止，只产生未解析前沿，既不是 $\mathcal Z$ 中的物理终止，也不是可观测信号。完成后的额外观测只在 $[\tau_c,\min\{\tau_c+B_d,H_A\}]$ 内采集；未完成运行仅记录分析时域内真正产生的外部事件。若实际任务需要完整的 $B_d$ 窗口，则必须另外保证相关完成时间不晚于 $H_A-B_d$，否则对该类运行不能声称已收集完整窗口。当外部首次完成记录存在且两层采用相同截断时，逻辑观测可以成为概率观测的一种特例。第五章将另行检查跨层可测对齐条件。
+
+\subsection{逻辑层与概率层的统一语义}
+
+基于前述定义，逻辑诊断和概率诊断共享同一类部分可观测并发任务，但在故障分类方式、完成边界和时间参数上具有不同侧重点。表~\ref{tab:logic-prob-semantics} 总结两类问题的主要语义关系。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{逻辑诊断层与概率诊断层的语义关系}
+\label{tab:logic-prob-semantics}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X}
+\hline
+比较维度 & 逻辑诊断层 & 概率诊断层\\
+\hline
+基础模型 & 标号 TPN & LSTPN\\
+故障分类 & 运行历史类别 \(\chi_f(\rho)\) & 截止 \(H_\psi\) 的假设 \(H_0,H_1\)\\
+完成边界 & 首次进入 \(\mathcal M_c\) & 指定完成变迁 \(T_c\) 及故障后首次完成\\
+观测 & \(\omega_c(\rho)\) & \(Y=\psi(\bar\omega)\)\\
+主要时间参数 & \(L,H\) & \(H_\psi,B_c,B_d,H_A\)\\
+核心问题 & 是否存在正常--故障等观测完成运行 & 等观测区域承载多少条件概率质量\\
+后续结果 & \logicstatus{1}、\logicstatus{0} 或 \logicstatus{\perp} & \probstatus{1}、\probstatus{0} 或 \probstatus{\perp}\\
+\hline
+\end{tabularx}
+\end{table}
+
+表~\ref{tab:logic-prob-semantics} 中的统一主要体现在持续使能时间语义、故障历史保持和任务完成边界三个方面；差异则主要来自故障分类窗口、完成形式和观测映射。第五章将在这些差异得到对齐以后研究逻辑无歧义与概率零风险之间的关系，而不会把表中的对应关系直接视为两类性质的等价关系。
+
+\section{有界任务完成逻辑诊断问题}
+
+\subsection{有界完成运行集合}
+
+逻辑验证并不分析任意长度、任意持续时间的所有系统行为，而是针对给定任务范围进行判定。为了把观测词长度界 \(L\) 与完成时间界 \(H\) 从诊断器实际观测中区分出来，先明确本章后续使用的有界首次完成运行集合。
+
+\begin{thesisdefinition}
+\label{def:bounded-complete-runs}
+记全部满足定义~\ref{def:first-completion} 的首次完成运行为 \(\mathcal R_c^{(1)}(N,\mathfrak T)\)。给定 \(L\in\mathbb Z_{\geq0}\) 与 \(H>0\)，其有界子集定义为式~\eqref{eq:bounded-complete-runs}。
+\begin{equation}
+\mathcal R^c_{L,H}(N,\mathfrak T)
+=
+\left\{
+\rho\in\mathcal R_c^{(1)}(N,\mathfrak T)
+\ \middle|\
+\begin{aligned}
+|\lambda(\rho)|&\leq L,\\
+\tau(\rho)&\leq H
+\end{aligned}
+\right\}.
+\label{eq:bounded-complete-runs}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:bounded-complete-runs} 中的 \(L\) 和 \(H\) 只限定需要验证的完成运行集合，并不会向诊断器增加新的传感信息。实际诊断观测仍由定义~\ref{def:logical-observation} 给出。因此，本文的有界任务完成可诊断性不能直接等同于经典无界可诊断性：前者固定在首次完成边界并限制分析域，后者通常讨论故障发生后经过未来观测能否最终确定故障。
+
+\subsection{有界任务完成可诊断性}
+
+有了分析域以后，诊断问题可以归结为一个唯一性要求：同一个任务完成观测不能同时对应不同的故障历史。该要求给出本文逻辑层的核心性质。
+
+\begin{thesisdefinition}
+\label{def:bounded-task-diagnosability}
+TPN \(N\) 关于任务规格 \(\mathfrak T\) 满足 \((L,H)\) 有界任务完成可诊断性，当且仅当式~\eqref{eq:bounded-diagnosability} 成立。
+\begin{equation}
+\forall \rho_1,\rho_2\in\mathcal R^c_{L,H}(N,\mathfrak T),\quad
+\omega_c(\rho_1)
+=
+\omega_c(\rho_2)
+\Longrightarrow
+\chi_f(\rho_1)
+=
+\chi_f(\rho_2).
+\label{eq:bounded-diagnosability}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:bounded-diagnosability} 说明，若一条正常完成运行和一条故障完成运行具有相同可观测词，但总完成时间不同，则两者仍然能够通过完成时间区分；只有事件顺序和总完成时间同时一致时，才构成真正的任务完成观测歧义。
+
+\subsection{临界运行对及其表征}
+
+直接在连续时间运行层面对定义~\ref{def:bounded-task-diagnosability} 进行两两比较不利于后续算法构造。更合适的做法是先固定离散发射序列，再把该序列能够产生的全部完成时间压缩为一个集合。
+
+\begin{thesisdefinition}
+\label{def:completion-time-set}
+对完整发射序列 \(\sigma\)，其在时间界 \(H\) 内的可行完成时间集合定义为式~\eqref{eq:completion-time-set}。
+\begin{equation}
+\mathcal T_{L,H}^{N,\mathfrak T}(\sigma)
+=
+\left\{
+d\in[0,H]\ \middle|\
+\begin{aligned}
+&\exists\rho\in\mathcal R^c_{L,H}(N,\mathfrak T),\\
+&\sigma_\rho=\sigma,\quad
+\tau(\rho)=d
+\end{aligned}
+\right\}.
+\label{eq:completion-time-set}
+\end{equation}
+\end{thesisdefinition}
+
+后续算法希望用区间交叠来表示两条固定序列是否可能具有相同完成时间，因此需要先确认定义~\ref{def:completion-time-set} 得到的集合确实具有区间结构，而不是一般的非连通集合。下面的命题给出这一基础性质。
+
+\begin{thesisproposition}[完成时间集合的区间性]
+\label{prop:completion-time-interval}
+若 \(\mathcal T_{L,H}^{N,\mathfrak T}(\sigma)\neq\varnothing\)，则 \(\mathcal T_{L,H}^{N,\mathfrak T}(\sigma)\) 是实数轴上的非空紧区间。
+\end{thesisproposition}
+
+\begin{proof}
+固定发射序列 \(\sigma=t_1\cdots t_n\) 后，沿该序列的标识变化、持续使能集合与新使能集合均被确定。将各次发射前延迟以及所需使能年龄写成有限维变量，则定义~\ref{def:strong-time} 中的最早发射、最晚发射、时钟持续与重置约束，以及全局界 \(H\)，共同构成有限个仿射等式和非严格仿射不等式。因此，可行变量集合是闭凸集。又因为所有延迟非负且总和不超过 \(H\)，每个年龄变量均由最近一次重置后若干非负延迟的和得到，所以全部变量有界。由此该可行集为非空紧凸集。总完成时间是这些变量上的连续线性函数，其像仍为实数轴上的非空紧凸集，而实数轴上的非空凸集必为区间，故结论成立。
+\end{proof}
+
+命题~\ref{prop:completion-time-interval} 允许后续用一个闭区间描述固定完整发射序列的全部可行完成时间，而不需要逐个枚举连续时间取值。
+
+在此基础上，可以把违反可诊断性的正常--故障运行对压缩为“公共观测词、两条发射序列以及公共完成时间区间”四部分信息。为后续验证算法提供明确搜索对象，定义临界运行对如下。
+
+\begin{thesisdefinition}
+\label{def:critical-pair}
+设 \(\sigma_N\) 与 \(\sigma_F\) 分别为正常和故障首次完成发射序列。若存在可观测词 \(\phi\) 与非空区间 \(J\) 使式~\eqref{eq:critical-pair} 成立，则称 \(\kappa=(\phi,\sigma_N,\sigma_F,J)\) 为一个 \((L,H)\) 有界临界运行对。
+\begin{equation}
+\left\{
+\begin{aligned}
+\chi_f(\sigma_N)&=\mathrm N,
+&\chi_f(\sigma_F)&=\mathrm F,\\
+\lambda(\sigma_N)&=\phi,
+&\lambda(\sigma_F)&=\phi,\\
+|\phi|&\leq L,
+&J&=
+\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_N)\cap
+\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_F)\neq\varnothing
+\end{aligned}
+\right.
+\label{eq:critical-pair}
+\end{equation}
+全部临界运行对组成集合 \(\mathcal K_{L,H}(N,\mathfrak T)\)。
+\end{thesisdefinition}
+
+临界运行对只有在与原始可诊断性定义严格等价时，才能作为第三章的验证对象。下面的命题说明这种转化既不会漏掉真正的观测歧义，也不会引入额外的判定条件。
+
+\begin{thesisproposition}[临界运行对表征]
+\label{prop:critical-pair-characterization}
+TPN \(N\) 满足定义~\ref{def:bounded-task-diagnosability} 当且仅当 \(\mathcal K_{L,H}(N,\mathfrak T)=\varnothing\)。
+\end{thesisproposition}
+
+\begin{proof}
+若 \(\mathcal K_{L,H}(N,\mathfrak T)\neq\varnothing\)，任选 \(\kappa=(\phi,\sigma_N,\sigma_F,J)\)。由 \(J\neq\varnothing\)，可取 \(d\in J\)。根据定义~\ref{def:completion-time-set}，分别存在实现 \(\sigma_N\) 与 \(\sigma_F\) 的首次完成运行，其可观测词均为 \(\phi\)，总完成时间均为 \(d\)，但故障类别不同，因此违反式~\eqref{eq:bounded-diagnosability}。
+
+反之，若式~\eqref{eq:bounded-diagnosability} 不成立，则存在 \(\rho_N,\rho_F\in\mathcal R^c_{L,H}(N,\mathfrak T)\)，二者任务完成观测相同而故障类别不同。令 \(\sigma_N=\sigma_{\rho_N}\)、\(\sigma_F=\sigma_{\rho_F}\)，公共可观测词为 \(\phi\)，公共完成时间为 \(d\)。则 \(d\) 同时属于 \(\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_N)\) 与 \(\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_F)\)，从而构成定义~\ref{def:critical-pair} 的临界运行对。故两者等价。
+\end{proof}
+
+命题~\ref{prop:critical-pair-characterization} 将第三章的验证目标从检查所有成对运行是否满足式~\eqref{eq:bounded-diagnosability}，转化为判断临界运行对集合是否为空，为后续结构筛选和路径级精确验证提供了直接入口。
+
+\section{风险有界任务完成概率诊断问题}
+
+\subsection{故障窗口与故障后有界完成}
+
+概率诊断需要首先明确当前窗口中哪些运行属于故障假设。设 \(H_\psi<+\infty\) 为故障假设分类截止时刻。下述概率事件均定义在随机机制诱导的\emph{完整分析样本历史}空间 \(\Omega_{H_A}\) 上：一条样本历史必须运行至首次任务完成并按规定收集附加观测、合法的非完成终止、死锁，或被截断于固定分析时域 \(H_A\)；它不包括任意人为提前停止的非终止有限前缀。若在 \(H_A\) 前已经产生完成记录，则依任务观测规则记录至相应终止边界；若仍未完成，则在 \(H_A\) 处保留截断结局。该完整样本空间的四类结局按先后优先级互斥划分，而非把计算预算前沿视作样本终止。由于当前诊断只针对\emph{同一次任务首次完成之前}的故障历史，\(\tau_f(\rho)\) 定义为首次完成截断内第一次指定故障时刻（若完成变迁本身为故障变迁，也计入）；若直到首次完成时仍未发生指定故障，或分析时域结束前始终未完成且未发生该故障，则令 \(\tau_f(\rho)=+\infty\)。概率层允许在首次完成后为观测额外保留长度 \(B_d\) 的执行片段，但这段片段中的新故障不再改变本次任务的 \(H_0/H_1\) 类别。
+
+\begin{thesisdefinition}
+\label{def:probability-hypotheses}
+在完整分析样本空间 \(\Omega_{H_A}\) 上，当前窗口的无故障假设定义为
+\(H_0=\{\rho\in\Omega_{H_A}:\tau_f(\rho)>H_\psi\}\)，故障假设定义为
+\(H_1=\{\rho\in\Omega_{H_A}:\tau_f(\rho)\leq H_\psi\}\)。
+\end{thesisdefinition}
+
+定义~\ref{def:probability-hypotheses} 将首次完成前（包括完成发射本身）恰好在 \(H_\psi\) 时刻发生的指定故障归入 \(H_1\)，而窗口关闭后或本次首次完成后发生的新故障不再改变当前任务的假设类别。其中有限分析时域固定为 \(H_A=H_\psi+B_c+B_d\)。\(\Omega_{H_A}\) 中的每条历史均按首次适用的语义终止原因归入 \(\mathcal Z\) 的恰好一类：\(z_c\) 表示按本次任务观测协议结束的首次完成记录，\(z_e\) 仅表示模型另行明确定义的合法非完成终止，\(z_d\) 表示无合法后继的非完成死锁，\(z_h\) 表示前述事件均未发生时到达分析时域的截断。未明确定义合法非完成终止规则的模型取空的 \(z_e\) 类。四类事件互斥且覆盖 \(\Omega_{H_A}\)，而 \(H_0,H_1\) 按第一次窗口内故障发生与否划分同一个样本空间。
+
+仅完成假设分类还不足以表达任务要求。对于已经归入 \(H_1\) 的故障运行，还必须限制故障发生后任务能够在多长时间内完成，因此进一步引入故障后有界完成条件。
+
+\begin{thesisdefinition}
+\label{def:bounded-postfault-completion}
+设 \(B_c>0\)。对 \(\rho\in H_1\)，令 \(\tau_c(\rho)\) 为本次首次故障发射本身或其后第一次属于 \(T_c\) 的完成发射时刻；当 \(T_f\cap T_c\neq\varnothing\) 且同一次发射同时触发故障与首次完成时，取 \(\tau_c(\rho)=\tau_f(\rho)\)，其故障后完成时长为零；若此后没有完成发射，则令 \(\tau_c(\rho)=+\infty\)。若 \(\tau_c(\rho)<+\infty\) 且
+\(0\leq\tau_c(\rho)-\tau_f(\rho)\leq B_c\)，则称 \(\rho\) 满足 \(B_c\) 有界完成。若每条完整分析样本历史 \(\rho\in H_1\) 均满足该条件，则称模型满足普遍 \(B_c\) 有界完成；这里不以尚未达到完成截止时间的短前缀作为违反见证。故障后在完成之前正常终止、死锁或超过 \(B_c\) 仍未完成均违反该条件。在数学分析时域的右端点，必须先把该时刻允许的完成发射及零时间行为按照模型语义完成边界判定，再将真正尚未完成的剩余历史归入时域截断。由于对任何窗口内故障都有 \(\tau_f+B_c\leq H_\psi+B_c\leq H_A\)，这些最终截断且未完成的 \(H_1\) 历史也违反本定义，包括 \(\tau_f+B_c=H_A\) 恰好等于时域右端点的情形；不能把尚未走到截止时刻的任意有限前缀当作违反见证。计算资源耗尽本身不构成语义反例。
+\end{thesisdefinition}
+
+完成后还可以继续收集长度为 \(B_d\geq0\) 的附加观测，其中 \(B_d=0\) 表示完成后不再等待额外信息。三个参数分别承担故障分类截止、故障后完成时限和完成后附加观测三种作用，不能合并解释为同一个时间上界。
+
+概率层仍然需要先区分“支持上能否产生相同观测”和“这些观测承载多少概率质量”。为了给第四章的支持验证器一个明确目标，先定义概率诊断中的支持临界运行对。
+
+\begin{thesisdefinition}
+\label{def:prob-critical-pair}
+给定 \(B_c,B_d,\psi\)。若 \(\rho_1\in H_1\) 满足定义~\ref{def:bounded-postfault-completion}，\(\rho_0\in H_0\)，且 \(Y(\rho_1)=Y(\rho_0)\)，则称 \((\rho_1,\rho_0)\) 构成概率诊断支持层的临界运行对。全部此类运行对组成集合 \(\mathcal K(B_c,B_d,\psi)\)。
+\end{thesisdefinition}
+
+定义~\ref{def:prob-critical-pair} 只说明等观测行为在支持上可行。即使 \(\mathcal K(B_c,B_d,\psi)\neq\varnothing\)，公共观测也可能仅对应连续分布下的零概率边界，因而不能据此直接判定概率诊断失败。
+
+\subsection{条件观测分布与决策先验}
+
+支持临界对只能判断等观测行为是否可行，不能反映这些行为在两个假设下出现的概率大小。为进入风险量化，需要分别构造 \(H_0\) 与 \(H_1\) 条件下的观测分布。设 LSTPN 的随机发射时间和即时冲突选择在全部可行时间运行上诱导概率测度 \(\Pr\)。
+
+\begin{thesisdefinition}
+\label{def:conditional-observation-law}
+对 \(i\in\{0,1\}\) 及观测空间 \(\mathcal Y\) 中任意可测集合 \(B\)，联合假设--观测测度 \(Q_i^Y\)、模型诱导的假设概率 \(q_i\) 和条件观测分布 \(P_i^Y\) 定义为式~\eqref{eq:conditional-laws}。
+\begin{equation}
+\begin{aligned}
+Q_i^Y(B)
+&=
+\Pr\!\left(\{Y\in B\}\cap H_i\right),\\
+q_i
+&=
+Q_i^Y(\mathcal Y)
+=
+\Pr(H_i),\\
+P_i^Y(B)
+&=
+\frac{Q_i^Y(B)}{q_i},
+\qquad q_i>0.
+\end{aligned}
+\label{eq:conditional-laws}
+\end{equation}
+\end{thesisdefinition}
+
+由式~\eqref{eq:conditional-laws} 可知，\(Q_i^Y\) 保留假设发生概率与观测概率的联合质量，而 \(P_i^Y\) 是已知 \(H_i\) 成立后的归一化观测分布。为同时处理连续时间观测和离散终止状态，取支配测度 \(\mu=P_0^Y+P_1^Y\)，并记 \(p_i=\mathrm dP_i^Y/\mathrm d\mu\)。当观测分量相对于 Lebesgue 测度具有普通连续密度时，另以 \(f_i\) 表示该密度，避免与一般 Radon--Nikodym 密度 \(p_i\) 混用。
+
+模型诱导的假设概率 \(q_i\) 与诊断决策使用的先验概率不要求相同。记决策先验为 \(\boldsymbol\pi=(\pi_0,\pi_1)\)，其中 \(\pi_0,\pi_1>0\) 且 \(\pi_0+\pi_1=1\)。当应用场景直接采用模型中的故障比例时可以取 \(\pi_i=q_i\)；当需要引入外部风险偏好或其他先验知识时，也可以使用与 \(q_i\) 不同的 \(\pi_i\)。二者都不同于即时冲突权重 \(w_t\)。
+
+\subsection{Bayes 错误与可靠诊断覆盖率}
+
+得到两类条件观测分布以后，还需要把分布差异转化为可用于诊断决策的量化指标。本文首先采用零--一损失下的 Bayes 判决描述整体最低分类错误，再用可靠覆盖率描述满足给定后验可靠度的观测比例。
+
+\begin{thesisdefinition}
+\label{def:bayes-error}
+给定决策先验 \(\boldsymbol\pi\)，令 \(m_{\boldsymbol\pi}(y)=\pi_0p_0(y)+\pi_1p_1(y)\)。在 \(m_{\boldsymbol\pi}(y)>0\) 的观测点，故障假设 \(H_1\) 的后验概率为
+\(\eta_{\boldsymbol\pi}(y)=\pi_1p_1(y)/m_{\boldsymbol\pi}(y)\)；在 \(m_{\boldsymbol\pi}(y)=0\) 的零测度点上可任意约定其值，例如取 \(0\)，而不改变下述风险及覆盖率。在零--一损失下，最小 Bayes 错误定义为式~\eqref{eq:bayes-error}。
+\begin{equation}
+P_e^\star
+=
+\int_{\mathcal Y}
+\min\!\left\{
+\pi_0p_0(y),
+\pi_1p_1(y)
+\right\}
+\,\mathrm d\mu(y).
+\label{eq:bayes-error}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:bayes-error} 衡量在给定观测机制与决策先验下任何二元 Bayes 判决都无法进一步降低的平均判错概率。平均错误较小并不意味着每一次输出都达到足够高的后验可靠度，因此还需要定义可靠判断的覆盖范围。
+
+\begin{thesisdefinition}
+\label{def:diagnostic-coverage}
+给定 \(\delta\in(0,1/2)\)，可靠观测集合 \(C_\delta\) 与诊断覆盖率 \(\Gamma_\delta\) 定义为式~\eqref{eq:coverage}。
+\begin{equation}
+\begin{aligned}
+C_\delta
+&=
+\left\{
+y\in\mathcal Y:
+\min\!\left(
+\eta_{\boldsymbol\pi}(y),
+1-\eta_{\boldsymbol\pi}(y)
+\right)
+\leq\delta
+\right\},\\
+\Gamma_\delta
+&=
+\int_{C_\delta}
+\left[
+\pi_0p_0(y)+\pi_1p_1(y)
+\right]
+\,\mathrm d\mu(y).
+\end{aligned}
+\label{eq:coverage}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:coverage} 中，\(1-\Gamma_\delta\) 可理解为在给定后验可靠度要求下需要拒绝或暂缓判断的观测比例。\(P_e^\star\) 与 \(\Gamma_\delta\) 描述不同侧面：前者是全体观测上的平均最小错误，后者是能够达到指定单次后验可靠度的观测覆盖比例，二者不能相互替代。
+
+\subsection{风险有界任务完成可诊断性}
+
+前述定义分别给出了故障后完成约束、条件观测分布、平均错误风险和可靠覆盖范围。为了使第四章的验证对象具有明确的输入规格，需要把这些要求合并为一个统一性质，而不是分别给出彼此独立的判定结果。
+
+\begin{thesisdefinition}
+\label{def:risk-bounded-diagnosability}
+定义诊断规格 \(\Theta=(H_\psi,B_c,B_d,\psi,\boldsymbol\pi,\varepsilon,\delta,\gamma)\)，其中 \(H_\psi\geq0\)、\(B_c>0\)、\(B_d\geq0\)、\(\pi_0,\pi_1>0\)、\(\pi_0+\pi_1=1\)、\(0\leq\varepsilon\leq1\)、\(0<\delta<1/2\)、\(0\leq\gamma\leq1\)，且 \(\psi\) 为作用于实际外部观测的可测映射。上述参数有效性是输入合同的一部分；非法输入不是概率意义上的未决。仅当 \(q_0>0\) 且 \(q_1>0\) 时该二元诊断问题适用；在此条件下，若式~\eqref{eq:risk-bounded-property} 的三项要求同时成立，则称 LSTPN 关于 \(\Theta\) 满足风险有界任务完成可诊断性。
+\begin{equation}
+\left\{
+\begin{aligned}
+\tau_c(\rho)&<+\infty,\quad
+0\leq\tau_c(\rho)-\tau_f(\rho)\leq B_c,
+&&\forall\rho\in H_1,\\
+P_e^\star&\leq \varepsilon,\\
+\Gamma_\delta&\geq\gamma.
+\end{aligned}
+\right.
+\label{eq:risk-bounded-property}
+\end{equation}
+\end{thesisdefinition}
+
+若 \(q_0=0\) 或 \(q_1=0\)，则条件观测分布之一没有定义，问题应报告为不适用，而不是报告为尚未求得真假结论。定义~\ref{def:risk-bounded-diagnosability} 将故障后任务能否按期完成与完成观测能否支持可靠故障判断同时纳入同一诊断规格。第一项是任务完成要求，后两项是概率风险要求。第四章将在有限支持探索、路径事件展开和数值积分条件下给出这些量的保守认证方法。
+
+逻辑支持结论与概率风险结论之间还需要模型、完成边界、假设窗口和观测映射同时对齐，不能仅由本节定义直接替代。相关充分条件、逆向不成立的情形及其证明统一留到第五章给出。
+
+\section{贯穿全文的并行任务示例}
+
+为了在同一个模型上解释逻辑诊断、概率诊断以及两者之间的关系，本文采用一个并行任务作为贯穿示例，其 Petri 网结构如图~\ref{fig:parallel-task-stpn} 所示。模型由服务/加工支路和独立验证支路构成。服务支路在任务开始时通过不可观即时选择进入正常服务模式或故障恢复后重执行模式；验证支路与服务支路并行执行。只有两条支路均结束以后，任务完成变迁才能发射。
+
+示例使用七个库所 $p_1,\ldots,p_7$。初始时，$p_1$ 表示尚未选择服务模式，$p_5$ 表示验证支路开始；$p_2$ 和 $p_3$ 分别表示正常服务与故障恢复/重执行活动，$p_4$ 表示服务支路结束，$p_6$ 表示验证支路结束，$p_7$ 表示整个任务完成。初始标识在 $p_1$ 和 $p_5$ 中各含一个Token。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{STPN.eps}
+    \caption{贯穿全文并行任务示例的 Petri 网结构}
+    \label{fig:parallel-task-stpn}
+\end{figure}
+
+图~\ref{fig:parallel-task-stpn} 中，$t_1$ 和 $t_2$ 分别对应服务支路的正常模式选择与故障恢复/重执行模式选择；$t_3$ 和 $t_4$ 分别表示两种模式下服务支路的结束，二者均到达库所 $p_4$。独立验证支路由 $p_5$ 经 $t_5$ 到达 $p_6$。只有当服务支路和验证支路分别到达 $p_4$ 和 $p_6$ 后，任务完成变迁 $t_6$ 才能发射，并使系统进入完成库所 $p_7$。因此，该结构同时包含模式选择、并行执行与同步完成三个特征，能够用于后续逻辑诊断和概率诊断方法的统一说明。
+
+表~\ref{tab:running-example-transitions} 给出主要变迁与时间参数。即时变迁 $t_1$ 选择正常服务分支，$t_2$ 选择故障恢复与重执行分支并被指定为故障变迁；$t_3,t_4,t_5$ 分别表示正常服务完成、故障恢复与重执行完成以及独立验证完成；$t_6$ 为可观测任务完成变迁，标号为 $c$。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{贯穿全文并行任务示例的变迁设置}
+\label{tab:running-example-transitions}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}X}
+\hline
+变迁 & 标号 & 时间/概率设置 & 含义\\
+\hline
+\(t_1\) & \(\varepsilon\) & 即时，\(w_1=1\) & 选择正常服务模式\\
+\(t_2\) & \(\varepsilon\) & 即时，\(w_2=1\) & 指定故障并进入恢复/重执行模式\\
+\(t_3\) & \(\varepsilon\) & \(X_3\sim U[2,4]\) & 正常服务完成\\
+\(t_4\) & \(\varepsilon\) & \(X_4\sim U[a_4,5]\) & 故障恢复与重执行完成\\
+\(t_5\) & \(\varepsilon\) & \(X_5\sim U[1,3]\) & 独立验证完成\\
+\(t_6\) & \(c\) & 即时，\(w_6=1\) & 两条支路均结束后的任务完成\\
+\hline
+\end{tabularx}
+\end{table}
+
+其中 \(a_4\in[3,4]\)。该示例的任务规格取为 \(\mathfrak T=(\{t_2\},\{M:M(p_7)=1\},\{t_6\})\)，完成变迁 \(t_6\) 首次发射后恰好进入完成标识集合，因而满足式~\eqref{eq:completion-boundary-consistency}。在逻辑 TPN 解释下，只保留 \(I(t_3)=[2,4]\)、\(I(t_4)=[a_4,5]\) 与 \(I(t_5)=[1,3]\)。由于其余内部变迁均静默，两类运行最终只留下相同的可观测完成标号 \(c\)，故逻辑可区分性主要取决于总完成时间是否仍有公共取值。
+
+在概率 LSTPN 解释下，三个时间区间分别赋予表~\ref{tab:running-example-transitions} 中的独立均匀分布。服务支路与验证支路并行执行，整个任务必须等待较慢支路结束，因此正常假设和故障假设下的完成时间分别为 \(Y_0=\max\{X_3,X_5\}\) 与 \(Y_1=\max\{X_4,X_5\}\)。由支持区间可直接得到正常完成时间支持为 \([2,4]\)，故障完成时间支持为 \([a_4,5]\)。
+
+当 \(a_4<4\) 时，两类支持在 \([a_4,4]\) 上具有正宽度重叠；当 \(a_4=4\) 时，公共支持退化为单点 \(\{4\}\)。逻辑层只要确认该单点可以由正常和故障运行共同实现，就仍然存在支持临界观测；但连续分布在单点上的概率质量为零，因此这一边界接触不产生正的 Bayes 错误。该例将在第四章用于说明概率风险计算，在第五章用于说明上述单向关系的逆向一般不成立。
+
+示例的逻辑层可以取 \(L=1\) 与 \(H=5\)，概率层可以取 \(H_\psi=0\)、\(B_c=5\) 与 \(B_d=0\)。这些数值只用于贯穿示例，不构成本文算法对分析参数的固定要求。
+
+\section{本章小结}
+
+本章建立了逻辑诊断与概率诊断共同依赖的模型和问题语义。由标号 PN 出发，引入持续使能强时间语义形成 TPN，并进一步在相同时间支持上加入一般连续发射时间分布和即时冲突权重形成 LSTPN；同时明确了持续使能变迁的条件剩余时间规律以及概率分析所需的有限域条件。
+
+在统一故障历史、首次任务完成边界和观测机制以后，本章分别定义了 \((L,H)\) 有界任务完成可诊断性与风险有界任务完成可诊断性。逻辑层通过固定序列完成时间区间和临界运行对把诊断问题转化为可验证的支持歧义判定，概率层则进一步引入故障后完成、最小 Bayes 错误和可靠诊断覆盖率。贯穿全文的并行任务示例展示了支持重叠与概率质量之间的差异，并为后续两类验证方法提供统一模型。
+
+% 第3章 有界任务完成的逻辑故障诊断方法
+\chapter{有界任务完成的逻辑故障诊断方法}
+
+\section{引言}
+
+第二章已经将 \((L,H)\) 有界任务完成可诊断性转化为临界运行对集合 \(\mathcal K_{L,H}(N,\mathfrak T)\) 的空性问题。若直接按照定义~\ref{def:critical-pair} 验证，可以先枚举全部正常首次完成运行与故障首次完成运行，再按可观测词进行配对，并逐对求解二者能否具有相同总完成时间。这一路径在理论上直接，但在存在并发、不可观变迁与较长任务路径时会迅速产生大量完整历史，而其中很多正常--故障组合在结构层或粗粒度时间层已经可以排除，没有必要全部进入精确线性求解。
+
+本章采用由粗到细的分层验证思路。首先利用规范化状态类图（State-Class Graph, SCG）压缩连续时间状态，并在首次任务完成边界截断得到任务完成状态类图（Task-Completion State-Class Graph, TCSCG）；随后构造观测同步器，只保留同时可能由正常和故障完成路径产生的候选可观测词。对每个候选词，再执行候选条件化的历史保持路径展开，并利用保守的剩余时间区间和累计完成时长包围排除不可能共享完成时间的路径对。最后，仅对仍然无法排除的正常--故障路径对建立精确路径可行域，并通过公共总完成时间约束构造耦合 LP，以确认临界运行对是否真实存在。
+
+上述层次分别承担不同职责。状态类与同步器用于结构可达性筛选，要求保证真实临界运行对的公共观测词不会被遗漏；时间包围用于低成本安全剪枝，只允许产生假阳性而不能删除真实公共完成时间；耦合 LP 则恢复路径级时间相关性，给出最终的精确判定。因而，本章的理论证明也按照“状态类轨迹唯一性--同步器语义正确性--候选覆盖--时间包围可靠性--路径多面体精确性--耦合 LP 等价性--整体算法正确性”的顺序展开。
+
+\section{任务完成状态类图与观测同步}
+
+\subsection{规范化状态类图}
+
+TPN 的连续时间状态空间通常不可逐点枚举。状态类方法通过将具有相同离散标识并满足同一组差分时间约束的时间状态表示为一个符号节点，把无限连续状态压缩为可计算的时间域\cite{Basile2015,Basile2017}。
+
+\begin{thesisdefinition}
+\label{def:scg}
+设 \(N\) 为定义~\ref{def:tpn} 的标号 TPN。规范化状态类记为 \(C=(M,Z)\)，其中 \(M\) 为可达标识，\(Z\) 为当前使能变迁年龄满足的规范差分约束域。规范化状态类图记为 \(G_{\mathrm{SCG}}=(\mathcal C,\mathcal E,C_0)\)，其中 \(C_0\) 为初始状态类；若存在变迁 \(t\) 的可行发射把类 \(C\) 中某个时间状态带入类 \(C'\)，则图中存在标记为 \(t\) 的边。
+\end{thesisdefinition}
+
+状态类后继的计算由标识更新、时间推进、发射约束、式~\eqref{eq:postfire-enabling-partition} 的时钟更新、精确投影与规范化组成。本文对固定路径的覆盖与完整性证明仅适用于\emph{历史保持的精确后继}：沿序列 $\sigma t$ 的符号域必须是沿 $\sigma$ 的可行具体时间状态执行 $t$ 后的精确集合；若共享图节点，则必须保留访问该节点的历史与对应时间域约束，不能在后续路径重建时将不同历史的时间域任意重组。单个图节点上的外包围、截断常数或不同历史的有损合并均不能替代这一性质。如果计算过程中不能保证此条件，结构候选仍可作为保守筛选，但不能凭借其穷尽性给出确定的可诊断结论。
+
+在历史保持、精确规范化后继为单值且不作有损合并的条件下，任一从 \(C_0\) 出发的可行发射序列 \(\sigma=t_1t_2\cdots t_n\) 唯一确定该历史对应的状态类链 \(C_0,C_1,\ldots,C_n\)，其中 \((C_{i-1},t_i,C_i)\in\mathcal E\)。这一性质直接来自状态类后继构造的确定性，不再单独提升为引理；后续只利用它把具体完成发射序列对应到唯一的符号轨迹。
+
+\subsection{首次完成截断与故障历史保持}
+
+令 \(\mathcal F_c=\{(M,Z)\in\mathcal C:M\in\mathcal M_c\}\) 表示完成状态类集合。根据定义~\ref{def:first-completion}，一条任务运行在第一次进入完成集合后即应终止，因此普通 SCG 中从完成类继续发出的边不能属于当前任务完成诊断记录。
+
+\begin{thesisdefinition}
+\label{def:tcscg}
+任务完成状态类图记为 \(G_c=(\mathcal C_c,\mathcal D_c,C_0)\)。它由 \(G_{\mathrm{SCG}}\) 删除所有从 \(\mathcal F_c\) 出发的边得到，并只保留从 \(C_0\) 可达的状态类。
+\end{thesisdefinition}
+
+定义~\ref{def:tcscg} 是首次完成语义在符号状态空间中的直接实现，而不是启发式剪枝。任一首次完成运行到达 \(\mathcal M_c\) 之前都不会经过完成标识，因此其由上述固定序列唯一确定的状态类轨迹在到达终止类以前不会被删除。
+
+需要单独处理故障历史。故障历史不是普通状态类 \(C=(M,Z)\) 的分量，因此同一个状态类可以由正常路径和故障路径同时到达。例如，故障后恢复行为可能使系统重新进入与正常路径相同的标识与时间域，但根据定义~\ref{def:fault-history}，两条路径的故障历史仍然不同。后续观测同步器因此不复制状态类本身，而是分别维护正常历史和故障历史能够到达的状态类集合。
+
+\subsection{任务完成状态类图构造}
+
+设在 \(G_c\) 中存在从 \(C\) 到 \(C'\) 的路径，其边序列为 \(\sigma\)，记作 \(C\xRightarrow{\sigma}_{G_c}C'\)。对于首次完成发射序列 \(\sigma\)，上述状态类轨迹唯一性与定义~\ref{def:tcscg} 共同保证该序列在 TCSCG 中存在唯一轨迹，并在首次进入 \(\mathcal F_c\) 时终止。
+
+由定义~\ref{def:first-completion} 和上述状态类轨迹唯一性可以直接得到：对任意 \(\rho\in\mathcal R^c_{L,H}(N,\mathfrak T)\)，其发射序列 \(\sigma_\rho\) 在 \(G_{\mathrm{SCG}}\) 中对应唯一轨迹；由于任何严格前缀都尚未进入 \(\mathcal M_c\)，这条轨迹在到达终止完成类之前不会被定义~\ref{def:tcscg} 的截断操作删除。因此，每条有界首次完成运行都在 \(G_c\) 中保留一条从 \(C_0\) 到完成类的唯一符号路径。该结论是首次完成定义与 TCSCG 构造的直接结果，作为后续候选覆盖证明的基础即可，无需单独列为命题。
+
+\subsection{观测同步器与候选词筛选}
+
+不可观变迁允许在两个相邻可观事件之间任意插入，因此同步器的一次推进不能简单理解为沿一条可观边走一步。为此，先定义固定可观测投影的路径段。
+
+\begin{thesisdefinition}
+\label{def:segment-reachability}
+设 \(X\subseteq\mathcal C_c\)。以下静默闭包与单步观测可达算子均作用于任务完成状态类图。此处 \(q\in\{\mathrm N,\mathrm F\}\) 表示\emph{当前路径段内部}是否发生指定故障，而非到达 \(X\) 以前的完整历史类别。静默闭包 \(\mathscr C_N(X)\) 收集从 \(X\) 出发、可观测投影为 \(\varepsilon\) 且段内未发生指定故障的终点；\(\mathscr C_F(X)\) 收集相同投影下段内至少发生一次指定故障的终点，记 \(\mathscr C_\ast(X)=\mathscr C_N(X)\cup\mathscr C_F(X)\)。对 \(e\in\Sigma\)，\(\mathscr S_{q,e}(X)\) 收集由一段静默路径接\emph{恰好一个}标号为 \(e\) 的可观变迁所达到的终点，并按\emph{整个路径段}是否包含 \(T_f\) 分类。\(\mathscr S_{\ast,e}(X)\) 不限制该段是否新发生故障，供先前已经属于故障历史的分量使用。
+\end{thesisdefinition}
+
+定义~\ref{def:segment-reachability} 把每一步规范为“前置静默闭包加一个可观变迁”，不在同一步末尾吸收静默后缀。因而，任意路径都可在每个可观事件之前唯一切分；完整可观测词处理结束后，再统一施加一次尾部静默闭包。该约定消除了相邻观测步对中间静默路径的重复归属。
+
+仅有段可达关系还不能保留“故障已经发生”这一历史信息，因此需要在每个可观测前缀上同时维护正常历史与故障历史能够到达的状态类集合。基于这一目的构造观测同步器。
+
+\begin{thesisdefinition}
+\label{def:observation-synchronizer}
+观测同步器记为 \(S_o=(\mathcal V,\Sigma,\delta,v_0)\)。同步器状态为 \(v=(X_N,X_F)\)，分别保存产生当前可观前缀的正常历史和故障历史可达状态类集合。初始状态与对 \(e\in\Sigma\) 的更新由式~\eqref{eq:synchronizer-update} 给出。
+\begin{equation}
+\begin{aligned}
+v_0
+&=\left(\{C_0\},\varnothing\right),\\
+\delta((X_N,X_F),e)
+&=
+\left(
+\mathscr S_{N,e}(X_N),
+\mathscr S_{\ast,e}(X_F)\cup\mathscr S_{F,e}(X_N)
+\right).
+\end{aligned}
+\label{eq:synchronizer-update}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:synchronizer-update} 的第二分量包含两种来源：故障历史可以从既有故障分量继续演化，也可以从正常分量在当前观测段中首次发生故障后进入故障分量。正常分量则只能沿不含故障的观测段演化。
+
+对任意已经处理的可观测词 \(\phi\)，设 \(\delta^\ast(v_0,\phi)=(X_N(\phi),X_F(\phi))\)，并在完整词末端定义尾部闭包集合如式~\eqref{eq:synchronizer-tail-closure}。
+\begin{equation}
+\begin{aligned}
+\overline X_N(\phi)
+&=\mathscr C_N\!\left(X_N(\phi)\right),\\
+\overline X_F(\phi)
+&=\mathscr C_\ast\!\left(X_F(\phi)\right)
+\cup
+\mathscr C_F\!\left(X_N(\phi)\right).
+\end{aligned}
+\label{eq:synchronizer-tail-closure}
+\end{equation}
+第一式保留尾部静默路径上始终未发生故障的终点，第二式合并已经具有故障历史的尾部演化与在尾部静默路径中首次发生故障的终点。
+
+同步器后续将直接用于候选词筛选，因此仅给出递推式还不够；还必须证明两个分量与真实 TCSCG 路径的正常、故障历史完全一致。这个集合语义承担后续候选覆盖证明的基础作用，具有独立证明价值，因此保留为引理。
+
+\begin{thesislemma}[同步器的精确集合语义]
+\label{lem:synchronizer-semantics}
+对 \(q\in\{\mathrm N,\mathrm F\}\)，\(\overline X_q(\phi)\) 恰好等于所有从 \(C_0\) 出发、可观测投影为 \(\phi\)、路径故障类别为 \(q\) 的 TCSCG 路径终止类集合。
+\end{thesislemma}
+
+\begin{proof}
+对已处理可观测词长度归纳，首先证明递推状态 \((X_N(\phi),X_F(\phi))\) 的语义：它分别收集投影为 \(\phi\) 且\emph{恰在最后一个可观变迁发射处截断}的正常历史和故障历史终点，不包括该发射后的静默后缀。空词在尚未施加尾部静默闭包的递推层恰对应零长度路径，故初态为 \((\{C_0\},\varnothing)\)；它不排除空观测词对应非空静默执行，后者统一由尾部闭包纳入。设对 \(\phi\) 成立，考虑 \(\phi e\)。在原截断点之后，先有零个或多个静默变迁，再有一个标号为 \(e\) 的可观变迁；这是由最后一个可观事件的位置确定的切分。此前已发生故障的路径由 \(\mathscr S_{\ast,e}(X_F)\) 产生；此前无故障的路径按本段是否首次发生故障，分别由 \(\mathscr S_{N,e}(X_N)\) 和 \(\mathscr S_{F,e}(X_N)\) 产生。各分支的终点与完整历史类别一致，反向拼接也不会改变可观测投影。完成对递推状态的归纳后，再分别施加式~\eqref{eq:synchronizer-tail-closure} 的尾部静默闭包。由段内故障分类和故障历史不可逆的性质，所得 \(\overline X_N(\phi)\) 与 \(\overline X_F(\phi)\) 恰为命题所述的两类终点集合。
+\end{proof}
+
+同步器只需要保留可能同时支持正常完成和故障完成的可观测词。
+
+\begin{thesisdefinition}
+\label{def:candidate-word}
+对 \(|\phi|\leq L\)，若 \(\overline X_N(\phi)\cap\mathcal F_c\neq\varnothing\) 且 \(\overline X_F(\phi)\cap\mathcal F_c\neq\varnothing\)，则称 \(\phi\) 为候选可观测词。全部候选词组成 \(\widehat\Phi_L(N,\mathfrak T)\)。
+\end{thesisdefinition}
+
+候选集合的作用是减少后续需要进行时间分析的观测词，但这种筛选只有在不会遗漏真实临界运行对时才是可用的。因此，需要证明所有真实临界对的公共观测词一定被候选集合保留；这一结果直接决定结构筛选是否存在假阴性，故保留为定理。
+
+\begin{thesistheorem}[候选词覆盖]
+\label{thm:candidate-coverage}
+若 \(\kappa=(\phi,\sigma_N,\sigma_F,J)\in\mathcal K_{L,H}(N,\mathfrak T)\)，则 \(\phi\in\widehat\Phi_L(N,\mathfrak T)\)。
+\end{thesistheorem}
+
+\begin{proof}
+由定义~\ref{def:critical-pair}，\(\sigma_N\) 与 \(\sigma_F\) 分别对应一条正常与故障首次完成运行，且二者可观测词均为 \(\phi\)。根据上述首次完成路径的保留性质，两条发射序列均在 TCSCG 中诱导从 \(C_0\) 到完成类的轨迹。再由引理~\ref{lem:synchronizer-semantics}，施加尾部静默闭包后，正常轨迹与故障轨迹的终止类分别被两个历史分量保留，且均属于 \(\mathcal F_c\)。因此定义~\ref{def:candidate-word} 的两个完成成员条件同时成立，得到 \(\phi\in\widehat\Phi_L(N,\mathfrak T)\)。
+\end{proof}
+
+定理~\ref{thm:candidate-coverage} 还直接给出一个算法上的早停条件：在 TCSCG 与同步器均完整构造的前提下，若 \(\widehat\Phi_L(N,\mathfrak T)=\varnothing\)，则不存在临界运行对，由命题~\ref{prop:critical-pair-characterization} 可直接判定系统满足 \((L,H)\) 有界任务完成可诊断性。该结论只是候选覆盖定理与临界运行对表征的直接组合，因此不再单独列为推论。若候选集合非空，则只能说明正常和故障完成路径在可观测词上兼容，还需要进一步检查时间兼容性。
+
+\section{候选条件化的路径展开与时长包围}
+
+\subsection{路径记录与观测前缀约束}
+
+给定候选词 \(\phi=e_1e_2\cdots e_m\)，时间阶段只展开与该候选词兼容的发射历史。为记录当前观测匹配进度，定义进度映射 \(\mu_\phi(k,t)\)，其中 \(k\) 表示已经匹配的可观事件数。其规则由式~\eqref{eq:progress-map} 给出。
+\begin{equation}
+\mu_\phi(k,t)
+=
+\begin{cases}
+k, & \ell(t)=\varepsilon,\\
+k+1, & k<m,\ \ell(t)=e_{k+1},\\
+\bot, & \mathrm{otherwise}.
+\end{cases}
+\label{eq:progress-map}
+\end{equation}
+式~\eqref{eq:progress-map} 中，\(\bot\) 表示当前变迁与候选词不兼容。候选条件化展开因此不会生成可观测前缀已经偏离 \(\phi\) 的路径。
+
+为在低成本条件下传播时间信息，本文不在该阶段保持全部时钟相关性，而是为当前每个使能变迁保存一个剩余时间区间外包围。
+
+\begin{thesisdefinition}
+\label{def:path-record}
+在标识 \(M\) 下，残余时间包围记为映射 \(\mathcal B:\mathcal E(M)\rightarrow\mathcal I_{\geq0}\)，其中 \(\mathcal B(u)=[\underline r_u,\overline r_u]\)。若对当前前缀 \(\sigma\) 的每条可行时间实现，变迁 \(u\) 的真实剩余发射窗口都包含于 \(\mathcal B(u)\)，则称 \(\mathcal B\) 对 \(\sigma\) 是可靠的。候选条件化结构节点写为 \(s=(M,\mathcal B,k,q)\)，其中 \(q\in\{\mathrm N,\mathrm F\}\) 为故障历史；一条路径记录写为 \(r=(s,\sigma,J_b)\)，其中 \(J_b\) 为累计持续时间的可靠外包围。
+\end{thesisdefinition}
+
+即使两个记录具有相同的 \(M,\mathcal B,k,q\)，只要其发射序列不同，本文仍将它们作为不同历史记录保留。原因是后续精确路径约束依赖具体的时钟持续与重置历史；结构节点可以共享后继结构，但不能据此无条件合并发射序列。
+
+\subsection{剩余时间区间的保守更新}
+
+设当前节点为 \(s=(M,\mathcal B,k,q)\)，\(\mathcal B(u)=[\underline r_u,\overline r_u]\)。若 \(t\in\mathcal E(M)\) 与候选词兼容，则所有可行的发射前延迟均被区间 \(\Delta(s,t)=[\underline r_t,\min_{u\in\mathcal E(M)}\overline r_u]\) 外包围；若该区间为空，则当前分支不可行并被删除。
+
+设 \(E^p(M,t)\) 与 \(E^n(M,t)\) 分别为 \(t\) 发射后持续使能与新使能的变迁集合，且 \(\Delta(s,t)=[\underline d,\overline d]\)。后继残余包围和累计持续时间包围按式~\eqref{eq:enclosure-update} 更新。
+\begin{equation}
+\begin{aligned}
+\mathcal B'(u)
+&=
+\begin{cases}
+[\max\{0,\underline r_u-\overline d\},
+ \overline r_u-\underline d],
+&u\in E^p(M,t),\\
+I(u),
+&u\in E^n(M,t),
+\end{cases}\\
+J_b'
+&=
+\left(
+J_b\oplus\Delta(s,t)
+\right)\cap[0,H].
+\end{aligned}
+\label{eq:enclosure-update}
+\end{equation}
+式~\eqref{eq:enclosure-update} 中的 \(\oplus\) 表示区间 Minkowski 加法。持续使能变迁需要扣除已经经历的延迟，新使能变迁重新采用静态发射区间。
+
+这些区间后续将直接用于删除路径分支，因此必须保证外包围更新绝不会把真实可行时间排除在外。这个“允许偏宽但不能偏窄”的性质是时间筛选安全性的核心，并承担后续路径覆盖证明的基础作用，故保留为引理。
+
+\begin{thesislemma}[时间包围更新的可靠性]
+\label{lem:enclosure-soundness}
+若 \(\mathcal B\) 对前缀 \(\sigma\) 可靠，且该前缀的全部可行持续时间均包含在 \(J_b\) 中，则任一可行且与候选词兼容的后继发射 \(t\) 的实际延迟均属于 \(\Delta(s,t)\)；由式~\eqref{eq:enclosure-update} 得到的 \(\mathcal B'\) 对 \(\sigma t\) 仍然可靠，且 \(\sigma t\) 的全部可行持续时间均包含在 \(J_b'\) 中。
+\end{thesislemma}
+
+\begin{proof}
+可靠性假设保证发射 \(t\) 的真实最早剩余时间不小于 \(\underline r_t\)。强时间语义要求任何延迟都不能越过当前任一使能变迁的真实最晚剩余时间，而真实最晚剩余时间又不超过相应外包围上端点，因此可行延迟不超过 \(\min_u\overline r_u\)。故实际延迟属于 \(\Delta(s,t)\)。
+
+对持续使能变迁，真实剩余窗口在经历实际延迟后整体向左平移。使用 \(\overline d\) 更新下界、使用 \(\underline d\) 更新上界，会得到包含所有可能平移结果的区间；对新使能变迁，其真实窗口由静态区间重新开始，因此被 \(I(u)\) 精确覆盖。累计持续时间等于前缀持续时间与本次延迟之和，所以所有后继持续时间均包含在 \(J_b\oplus\Delta(s,t)\) 中，再与 \([0,H]\) 截断即得到式~\eqref{eq:enclosure-update} 的第二式。
+\end{proof}
+
+\subsection{完成时长包围与候选对剔除}
+
+从初始记录出发，对式~\eqref{eq:progress-map} 允许的后继反复应用式~\eqref{eq:enclosure-update}，可以得到候选词 \(\phi\) 对应的历史保持路径记录集合。
+
+\begin{thesisdefinition}
+\label{def:fixed-point-expansion}
+设初始记录集合为 \(\mathcal R_0=\{(s_0,\varepsilon,[0,0])\}\)。以 \(\mathrm{Succ}_\phi\) 表示按照候选进度、可行延迟包围和首次完成规则生成的全部合法后继，则记录集合按式~\eqref{eq:fixed-point-expansion} 迭代。
+\begin{equation}
+\begin{aligned}
+\mathcal R_{j+1}
+&=
+\mathcal R_j
+\cup
+\mathrm{Succ}_\phi(\mathcal R_j),\\
+\mathcal R_\phi
+&=
+\bigcup_{j\geq0}\mathcal R_j.
+\end{aligned}
+\label{eq:fixed-point-expansion}
+\end{equation}
+若该递增序列达到固定点，则称候选 \(\phi\) 的路径展开完整终止。
+\end{thesisdefinition}
+
+节点满足 \(M\in\mathcal M_c\) 且 \(k=m\) 时成为终止记录；若已经首次进入完成标识但 \(k<m\)，则因候选词尚未匹配完成而直接丢弃，不再继续展开。
+
+固定点展开只有在能够覆盖所有与候选词一致的首次完成运行时，才能作为后续路径配对的完整输入。由于这一覆盖性质连接了局部包围更新与全局路径搜索，并直接决定后续是否可能漏掉真实临界运行，故保留为定理。
+
+\begin{thesistheorem}[路径记录覆盖]
+\label{thm:path-record-coverage}
+若候选 \(\phi\) 的固定点展开完整终止，则每条满足 \(\rho\in\mathcal R^c_{L,H}(N,\mathfrak T)\) 且 \(\lambda(\rho)=\phi\) 的首次完成运行，都对应 \(\mathcal R_\phi\) 中一个终止记录 \(r=(s,\sigma_\rho,J_b)\)，并满足 \(\tau(\rho)\in\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_\rho)\subseteq J_b\)，且记录中的故障类别与 \(\chi_f(\rho)\) 一致。
+\end{thesistheorem}
+
+\begin{proof}
+对发射序列长度归纳。初始记录显然覆盖空前缀。设任意长度为 \(n\) 的可行前缀均被某条记录覆盖。考虑长度为 \(n+1\) 的可行前缀 \(\sigma t\)。由于其完整可观测投影仍是候选词 \(\phi\) 的前缀，式~\eqref{eq:progress-map} 不会返回 \(\bot\)；由引理~\ref{lem:enclosure-soundness}，真实后继延迟属于 \(\Delta(s,t)\)，相应后继不会因时间包围被错误删除，且新的残余窗口与累计持续时间仍被可靠包围。故障类别按是否已经为故障或 \(t\in T_f\) 更新，也与定义~\ref{def:fault-history} 一致。
+
+当完整运行首次进入 \(\mathcal M_c\) 时，其候选词已经全部匹配，因此对应记录满足终止条件。由定义~\ref{def:fixed-point-expansion} 的完整固定点包含所有有限后继，故该终止记录必属于 \(\mathcal R_\phi\)。
+\end{proof}
+
+由引理~\ref{lem:enclosure-soundness} 和定理~\ref{thm:path-record-coverage} 可以直接得到安全剪枝规则。设同一候选词下的一对正常、故障终止记录具有累计时长包围 \(J_b^N,J_b^F\)。由于 \(\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_N)\subseteq J_b^N\) 且 \(\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_F)\subseteq J_b^F\)，若 \(J_b^N\cap J_b^F=\varnothing\)，则真实完成时间集合也必然不相交，该记录对可以安全删除。
+
+这一关系只是“真实集合包含于外包围”的直接集合推论，因此不再单独设置推论环境。需要特别注意，反方向并不成立：包围过程丢弃了多个时钟之间的相关性，两个外包围即使相交，也可能不存在任何满足全部强时间约束的共同完成时间。因此，包围重叠只能把路径对保留到下一阶段，而不能作为 \logicstatus{0} 结论。
+
+\section{基于耦合线性约束的临界对精确验证}
+
+\subsection{路径可行域构造}
+
+时间包围阶段只保存区间外包围。要精确判断一个正常--故障路径对是否共享完成时间，需要恢复固定发射序列上的全部强时间约束。设 \(\sigma=t_1t_2\cdots t_n\) 为结构可行序列，对第 \(i\) 次发射引入发射前延迟 \(d_i\)，并令 \(x_{i,u}\) 表示延迟 \(d_i\) 开始前使能变迁 \(u\in\mathcal E(M_{i-1})\) 的年龄。记 \(E_i^p\) 与 \(E_i^n\) 为 \(t_i\) 发射后的持续使能与新使能集合。
+
+\begin{thesisdefinition}
+\label{def:path-polytope}
+发射序列 \(\sigma\) 在时间界 \(H\) 下的路径可行域 \(\mathcal P_H^N(\sigma)\) 由式~\eqref{eq:path-polytope} 的线性约束定义。
+\begin{equation}
+\begin{aligned}
+x_{1,u} &= 0,
+&&u\in\mathcal E(M_0),\\
+d_i &\geq 0,
+&&i=1,\ldots,n,\\
+x_{i,t_i}+d_i &\geq a_{t_i},
+&&i=1,\ldots,n,\\
+x_{i,u}+d_i &\leq b_u,
+&&u\in\mathcal E(M_{i-1}),\ b_u<+\infty,\\
+x_{i+1,u} &= x_{i,u}+d_i,
+&&u\in E_i^p,\\
+x_{i+1,u} &= 0,
+&&u\in E_i^n,\\
+\sum_{i=1}^{n}d_i &\leq H.
+\end{aligned}
+\label{eq:path-polytope}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:path-polytope} 依次编码初始时钟重置、延迟非负、实际发射变迁的最早发射条件、所有当前使能变迁的强时间最晚界、持续使能时钟更新、新使能时钟重置与全局时间界。
+
+后续将把 LP 可行性直接解释为真实时间运行的存在性，因此必须排除“线性约束只是必要条件或只是充分条件”的可能。路径可行域与强时间运行之间的双向对应是精确验证成立的关键，具有独立理论作用，故保留为命题。
+
+\begin{thesisproposition}[路径可行域的精确性]
+\label{prop:path-polytope-exact}
+给定在离散结构上可行的固定发射序列 $\sigma$，并以式~\eqref{eq:path-polytope} 中的年龄关系严格采用式~\eqref{eq:postfire-enabling-partition}。一个延迟向量能够实现为时间界 $H$ 内满足定义~\ref{def:strong-time} 的合法时间运行，当且仅当存在相应年龄变量使其属于 $\mathcal P_H^N(\sigma)$。若还要求该序列属于首次完成问题，须另外验证它在末端首次进入 $\mathcal M_c$ 且 $|\lambda(\sigma)|\leq L$。
+\end{thesisproposition}
+
+\begin{proof}
+正向由强时间运行的构造直接得到。每次发射前的实际延迟和年龄满足非负性、最早发射条件与所有有限最晚发射界；持续使能与新使能时钟分别按照定义~\ref{def:strong-time} 更新；总持续时间受 \(H\) 限制。因此这些实际变量满足式~\eqref{eq:path-polytope}。
+
+反向地，若一组 \((d,x)\) 满足式~\eqref{eq:path-polytope}，则每个 \(d_i\) 均非负；\(t_i\) 在发射时达到其最早界，且没有任一当前使能变迁越过有限最晚界；年龄更新又与持续使能语义一致。因此可以依次执行每个 \(d_i,t_i\)，得到合法时间运行，其总持续时间不超过 \(H\)。
+\end{proof}
+
+对\emph{已经确认是首次完成且满足观测词长度界}的固定序列 $\sigma$，由命题~\ref{prop:path-polytope-exact}，其精确完成时间集合可以写为式~\eqref{eq:duration-projection}；不满足这两个结构条件的序列按定义具有空的首次完成时间集合。
+\begin{equation}
+\mathcal T_{L,H}^{N,\mathfrak T}(\sigma)
+=
+\left\{
+\sum_{i=1}^{n}d_i
+\ \middle|\
+(d,x)\in\mathcal P_H^N(\sigma)
+\right\}.
+\label{eq:duration-projection}
+\end{equation}
+式~\eqref{eq:duration-projection} 也给出了第二章命题~\ref{prop:completion-time-interval} 中所用的线性投影结构。
+
+\subsection{正常与故障路径的完成时长耦合}
+
+设同一候选词 \(\phi\) 下的正常终止记录和故障终止记录分别具有序列 \(\sigma_N=t_1^N\cdots t_{n_N}^N\) 与 \(\sigma_F=t_1^F\cdots t_{n_F}^F\)。两条序列分别可行还不足以形成临界对，还必须能够选择两组合法延迟使总完成时间相同。为此，引入公共完成时间变量 \(\theta\)，并把两套路径可行域通过总时长相等条件耦合。
+
+\begin{thesisdefinition}
+\label{def:coupled-polytope}
+正常序列 \(\sigma_N\) 与故障序列 \(\sigma_F\) 的耦合可行域定义为式~\eqref{eq:coupled-polytope}。
+\begin{equation}
+\begin{aligned}
+(d^N,x^N)&\in\mathcal P_H^N(\sigma_N),\\
+(d^F,x^F)&\in\mathcal P_H^N(\sigma_F),\\
+\sum_{i=1}^{n_N}d_i^N&=\theta,\\
+\sum_{j=1}^{n_F}d_j^F&=\theta.
+\end{aligned}
+\label{eq:coupled-polytope}
+\end{equation}
+\end{thesisdefinition}
+
+式~\eqref{eq:coupled-polytope} 全部为线性等式或不等式，因此其非空性可归约为 LP 可行性问题。这里的“可行”与“不可行”均指精确数学判定；若实际求解器仅给出带容差的浮点状态，则必须通过有效的可行解核查或不可行性证明将其提升为可靠结论，否则相应记录对仍为未决。
+
+但是，能够求解并不等于可以作为诊断结论。要把一个可行 LP 解释为临界运行对，还必须证明耦合可行性与公共完成时间存在性严格等价。这个双向等价关系是最终精确确认的理论依据，故保留为命题。
+
+\begin{thesisproposition}[耦合 LP 的临界对等价性]
+\label{prop:coupled-lp}
+设 \(\sigma_N,\sigma_F\) 为结构上可行的\emph{首次完成}发射序列，满足 \(\lambda(\sigma_N)=\lambda(\sigma_F)=\phi\)、\(|\phi|\leq L\)，且故障类别分别为 \(\mathrm N\) 与 \(\mathrm F\)。则二者构成定义~\ref{def:critical-pair} 的临界运行对，当且仅当式~\eqref{eq:coupled-polytope} 可行。
+\end{thesisproposition}
+
+\begin{proof}
+若式~\eqref{eq:coupled-polytope} 可行，由命题~\ref{prop:path-polytope-exact}，两组变量分别对应一条正常合法时间运行与一条故障合法时间运行；两条运行的可观测词相同，且公共变量 \(\theta\) 保证总完成时间相同，因此 \(\theta\in\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_N)\cap\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_F)\)，从而构成临界运行对。
+
+反之，若二者构成临界运行对，则存在 \(d\in\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_N)\cap\mathcal T_{L,H}^{N,\mathfrak T}(\sigma_F)\)。由式~\eqref{eq:duration-projection}，分别存在两套路径可行域变量使其总延迟等于 \(d\)。令 \(\theta=d\)，两套变量共同满足式~\eqref{eq:coupled-polytope}，故耦合 LP 可行。
+\end{proof}
+
+命题~\ref{prop:coupled-lp} 还意味着可行 LP 解本身就是可检查的歧义见证：两套延迟变量分别恢复正常与故障时间运行，公共变量 \(\theta\) 给出二者相同的完成时间。因此，\logicstatus{0} 并不是由包围重叠或启发式阈值触发，而是由一对真实可行的等观测时间运行直接确认。这个结论是命题~\ref{prop:coupled-lp} 的直接解释，不再单独设置推论。
+
+\subsection{临界对确认与歧义见证提取}
+
+对同一候选词 \(\phi\)，先从 \(\mathcal R_\phi\) 中取正常与故障终止记录的笛卡尔积，再利用上述时长包围安全剪枝规则删除包围不相交的记录对。对每个保留下来的记录对，建立式~\eqref{eq:coupled-polytope} 并执行 LP 可行性判断。只要发现一个可行记录对，即可直接从 LP 可行解恢复完整歧义见证，并停止只求判定结果的搜索。
+
+如果需要得到完整临界对集合，则不能在第一个可行解处停止，而要继续处理剩余候选与记录对。本文的核心逻辑验证以性质判定为主，因此算法~\ref{alg:logical-verifier} 允许在第一个已确认临界对处返回 \logicstatus{0}；若需要获得完整临界对集合，则继续处理剩余候选与记录对。
+
+\section{完整验证算法及理论性质}
+
+\subsection{有界任务完成逻辑验证算法}
+
+为避免把数学性质、计算完整性和返回材料混为一谈，定义逻辑验证算法接口如式~\eqref{eq:logical-interface}。
+\begin{equation}
+\mathcal A_L:\mathfrak I_L\rightarrow\mathfrak O_L,
+\qquad
+\mathcal A_L(N,\mathfrak T,L,H,\mathfrak B_L)
+=\bigl(v_L,\mathcal E_L,\mathcal U_L\bigr).
+\label{eq:logical-interface}
+\end{equation}
+其中，\(\mathfrak I_L\) 为满足第二章语义条件的逻辑验证输入集合，\(\mathfrak B_L\) 为状态、路径与求解所允许的有限计算界；\(v_L\in\{1,0,\perp\}\) 分别表示性质成立、性质不成立和尚未形成真假结论；\(\mathcal E_L\) 保存已确认的歧义运行见证或可核查的完整搜索记录；仅有布尔完整性标志本身不称为独立证明证书。\(\mathcal U_L\) 保存尚未解析的候选、前沿及求解状态。综合前述结构筛选、路径展开、时间包围和精确确认阶段，算法~\ref{alg:logical-verifier} 给出该接口的具体实现。
+
+\begin{thesisalgorithm}{有界任务完成逻辑验证算法}
+\label{alg:logical-verifier}
+\begin{algorithmic}[1]
+\Require TPN \(N\)，任务规格 \(\mathfrak T\)，分析界 \(L,H\)，计算界 \(\mathfrak B_L\)
+\Ensure \((v_L,\mathcal E_L,\mathcal U_L)\in\mathfrak O_L\)，其中 \(v_L\in\{1,0,\perp\}\)
+\State 初始化 $\mathcal E_L\gets\varnothing$、$\mathcal U_L\gets\varnothing$，$\chi_G\gets0$、$\chi_S\gets0$、$\chi_Q\gets1$
+\State 构造精确 SCG 并截断得到 TCSCG；仅当图的必要可达部分被完整建立时置 $\chi_G\gets1$
+\State 在已构造图上建立同步器并枚举候选词；仅当同步器及长度不超过 $L$ 的候选搜索完整时置 $\chi_S\gets1$
+\If{$\widehat\Phi_L=\varnothing$ 且 $\chi_G=\chi_S=1$}
+  \State \Return $(1,\mathcal E_L,\varnothing)$
+\EndIf
+\For{每个已发现的候选词 $\phi\in\widehat\Phi_L(N,\mathfrak T)$}
+  \State $\chi_\phi\gets0$；按定义~\ref{def:fixed-point-expansion} 展开并保留历史记录 $\mathcal R_\phi$
+  \If{所需固定点已完整获得}
+    \State $\chi_\phi\gets1$
+  \Else
+    \State 将未解析前沿加入 $\mathcal U_L$
+  \EndIf
+  \State 配对正常与故障终止记录，并删除累计时长包围不相交的记录对
+  \For{每个保留下来的正常--故障记录对}
+    \State 构造式~\eqref{eq:coupled-polytope} 的耦合 LP
+    \If{耦合 LP 已证明可行且解满足严格核验}
+      \State 从可行解恢复正常运行、故障运行与公共完成时间
+      \State 将见证加入 \(\mathcal E_L\) 并 \Return \((0,\mathcal E_L,\mathcal U_L)\)
+    \ElsIf{耦合 LP 未能给出已核验的可行或不可行结论}
+      \State \(\chi_Q\gets0\)，并把该求解对象加入 \(\mathcal U_L\)
+    \EndIf
+  \EndFor
+\EndFor
+\If{$\chi_G\land\chi_S\land\bigwedge_{\phi\in\widehat\Phi_L}\chi_\phi\land\chi_Q=1$}
+  \State \Return \((1,\mathcal E_L,\varnothing)\)
+\Else
+  \State \Return \((\perp,\mathcal E_L,\mathcal U_L)\)
+\EndIf
+\end{algorithmic}
+\end{thesisalgorithm}
+
+算法~\ref{alg:logical-verifier} 中，记已由可行解确认的歧义见证集合为 \(\mathcal W_L\)，并定义总体完整性标志 \(\chi\) 如式~\eqref{eq:logical-completeness}。
+\begin{equation}
+\chi
+=\chi_G\land\chi_S\land
+\bigwedge_{\phi\in\widehat\Phi_L(N,\mathfrak T)}\chi_\phi
+\land\chi_Q.
+\label{eq:logical-completeness}
+\end{equation}
+返回值只能由算法已经取得的信息确定，其判定语义写为式~\eqref{eq:logical-verdict}。
+\begin{equation}
+v_L
+=
+\begin{cases}
+0, & \mathcal W_L\neq\varnothing,\\
+1, & \mathcal W_L=\varnothing\ \wedge\ \chi=1,\\
+\perp, & \mathcal W_L=\varnothing\ \wedge\ \chi=0.
+\end{cases}
+\label{eq:logical-verdict}
+\end{equation}
+式~\eqref{eq:logical-verdict} 不读取真实但未知的临界对集合。返回 \(0\) 只需要一个已确认见证；返回 \(1\) 必须证明所有必要构造完整且不存在见证；其余情况返回 \(\perp\)。达到计算界、状态数上界或固定点尚未完成，只能进入 \(\mathcal U_L\)，不能解释为性质成立或不成立。
+
+\subsection{候选筛选的完备性}
+
+结构筛选的完备性已经由定理~\ref{thm:candidate-coverage} 给出。这里进一步强调其在整体算法中的作用：候选集合只使用状态类可达性、可观测投影和故障历史，不比较总完成时间。因此，候选集合可以包含时间上实际上无法产生公共完成观测的假阳性，但不能删除真正临界运行对的公共观测词。第三章的后续时间阶段正是用于逐步消除这些结构假阳性。
+
+在候选枚举中还有一个容易误用的剪枝条件。若当前正常分量 \(X_N(\phi)\) 已为空，则后续任何观测扩展都无法重新产生正常历史，因此该分支可以安全停止；但当前故障分量 \(X_F(\phi)\) 为空时不能直接停止，因为后续某个观测段仍可能从正常分量中首次触发故障并进入故障分量。这一差异由式~\eqref{eq:synchronizer-update} 的第二分量直接决定。
+
+\subsection{临界对确认的正确性}
+
+前述各项结果分别保证结构候选不漏失、路径展开不漏失、时间包围剪枝安全以及耦合 LP 精确。只有把这些局部性质连接起来，才能说明最终的 \logicstatus{1} 与 \logicstatus{0} 确实对应第二章的可诊断性定义，而不是某个中间表示的性质。因此，本节给出整个验证流程的总体正确性定理。
+
+\begin{thesistheorem}[逻辑验证算法正确性]
+\label{thm:logical-verifier-correctness}
+若规范化 SCG、观测同步器、所有候选条件化路径展开和耦合求解均完整终止，则 \(v_L=0\) 当且仅当 \(\mathcal K_{L,H}(N,\mathfrak T)\neq\varnothing\)；\(v_L=1\) 当且仅当 \(\mathcal K_{L,H}(N,\mathfrak T)=\varnothing\)。若没有发现歧义见证且任一必要构造未完成，则 \(v_L=\perp\)。
+\end{thesistheorem}
+
+\begin{proof}
+若算法返回 \logicstatus{0}，则存在一个通过耦合 LP 的正常--故障路径对。由命题~\ref{prop:coupled-lp}，该路径对构成临界运行对，因此 \(\mathcal K_{L,H}(N,\mathfrak T)\neq\varnothing\)。
+
+反之，若 \(\mathcal K_{L,H}(N,\mathfrak T)\neq\varnothing\)，任选临界对 \(\kappa=(\phi,\sigma_N,\sigma_F,J)\)。由定理~\ref{thm:candidate-coverage}，\(\phi\in\widehat\Phi_L(N,\mathfrak T)\)。由定理~\ref{thm:path-record-coverage}，\(\sigma_N\) 和 \(\sigma_F\) 分别对应正常与故障终止记录，且其累计时长包围都包含真实公共区间 \(J\)，因此不会被时长包围安全剪枝删除。最后，由命题~\ref{prop:coupled-lp}，该路径对的耦合 LP 必然可行，算法最终返回 \logicstatus{0}。
+
+当 \(\mathcal K_{L,H}(N,\mathfrak T)=\varnothing\) 且全部必要构造完整终止时，不存在任何可行耦合路径对；算法穷尽全部候选后返回 \logicstatus{1}。反过来，若算法在完整穷尽后返回 \logicstatus{1}，却有 \(\mathcal K_{L,H}(N,\mathfrak T)\neq\varnothing\)，前述第二部分会推出该临界对必被保留并产生可行 LP，与 \logicstatus{1} 矛盾。
+\end{proof}
+
+定理~\ref{thm:logical-verifier-correctness} 将前述各层性质连接成完整证明链。结构同步负责保证公共观测词不被漏掉，路径展开与时长包围负责保证真实完成运行不被错误删除，耦合 LP 则负责消除包围造成的假阳性并确认真实公共完成时间。
+
+\subsection{终止条件与复杂度分析}
+
+定理~\ref{thm:logical-verifier-correctness} 的前提明确要求各项构造完整终止。有限 \(L\) 与 \(H\) 本身并不足以保证这一点。例如，模型若包含能够在零时间内反复触发的循环，则有限时间界内仍可能存在任意长发射历史。因而，本章把终止条件与性质判定分开：只有在状态类图、同步器和候选条件化路径展开均达到有限完整表示时，才能依据穷尽结果给出 \logicstatus{1}；若计算预算耗尽而没有歧义见证，则按式~\eqref{eq:logical-verdict} 返回 \logicstatus{\perp}。
+
+下面给出结构筛选的保守复杂度。设 \(n_C=|\mathcal C_c|\)、\(n_E=|\mathcal D_c|\)、\(n_\Sigma=|\Sigma|\)，并令 \(B_L=\sum_{k=0}^{L}n_\Sigma^k\)。若一次段可达映射求值的代价按 \(O(n_C+n_E)\) 计，则候选枚举的最坏时间复杂度满足式~\eqref{eq:structural-complexity}。
+\begin{equation}
+O\!\left(
+T_{\mathrm{SCG}}
++
+n_\Sigma B_L(n_C+n_E)
+\right).
+\label{eq:structural-complexity}
+\end{equation}
+式~\eqref{eq:structural-complexity} 表明，即使状态类图已给定，候选前缀数量在最坏情况下仍随 \(L\) 指数增长，因此该阶段并非关于 \(L\) 的多项式算法。
+
+时间阶段具有更明显的输出敏感性。对候选 \(\phi\)，设路径记录数为 \(r_\phi\)，不同结构节点数为 \(s_\phi\)，最大同时使能变迁数为 \(e_{\max}\)，包围重叠后保留的正常--故障终止记录对集合为 \(\mathcal Q_\phi\)。若一次耦合 LP 的代价记为 \(T_{\mathrm{LP}}(n,e)\)，则路径级主要计算量可写为式~\eqref{eq:temporal-complexity}。
+\begin{equation}
+O\!\left(
+r_\phi e_{\max}^{2}
++
+\sum_{(\sigma_N,\sigma_F)\in\mathcal Q_\phi}
+T_{\mathrm{LP}}
+\!\left(
+|\sigma_N|+|\sigma_F|,
+e_{\max}
+\right)
+\right).
+\label{eq:temporal-complexity}
+\end{equation}
+式~\eqref{eq:temporal-complexity} 的第一项对应残余包围与记录展开，第二项对应所有保留路径对的精确 LP。由于 \(r_\phi\) 与 \(|\mathcal Q_\phi|\) 都可能随并发度和路径长度快速增长，时间阶段最坏情况下仍可能呈指数增长。因此，本章方法的主要目标不是改变一般问题的最坏复杂度类别，而是通过结构候选筛选和安全时间包围减少实际进入精确 LP 的路径对数量，并保证这种减少不牺牲判定正确性。
+
+\section{算例分析}
+
+为完整展示本章各阶段，采用一个四变迁加工单元示例。模型包括输入缓冲、正常加工、隐藏恢复与完成缓冲四类状态。\(t_1\) 表示装载确认，标号为 \(a\)；\(t_2\) 表示正常加工完成，标号为 \(b\)；\(t_3\) 为不可观重构故障，标号为 \(\varepsilon\)；\(t_4\) 为故障恢复后的完成确认，标号为 \(b\)。静态发射区间和分析参数见表~\ref{tab:chap3-example}。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{第三章算例的时间参数与诊断设置}
+\label{tab:chap3-example}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.5cm}>{\centering\arraybackslash}p{2cm}>{\centering\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}X}
+\hline
+对象 & 标号 & 时间设置 & 说明\\
+\hline
+\(t_1\) & \(a\) & \(I(t_1)=[2,3]\) & 装载确认\\
+\(t_2\) & \(b\) & \(I(t_2)=[1,4]\) & 正常加工完成\\
+\(t_3\) & \(\varepsilon\) & \(I(t_3)=[2,5]\) & 不可观重构故障\\
+\(t_4\) & \(b\) & \(I(t_4)=[0,3]\) & 故障恢复后完成\\
+分析域 & -- & \(L=2,\ H=12\) & 完成标识满足 \(M(p_4)=1\)\\
+\hline
+\end{tabularx}
+\end{table}
+
+该模型存在两条与诊断相关的首次完成发射序列：正常序列为 \(\sigma_N=t_1t_2\)，故障序列为 \(\sigma_F=t_1t_3t_4\)，二者的可观测投影均为 \(ab\)。根据 TCSCG 构造，相关状态类可以记为 \(C_0,C_1,C_2,C_c\)：\(C_0\) 为初始类，\(C_1\) 由 \(t_1\) 到达，\(C_2\) 由 \(t_1t_3\) 到达，正常和故障路径最终都可以进入同一个完成类 \(C_c\)。这说明故障历史不能由终止状态类本身区分，必须由同步器的正常、故障两个分量分别保存。
+
+同步器初态为 \((\{C_0\},\varnothing)\)。观察到 \(a\) 后，正常分量包含 \(C_1\)，故障分量包含通过不可观故障 \(t_3\) 到达的 \(C_2\)；但此时两个分量都尚未到达完成类，因此 \(a\) 不是候选词。观察到 \(ab\) 后，正常和故障分量都包含 \(C_c\)，于是根据定义~\ref{def:candidate-word} 有 \(ab\in\widehat\Phi_2(N,\mathfrak T)\)。
+
+对候选 \(ab\) 执行路径记录展开后，得到正常终止记录 \(t_1t_2\) 与故障终止记录 \(t_1t_3t_4\)。对正常序列，其精确路径约束可以简化为 \(2\leq d_1\leq3\)、\(1\leq d_2\leq4\) 与 \(d_1+d_2\leq12\)，因此完成时间集合为 \([3,7]\)。
+
+故障序列中，在 \(t_1\) 发射以后 \(t_2\) 与 \(t_3\) 同时使能。尽管故障路径不实际发射 \(t_2\)，强时间语义仍要求时间不能越过 \(t_2\) 的最晚发射界 4，因此 \(t_3\) 的有效发射延迟上界由原来的 5 收紧为 4。于是故障序列的约束为 \(2\leq d_1\leq3\)、\(2\leq d_3\leq4\)、\(0\leq d_4\leq3\) 以及 \(d_1+d_3+d_4\leq12\)，完成时间集合为 \([4,10]\)。
+
+两个累计完成时间包围在本例中恰好与精确投影一致，因此其交集为 \([4,7]\)，不能由时长包围安全剪枝删除。进一步建立耦合 LP，并分别使用正常路径变量 \(d_1^N,d_2^N\) 与故障路径变量 \(d_1^F,d_3^F,d_4^F\)。公共完成时间要求 \(d_1^N+d_2^N=d_1^F+d_3^F+d_4^F=\theta\)。对任意 \(\theta\in[4,7]\)，上述约束均存在可行解，因此由命题~\ref{prop:coupled-lp} 得到临界运行对 \(\kappa=(ab,t_1t_2,t_1t_3t_4,[4,7])\)，并由式~\eqref{eq:logical-verdict} 得到 \(v_L=0\)。
+
+该算例同时说明了本章分层方法中三个容易混淆的概念。首先，正常和故障路径终止在同一个状态类并不意味着其故障历史被合并；同步器的两个分量仍分别保存历史类别。其次，候选词 \(ab\) 只说明结构上存在正常与故障完成路径，并不能单独确认时间歧义。最后，只有耦合 LP 可行才构成 \logicstatus{0} 的精确证据；如果包围重叠但 LP 不可行，则该记录对只是时间包围造成的假阳性。
+
+\section{本章小结}
+
+本章针对 \((L,H)\) 有界任务完成可诊断性建立了“结构筛选--时间包围--精确确认”的分层验证方法。任务完成状态类图和观测同步器首先限制可能同时由正常与故障完成行为产生的候选观测；随后通过历史保持的路径展开和完成时长包围安全排除时间上必然分离的路径对；最后以共同总完成时间耦合正常与故障路径的线性约束，精确确认临界运行对并提取歧义见证。
+
+相应理论结果保证候选筛选与时间包围不会漏失真实临界对，并保证路径可行域及耦合 LP 与强时间语义下的合法运行保持一致。在所需符号构造完整终止时，算法能够正确返回 \logicstatus{1} 或 \logicstatus{0}；若搜索未完整穷尽且尚未发现歧义见证，则保留 \logicstatus{\perp}，而不把计算未完成解释为性质结论。下一章将在这一支持层分析基础上进一步引入随机时间分布和概率风险。
+
+% 第4章 任务完成概率故障诊断的验证与风险分析方法
+\chapter{任务完成概率故障诊断的验证与风险分析方法}
+
+\section{引言}
+
+第二章在统一任务完成诊断语义和概率诊断问题定义时已经指出，在随机时间模型中，仅判断“歧义是否可能发生”还不足以刻画诊断风险。第三章随后从支持层研究了有界任务完成逻辑诊断问题，重点判断正常首次完成运行与故障首次完成运行是否可能产生相同的任务完成观测。在此基础上，本章进一步进入概率层：正常与故障行为的观测支持即使发生接触或重叠，相应公共观测也可能只位于零概率边界；反之，即使支持重叠区域较小，只要其承载较大的概率质量，仍可能造成不可忽略的平均判错风险。因此，本章在标号随机时间 Petri 网（LSTPN）的有限分析时域内，研究任务完成概率故障诊断的验证与风险量化方法。
+
+依据定义~\ref{def:risk-bounded-diagnosability}，风险有界任务完成可诊断性要求三个条件同时成立：故障假设 \(H_1\) 下的运行必须普遍满足 \(B_c\) 有界完成，最小 Bayes 错误 \(P_e^\star\) 不超过目标上界 \(\varepsilon\)，可靠诊断覆盖率 \(\Gamma_\delta\) 不低于目标下界 \(\gamma\)。这三个条件涉及两类不同的计算对象。前者是支持性质，需要回答某条时间运行是否可行以及故障后是否存在超过完成时限或未完成行为；后两者是概率性质，需要在可行运行空间上构造归一化条件观测分布并计算其概率质量。
+
+直接在同一个合并状态图上同时完成这两类计算并不可靠，主要原因有三点。首先，持续使能的时间变迁在其他变迁发射后保留已有年龄，其剩余时间支持和条件剩余分布均随年龄发生变化，不能采用无记忆重启近似。其次，支持层的等观测临界对可以来自正概率区域，也可以只来自连续分布下的零概率边界，因此“支持歧义存在”不能直接等同于“概率诊断风险为正”。最后，不同执行历史可以在符号支持图中汇聚到同一个状态类，而这些历史对应的随机事件并不因此变成同一个概率事件；若在状态合并以后直接累加路径概率，可能产生重复计数或丢失概率来源。随机时间状态类方法和一般分布下的状态类分析同样需要区分时间可行域与概率质量传播\cite{Carnevali2009,Vicario2009,Lefebvre2023}。
+
+基于上述特点，本章采用“支持验证--概率展开--数值认证”的三级处理框架。第一阶段构造带故障与完成监视信息的年龄保持状态类，在有限分析时域内验证故障后有界完成，并通过定时验证器同步 \(H_1\) 与 \(H_0\) 行为以识别等观测支持临界对。第二阶段不再沿合并后的支持图直接传播概率，而是按照完整执行历史展开两两互斥的路径事件，在即时冲突和随机竞争处分别分配概率质量，并由终止路径事件构造联合假设--观测测度。第三阶段针对连续积分和未完全展开的概率质量建立保守上下界，最终只在风险区间能够确定跨越给定阈值时输出 \probstatus{1} 或 \probstatus{0}，否则返回 \probstatus{\perp}。这样既保留支持层闭集边界，又避免把零概率支持接触误判为正概率风险。
+
+\section{受监视状态类与故障后完成验证}
+
+\subsection{受监视状态类及监视变量}
+
+第二章已经给出 LSTPN 的持续使能随机时间语义，但普通时间状态 \((M,\boldsymbol\alpha)\) 只能记录当前标识和使能年龄，无法直接判断当前运行是否已经在诊断窗口内发生指定故障、故障后任务是否已经完成以及距首次相关故障已经经过多长时间。为了在支持探索过程中同时检查定义~\ref{def:bounded-postfault-completion} 的任务完成条件，需要把这些诊断监视信息并入符号状态。本文采用差分约束矩阵（Difference-Bound Matrix, DBM）表示有限时域中的年龄和监视时钟约束\cite{Basile2015,Basile2017}。
+
+\begin{thesisdefinition}
+\label{def:monitored-class}
+受监视状态类记为
+\(\xi=(M,E,b_f,b_c,b_{\mathrm{done}},\theta_f,\theta,Z)\)。
+其中，\(M\) 为当前标识；\(E\subseteq T_d\) 为当前使能的时间变迁集合；\(b_f\in\{0,1\}\) 表示是否已经在全局时刻不超过 \(H_\psi\) 时发生指定故障；\(b_c\in\{0,1\}\) 表示该故障之后是否已经发生指定完成变迁；\(b_{\mathrm{done}}\in\{0,1\}\) 表示当前任务是否已经首次完成，且此标志不因完成后的附加观测而清除；\(\theta_f\) 为首次窗口内故障发生后的累计时间，在 \(b_f=0\) 时不激活；\(\theta\) 为全局累计时间；\(Z\) 为同时约束当前使能年龄、\(\theta_f\) 与 \(\theta\) 的规范 DBM 时间域。
+\end{thesisdefinition}
+
+定义~\ref{def:monitored-class} 中的 \(b_f,b_c,b_{\mathrm{done}}\) 只承担概率层的任务监视作用，不与第二章运行级故障历史函数 \(\chi_f(\rho)\) 混用。后者用于首次完成截断；若直接对完成后的扩展运行重新计算 \(\chi_f\)，则可能把下一阶段才发生的故障误归到本次任务。若指定故障在 \(H_\psi\) 之后发生，而此前没有窗口内故障，则该故障不激活当前诊断窗口的 \(b_f\) 与 \(\theta_f\)。这一处理与定义~\ref{def:probability-hypotheses} 的包含边界一致：仅 \(\tau_f\leq H_\psi\) 的运行属于 \(H_1\)。
+
+有限支持探索只需要覆盖分析时域 \(H_A=H_\psi+B_c+B_d\)。在该时域内，\(b_f\) 用于区分 \(H_1\) 与 \(H_0\) 支持，\(b_{\mathrm{done}}\) 阻止将首次完成后的新故障算入本次任务，\(b_c\) 和 \(\theta_f\) 用于检测故障后完成约束，\(\theta\) 则保证符号探索不会越过当前诊断规格所需的全局时域。
+
+\subsection{年龄保持的后继状态类构造}
+
+受监视状态类的后继计算必须同时满足 LSTPN 的强时间语义和监视变量更新规则。设 \(\xi=(M,E,b_f,b_c,b_{\mathrm{done}},\theta_f,\theta,Z)\)，考虑时间变迁 \(t\in E\)。以 \(\boldsymbol\alpha=(\alpha_u)_{u\in E}\) 表示当前使能年龄，以 \(d\geq0\) 表示 \(t\) 发射前经历的延迟。为了保证 \(t\) 在自身支持区间内发射，同时不使任一当前使能变迁越过其有限最晚发射界，定义合法发射域 \(D_t(\xi)\)，其约束见式~\eqref{eq:monitored-firing-domain}。
+\par\nopagebreak[4]
+\begin{equation}
+\begin{aligned}
+D_t(\xi)=
+\bigl\{
+(\boldsymbol\alpha,\theta_f,\theta,d)\ \bigm|\ &
+(\boldsymbol\alpha,\theta_f,\theta)\in Z,\quad d\geq0,\\
+&a_t\leq\alpha_t+d\leq b_t,\\
+&\alpha_u+d\leq b_u,\quad
+u\in E,\ b_u<+\infty
+\bigr\}.
+\end{aligned}
+\label{eq:monitored-firing-domain}
+\end{equation}
+式~\eqref{eq:monitored-firing-domain} 的第二行规定实际发射变迁满足自身支持，第三行体现强时间语义中的最晚发射约束。该时间变迁后继仅在当前没有已使能即时变迁时可用；若即时变迁已使能，则须先执行零时间即时选择，不允许从该状态直接选取时间变迁或推进正时间。
+
+这里的持续使能集合 $E^p(M,t)$ 和新使能集合 $E^n(M,t)$ 严格采用第二章式~\eqref{eq:postfire-enabling-partition} 的中间标识规则，而不是仅比较发射前后的使能集合。实际发射变迁重新启动时钟；其他变迁只有在中间标识仍使能时才能保留年龄。这与第三章的 $E_i^p,E_i^n$ 完全相同。
+
+给定 \((\boldsymbol\alpha,\theta_f,\theta,d)\in D_t(\xi)\)，年龄、全局时钟和两个监视标志的更新写为式~\eqref{eq:monitored-update}。
+\begin{equation}
+\begin{aligned}
+\alpha_u'
+&=
+\begin{cases}
+\alpha_u+d, & u\in E^p(M,t),\\
+0, & u\in E^n(M,t),
+\end{cases}\\
+\theta'
+&=\theta+d,\\
+b_f'
+&=
+b_f\vee
+\mathbf 1_{\{b_{\mathrm{done}}=0,\ t\in T_f,\ \theta+d\leq H_\psi\}},\\
+b_{\mathrm{done}}'
+&=b_{\mathrm{done}}\vee\mathbf 1_{\{t\in T_c\}},\\
+b_c'
+&=
+b_c\vee
+\left(
+b_f'\wedge\mathbf 1_{\{b_{\mathrm{done}}=0,\ t\in T_c\}}
+\right),\\
+\theta_f'
+&=
+\begin{cases}
+\theta_f+d, & b_f=1,\\
+0, & b_f=0.
+\end{cases}
+\end{aligned}
+\label{eq:monitored-update}
+\end{equation}
+其中 \(\mathbf 1_{\{\cdot\}}\) 为示性函数。\(b_{\mathrm{done}}\) 记录首次完成是否已经发生，计算本次任务的故障类别时只读取该标志尚为零的任务阶段；完成后的\(B_d\) 附加观测可以继续采集，但不能把之后发生的新故障倒填到当前任务的\(H_1\) 类别中。若 \(b_f=0\) 且本次发射正好是窗口内首次指定故障，则故障在本次发射时刻发生，故后继中的 \(\theta_f'\) 从零开始；之后只要故障监视已经激活，\(\theta_f\) 便随时间继续增加。
+
+记 \(\Psi_t\) 为式~\eqref{eq:monitored-update} 与标识更新共同构成的状态更新映射。对 \(D_t(\xi)\) 进行更新并投影掉发射延迟和失效年龄变量，得到连续后继集合，再将其分割为有限个规范 DBM。即时变迁采用相同的持续使能/新使能判定，但取 \(d=0\)；在允许正时间推进以前，需要穷尽即时闭包。连续分布下的精确同时发射边界具有零概率，但它仍属于闭支持，因此在支持图中不能删除。
+
+后续的故障完成检查和定时验证器都会把符号后继解释为真实可行运行。如果后继 DBM 只给出外包围或遗漏部分合法赋值，则后面的支持结论都不再是精确结论。因此，有必要明确当前符号实现的精确性条件。
+
+\begin{thesislemma}[受监视状态类后继的精确性]
+\label{lem:monitored-successor-exact}
+设合法发射域、更新映射、变量投影与 DBM 分割均采用精确表示。对任意受监视状态类 \(\xi\) 和可发射时间变迁 \(t\)，由式~\eqref{eq:monitored-firing-domain}--\eqref{eq:monitored-update} 生成的全部非空后继 DBM 的并集，恰好等于从 \(\xi\) 所表示的某个具体时间状态合法发射 \(t\) 后能够到达的连续状态集合。
+\end{thesislemma}
+
+\begin{proof}
+先证明充分包含关系。任取 \(\xi\) 中一个可以合法发射 \(t\) 的具体时间状态及其发射延迟 \(d\)。由强时间语义，该状态与 \(d\) 满足式~\eqref{eq:monitored-firing-domain}。发射时，持续使能变迁的年龄增加 \(d\)，新使能变迁年龄置零，故障、完成与监视时钟按照式~\eqref{eq:monitored-update} 更新，因此所得具体后继属于 \(\Psi_t(D_t(\xi))\) 的投影像，进而属于某个规范后继 DBM。
+
+再证明必要包含关系。任取任一生成后继 DBM 中的赋值。由于投影和 DBM 分割均为精确操作，该赋值在投影前必存在一个前驱 \((\boldsymbol\alpha,\theta_f,\theta,d)\in D_t(\xi)\)，并满足式~\eqref{eq:monitored-update}。式~\eqref{eq:monitored-firing-domain} 保证延迟与发射满足强时间语义，更新规则又保持持续使能年龄和监视变量的正确演化，因此该赋值对应一条真实合法的 \(t\) 发射。两向包含同时成立，故结论成立。
+\end{proof}
+
+引理~\ref{lem:monitored-successor-exact} 说明，在所述精确表示条件下，受监视状态类可以用于支持层的存在性和全称性验证；如果实际实现改用保守多面体外包围，则只能得到相应的外支持近似，不能直接沿用本章的精确等价结论。
+
+\subsection{故障后有界完成条件检查}
+
+有了受监视状态类以后，定义~\ref{def:bounded-postfault-completion} 的违反行为可以在支持探索过程中直接识别。若某个可达类包含满足 \(b_f=1\)、\(b_c=0\) 且 \(\theta_f>B_c\) 的赋值，则已经存在一条 \(H_1\) 运行在故障后超过 \(B_c\) 仍未完成。类似地，如果一条已经满足 \(b_f=1,b_c=0\) 的运行在完成前进入正常终止 \(z_e\) 或死锁 \(z_d\)，或者在处理完时域右端点允许的发射之后仍归入 \(z_h\) 且 \(b_f=1,b_c=0\)，则该历史也构成故障后有界完成的违反见证。这里对 \(z_h\) 的检查包含 \(\theta_f=B_c\) 的截止端点；但在尚可于该端点合法完成的分支被检查之前，不得直接将时间等号视为失败。
+
+为便于算法描述，定义违反示性量 \(\upsilon(\xi)\in\{0,1\}\)：当且仅当受监视状态类 \(\xi\) 中存在上述违反赋值或违反终止类型时取 \(1\)，否则取 \(0\)。每个被检测到的违反类均保留前驱记录，因此可以恢复一条具体时间运行作为 \probstatus{0} 的结构见证。
+
+支持探索从初始受监视状态类开始，在时域 \(H_A\) 内反复执行年龄保持后继。若 \(\upsilon(\xi)=1\)，先按完成违反谓词对类中时间域作\emph{精确分割}：已经违反的赋值作为见证加入 \(\mathcal W\)，只停止这些违反分片；尚未违反的赋值及其历史仍须完整展开。因为 \(\upsilon(\xi)=1\) 表示\emph{至少存在}一条违反赋值，并不意味着原类中的每个赋值均违反，故不能直接删除整个混合状态类，否则可能漏掉仍能按时完成的 \(H_1\) 运行以及后续等观测临界对。对确已违反的历史，一旦故障后完成界被突破，任何后续行为都不能使其重新满足 \(B_c\) 有界完成。其余未违反分片继续构造后继，并只在符号操作已经证明支持等价或支持包含时执行类合并。这里的合并仅用于支持图；后面的概率阶段不会沿用这种历史合并。
+
+\section{正常与故障支持同步及临界对分析}
+
+\subsection{定时验证器构造}
+
+受监视支持图能够分别表示 \(H_1\) 与 \(H_0\) 下哪些时间行为可行，但它本身不能回答两类运行是否能够留下相同观测。为判断定义~\ref{def:prob-critical-pair} 中的支持临界运行对，需要把两个假设下的状态类路径按照观测映射 \(\psi\) 进行同步。本文构造定时验证器（Timed Verifier），其职责只限于等观测可行性判断，概率质量仍留到后续路径事件展开中计算。
+
+\begin{thesisdefinition}
+\label{def:timed-verifier-state}
+定时验证器状态记为
+\(\xi^\times=(\xi_1,\xi_0,\zeta,Z^\times)\)。
+其中，\(\xi_1\) 与 \(\xi_0\) 分别是与 \(H_1\) 和 \(H_0\) 相容的受监视状态类；\(\zeta\) 为两侧已经共同生成的符号观测前缀；\(Z^\times\) 为联合时间域，包含两个分量各自的年龄与监视约束，以及由 \(\psi\) 诱导的观测相等时间关系。
+\end{thesisdefinition}
+
+定义~\ref{def:timed-verifier-state} 中，两个分量不要求在每个内部步骤经历相同的延迟。原因是两侧可以包含不同数量的静默变迁，只要经过观测映射 \(\psi\) 后的可见记录保持一致即可。只有对给定 \(\psi\) 已构造\emph{精确的有限观测状态更新规则}时，才允许增量式同步：\(\zeta\) 必须完整保存决定最终 \(\psi\)-等值关系所需的观测摘要，结束时其接受条件与 \(Y(\rho_1)=Y(\rho_0)\) 严格等价。对 \(\psi\) 保留的事件标号与时间信息，按真实投影同步；对 \(\psi\) 已经删除的标号、时间戳或其他字段，不得额外施加等值条件。若某个可观变迁的标号被映射保留，则需与另一侧对应事件匹配；若 \(\psi\) 仅保留完成时间，则两侧的中间可观事件不要求具有相同标号或长度，可异步推进并在结束时只检查完成观测。这样，静默及所有被 \(\psi\) 忽略的行为均不强制改变共同观测摘要。$z_c,z_e,z_d,z_h$ 是支持分析器内部的语义终止类别，仅用于路径事件分割；只有外部终止标记 $z_{\mathrm{ext}}^{\mathrm{obs}}$ 确实存在且映射 $\psi$ 保留该字段时，才允许以对应终止信息约束两侧观测相等。否则，即使两条运行的内部终止类型不同，只要它们产生相同的真实外部观测，验证器也不得将其错误排除。计算资源限制产生的未解析前沿不参与观测匹配。
+
+\subsection{观测等价匹配}
+
+观测匹配的具体约束依赖第二章定义~\ref{def:probability-observation} 中的 \(\psi\)。当 \(\psi\) 保留精确事件词及时间戳时，联合域应同时匹配相应标号和保留的时间坐标；当 \(\psi\) 对所保留时间戳进行有限量化时，只要求对应时间落入相同量化单元；如果 \(\psi\) 仅保留任务完成时间，则中间事件不得强制配对，只在两侧真实任务完成记录出现后比较总完成时间。若 \(\psi\) 对整个记录执行非前缀兼容的全局运算，则不能直接套用逐事件同步器，必须先构造一个已证明等价的有限观测状态，或改为分别枚举两侧完整路径后比较最终观测。
+
+本章的增量式精确定时验证还要求 \(\psi\) 具有可精确实现的有限观测状态：其更新无损地表示对最终等值测试有影响的外部观测信息；全部允许的异步与同步转移均被枚举且不存在额外匹配约束。除此之外，\(\psi\) 所诱导的观测相等关系还必须在有限分析时域内能够被当前符号表示精确划分。对于精确时间戳和有限时间量化，可以使用 DBM 或有限 DBM 分区实现；更一般的线性关系可以改用精确有理多面体表示。若实际实现只提供观测关系的外包围，则接受状态仍可用于生成可能临界对，但不能把非空接受集直接解释为真实临界对存在。
+
+一个定时验证器状态被接受，需要同时满足三个条件：\(H_1\) 侧已经满足 \(B_c\) 有界完成；两侧按照 \(\psi\) 得到的完整观测一致；完成后的附加观测长度满足 \(B_d\)。每条验证器边保留两个分量的局部发射步骤、前驱状态与非空联合时间域，因此一个接受路径可以投影回两条具体时间运行。
+
+\subsection{支持层分析结果}
+
+上述支持探索同时承担两个彼此独立的判定任务：一是检查是否存在违反普遍 \(B_c\) 有界完成的 \(H_1\) 运行；二是在全部未违反支持上检查 \(H_1\) 与 \(H_0\) 是否存在等观测运行。只有证明受监视后继精确，并证明验证器接受路径与定义~\ref{def:prob-critical-pair} 的临界运行对一一对应，才能把符号图结果作为后续概率分析的可靠支持基础。
+
+\begin{thesistheorem}[支持分析与定时验证器正确性]
+\label{thm:support-verifier-correctness}
+在假设~\ref{ass:probability-domain} 成立、\(\psi\) 的完整记录等值关系具有前述无损、有限且精确的观测状态实现、有限分析时域 \(H_A\) 内的监视与观测约束能够形成有限精确符号分区，并且受监视状态类操作均精确的条件下，支持探索在有限步内终止。令 \(v_c\in\{1,0\}\) 表示故障后有界完成状态，\(\mathcal A\) 表示定时验证器接受状态集合，则 \(v_c=0\) 当且仅当存在一条可实现的 \(H_1\) 运行违反普遍 \(B_c\) 有界完成；同时，无论 \(v_c\) 取何值，均有式~\eqref{eq:verifier-critical-equivalence}。
+\begin{equation}
+\mathcal A\neq\varnothing
+\quad\Longleftrightarrow\quad
+\mathcal K(B_c,B_d,\psi)\neq\varnothing.
+\label{eq:verifier-critical-equivalence}
+\end{equation}
+此外，\(\mathcal W\) 中的违反状态和 \(\mathcal A\) 中的接受状态均可通过前驱记录恢复相应的具体运行见证。若上述有限精确构造条件尚未得到满足且没有发现真实违反见证，则支持阶段必须返回 \(v_c=\perp\)，不能由已探索部分推出普遍完成。
+\end{thesistheorem}
+
+\begin{proof}
+由假设~\ref{ass:probability-domain} 的 \(k\)-有界性，可达标识集合有限；即时发射序列有限，且有限时域 \(H_A\) 内的时间变迁发射深度存在统一上界。再结合每一步只有有限个精确符号分区，支持探索具有有限分支和有限深度，因此能够终止。
+
+由引理~\ref{lem:monitored-successor-exact}，每个受监视符号后继恰好表示相应具体发射能够到达的全部赋值。于是，若某个类满足 \(\upsilon(\xi)=1\)，其中确实存在一条可实现的 \(H_1\) 运行违反 \(B_c\) 有界完成；对恰好处于完成截止端点的历史，违反类别只在所有该端点合法完成分支已经按语义分离以后确认。由于混合类的非违反分片在精确分割后被保留，任意真实违反运行的每个非违反前缀都会被完整探索或被支持包含关系安全覆盖，最终必到达一个含真实违反赋值的类。因此 \(v_c=0\) 与普遍完成条件被真实违反等价。
+
+再考虑定时验证器。若存在接受路径，其两个投影分别是合法的 \(H_1\) 和 \(H_0\) 受监视类路径；匹配规则保证两条运行在 \(\psi\) 下具有相同完整观测，接受条件又保证 \(H_1\) 投影满足 \(B_c\) 有界完成与 \(B_d\) 附加观测要求，因此两条运行构成 \(\mathcal K(B_c,B_d,\psi)\) 中的临界运行对。
+
+反之，任取 \(\mathcal K(B_c,B_d,\psi)\) 中的临界运行对。两条运行的各类内部步骤按无损观测状态更新器允许的次序在对应分量推进；只有被 \(\psi\) 实际保留且需要逐项同步的外部事件才配对，其余事件允许异步演化；由于该更新器的最终接受条件与完整 \(\psi\)-观测相等严格等价，且精确状态类后继和联合时间域保留全部合法延迟与观测约束，因此该临界运行对必诱导一条到达接受状态的验证器路径。于是得到式~\eqref{eq:verifier-critical-equivalence}。前驱信息在支持图与验证器边上均被保留，因此违反见证和临界对见证均可恢复。
+\end{proof}
+
+定理~\ref{thm:support-verifier-correctness} 完成了支持层验证，但还不能量化概率风险。特别地，\(\mathcal A\neq\varnothing\) 既可能对应具有正测度的观测重叠，也可能只对应连续分布下的单点边界接触。由此，支持验证器不能直接给出 \(P_e^\star\) 或 \(\Gamma_\delta\)，后续必须转到保持完整随机历史的概率事件空间。
+
+\section{历史保持的互斥路径事件展开}
+
+\subsection{路径事件与互斥性}
+
+受监视支持图和定时验证器允许不同执行历史在相同离散状态和相同时间域处合并，这种合并对于支持可达性分析是安全的，但不能直接用于概率传播。两个不同历史即使到达同一个受监视状态类，也可能由不同即时选择或不同随机竞争结果产生；若在合并节点之后只保留一份概率质量，再沿图的不同路径累加，就可能重复统计同一运行空间，或者把原本互斥的随机事件错误地重新组合。因此，概率层不在合并后的支持图上计算“路径概率”，而是另行构造保持完整历史的路径事件树。
+
+为使不同分支在概率意义下真正互斥，需要把每一次分支的离散选择、发射变迁以及连续延迟单元都记录到历史中。连续延迟区域采用两两不交的可测单元；在一维延迟方向上，相邻单元优先采用半开形式，例如 \([c_1,c_2)\) 与 \([c_2,c_3)\)，从而把公共端点唯一分配给一个子事件。
+
+\begin{thesisdefinition}
+\label{def:path-event}
+一个长度为 \(n\) 的有限事件历史记为
+\begin{equation}
+h=((b_1,t_1,D_1),\ldots,(b_n,t_n,D_n)).
+\label{eq:path-event-history}
+\end{equation}
+其中，\(b_j\) 标识第 \(j\) 次分支所选择的即时分支或时间竞争结果，\(t_j\) 为该步实际发射变迁，\(D_j\) 为分配给该结果的可测状态--延迟单元。对任意运行 \(\rho\)，以 \(x_j(\rho)\) 和 \(d_j(\rho)\) 表示第 \(j\) 次分支前的活动连续状态和实际延迟，则历史 \(h\) 对应的路径事件 \(\Omega_h\) 定义为式~\eqref{eq:path-event-set}。
+\begin{equation}
+\Omega_h
+=
+\left\{
+\rho\ \middle|\
+\begin{aligned}
+&b_j(\rho)=b_j,\quad t_j(\rho)=t_j,\\
+&(x_j(\rho),d_j(\rho))\in D_j,\quad
+j=1,\ldots,n
+\end{aligned}
+\right\}.
+\label{eq:path-event-set}
+\end{equation}
+\end{thesisdefinition}
+
+每个路径事件节点除历史 \(h\) 外，还保存当前符号状态、终止状态以及定义在活动连续变量域 \(X_h\) 上的次概率测度 \(\nu_h\)。这里的 \(X_h\) 除当前时间、年龄等可确定的状态变量外，还显式包含\emph{已经抽取但尚未发射}的各活动计时器原始时延或等价的剩余截止时长；这些潜在抽样值不属于诊断器的可观测信息。其总质量为 \(\|\nu_h\|=\nu_h(X_h)=\Pr(\Omega_h)\)，一般小于 1。\(\nu_h\) 是\emph{未经重新归一化的联合次概率测度}，完整保存此前竞争、历史条件与时间限制形成的相关性，不能仅由当前年龄向量重建。即使两个节点最终对应相同受监视状态类，只要其历史 \(h\) 不同，仍保持为不同路径事件节点。
+
+在即时分支处，不同选择本身属于不同离散结果，因此天然互斥；在时间竞争处，先按唯一获胜变迁划分，再按两两不交的状态--延迟单元细分。连续随机时间下仍需处理多个竞争变迁精确同时发射的边界事件。支持层为了保持闭支持会保留这些边界，但根据假设~\ref{ass:probability-domain} 中的绝对连续随机延迟与独立性条件，精确时间相等只形成零概率集合。由于后续质量守恒依赖所有子事件确实构成父事件的概率分割，需要把这一性质单独证明。
+
+\begin{thesislemma}[局部路径事件的互斥分割]
+\label{lem:path-event-partition}
+对任意非终止路径事件 \(\Omega_h\)，设所有合法子历史记为 \(h\!\cdot\!b\)，精确同时发射事件记为 \(\Omega_h^{=}\)。若即时选择互斥、时间竞争单元两两不交且连续竞争满足假设~\ref{ass:probability-domain}，则式~\eqref{eq:path-event-partition} 成立。
+\begin{equation}
+\Omega_h
+=
+\left(
+\biguplus_{b:\,h\cdot b\ \mathrm{admissible}}
+\Omega_{h\cdot b}
+\right)
+\uplus
+\Omega_h^{=},
+\qquad
+\Pr(\Omega_h^{=})=0.
+\label{eq:path-event-partition}
+\end{equation}
+因此父事件的概率质量等于所有合法子事件概率质量之和。
+\end{thesislemma}
+
+\begin{proof}
+若当前为即时分支，不同即时变迁选择对应不同离散结果，同一具体运行只能选择其中一个，因此各子事件两两互斥，并覆盖父事件中的全部即时后继。
+
+若当前为时间竞争分支，则除精确同时发射外，每条具体运行都存在唯一的下一获胜变迁。对固定获胜变迁，半开或其他两两不交的可测状态--延迟单元又把其实际连续状态和延迟唯一分配到某个子事件。因此，任意非同时发射运行属于且只属于一个 \(\Omega_{h\cdot b}\)。剩余集合恰为两个或多个连续竞争时间完全相等的 \(\Omega_h^{=}\)。因为同时活动的不同计时器来自不同新使能事件的独立绝对连续抽样，任一两钟原始时延在给定完整抽样空间中相等或相差一段由此前离散历史确定的仿射时间差，均对应一个零 Lebesgue 测度超平面；对可数个有限历史逐一取并仍为零测度。对历史事件作限制不会使原本的零测度集合重新得到正质量。故精确相等事件概率为零，父事件质量等于全部合法子事件质量之和。这里不假设历史条件化以后的未发射计时器相互独立。
+\end{proof}
+
+\subsection{即时冲突与随机竞争概率传播}
+
+路径事件的互斥性并不自动给出每个子事件的概率质量。若当前存在已使能的即时变迁，按即时优先语义不允许正时间流逝。此时必须从实际标识 $M$ 按 $M\geq W^-(\cdot,u)$ 枚举\emph{所有}已经使能的即时变迁，令 $E_0(M)=\{u\in T_0:M\geq W^-(\cdot,u)\}$。对每个 $t\in E_0(M)$，以 $p_t=w_t/\sum_{u\in E_0(M)}w_u$ 将父测度按比例限制至选择 $t$ 的事件，再按式~\eqref{eq:postfire-enabling-partition} 更新标识与计时器。不能使用“变迁输入标识恰好等于整个当前标识”来筛选即时分支；若有第三个使能即时变迁，也必须纳入同一次归一化。只有另行明确定义并验证的更受限冲突机制，才允许使用相应更窄的可选集合。
+
+当没有即时变迁使能时，设 \(E_d\) 为当前活动时间变迁集合。在 \(X_h\) 的一个具体潜在状态 \(x\) 中，记 \(R_u(x)\) 为活动计时器 \(u\) 尚需等待的时间。各剩余时间由过去已抽取的样本和当前年龄确定，\emph{并非每次竞争时重新抽样}。令
+\(d_t(x)=R_t(x)\)，并定义唯一获胜事件
+\(A_{h,t,D}=\{x\in X_h: R_t(x)<R_u(x)\ (u\in E_d\setminus\{t\}),\ (x,R_t(x))\in D,\ R_t(x)\leq H_A-\theta(x)\}\)，其中 \(D\) 为预设的可测状态--延迟单元，\(\theta(x)\) 为当前全局时刻。若没有时间变迁可以在剩余分析时域内发射，则相应质量归入时域终止事件；若没有合法后继，则按模型语义进入死锁等终止类型。各类终止事件与获胜事件必须构成当前父事件的完整分割。
+
+若 \(t\) 获胜，在该次发射之后按照第二章的持续使能规则更新所有旧计时器：真正持续使能的计时器扣除经过的延迟，本次实际发射后仍使能的 \(t\) 以及其他新使能计时器重新抽取原始时延。记 \(E^n(M,t)\) 为这些新使能时间变迁，\(U_t(x,\mathbf z)\) 为给定旧潜在状态及新样本 \(\mathbf z\) 后的完整状态更新映射。于是子事件质量与子节点联合测度分别由式~\eqref{eq:path-event-mass-transfer} 给出：
+\begin{equation}
+\begin{aligned}
+\beta_{h,t,D}
+&=\nu_h(A_{h,t,D}),\\
+\nu_{h\cdot(t,D)}
+&=(U_t)_\#\!\left(
+(\left.\nu_h\right|_{A_{h,t,D}})
+\otimes
+\bigotimes_{u\in E^n(M,t)}\mathsf{Law}(F_u)
+\right).
+\end{aligned}
+\label{eq:path-event-mass-transfer}
+\end{equation}
+其中，\(\left.\nu_h\right|_{A_{h,t,D}}\) 表示测度 \(\nu_h\) 在获胜事件上的限制，\((U_t)_\#\) 表示通过状态更新映射的推前测度；没有新使能随机计时器时，空乘积取单位测度。式中 \(\mathsf{Law}(F_u)\) 表示分布函数 \(F_u\) 诱导的概率测度，以免将分布函数本身误当成可与联合测度作张量积的对象。由于新样本只在新使能时独立抽取，以上乘积只涉及\emph{新样本与已有历史}之间的独立性，并不假设旧活动计时器在给定路径历史后仍相互独立。子测度的总质量正好为 \(\beta_{h,t,D}\)，无需再次归一化。
+
+为说明不能直接将原始独立性推广到任意历史，考虑三个独立且均服从 \(U[0,1]\) 的计时器 \(X,Y,Z\)，并只保存“\(X\) 先于 \(Y,Z\) 发射”的历史事件 \(A=\{X<Y,\ X<Z\}\)，但尚未将首个发射时刻细分为精确数值。则 \(\Pr(A)=1/3\)，\(\Pr(Y\leq1/2\mid A)=\Pr(Z\leq1/2\mid A)=5/16\)，而 \(\Pr(Y\leq1/2,Z\leq1/2\mid A)=1/8\neq25/256\)。因此，在保留的两个计时器上，按获胜历史聚合后的联合测度已出现相关性；若进一步条件化精确获胜时刻，则必须使用相应的条件状态计算，不能未经证明就以聚合状态的边缘分布相乘。如果在额外证明完整历史条件下活动计时器的剩余时延独立且仅受到存活约束，才可使用式~\eqref{eq:unique-winner-density} 的乘积密度：
+\begin{equation}
+\phi_t(d\mid\boldsymbol\alpha,E_d)
+=
+ f_t^{\alpha_t}(d)
+ \prod_{u\in E_d\setminus\{t\}}
+ S_u^{\alpha_u}(d).
+\label{eq:unique-winner-density}
+\end{equation}
+式~\eqref{eq:unique-winner-density} 只是具有上述条件独立性的特殊计算公式；一般路径事件应以式~\eqref{eq:path-event-mass-transfer} 的联合测度限制及推送为准。这也避免将某个给定潜在抽样状态下的确定性下一发射时间误写成普通条件密度。
+
+式~\eqref{eq:path-event-mass-transfer} 的更新是一个明确定义的测度限制与推前算子：只要历史分割、时钟更新和抽样核是可测的，就得到唯一的子测度，并且其质量由原始限制事件的概率决定。这证明了\emph{语义上的传播与守恒}，但并不提供任意绝对连续分布下的有限步骤精确积分。特别地，新的随机样本只在时钟实例实际新使能时生成，而不是在每次状态图边上生成；路径历史保存原始样本变量，支持图中的类合并不能替代概率测度的混合与求和。一个可以明确构造的\emph{严格可计算子类}如下：全部时间分布具有有限有理端点的紧支撑与有理系数分段多项式密度；即时权重、时间界均为有理数；观测映射取有限个离散观测类别，各类别由可观标号、终止信息以及时间变量上的有限组有理线性不等式确定，并且对类别的可观测性已有独立声明。在假设~\ref{ass:probability-domain} 的有限深度条件下，每条离散发射历史只涉及有限次独立抽样。固定该历史后，发射次序、时间界及观测类别对应有限个有理多面体上的约束；原始联合密度是分段多项式，因而可以通过分区、精确多面体多项式积分得到各终止类别、假设与观测类别的有理概率质量。实施时可以先按发射顺序与每段密度多项式分片切开抽样变量域，形成有理线性约束多面体；再将区域分解为有理单纯形，使用变量替换后对多项式逐项精确积分，最后按历史与观测类别加总。每次新使能抽样对应一个新变量，其密度因子只在抽样时加入一次，避免在后续竞争中重复抽取。该构造虽然可能具有很高的计算复杂度，但不依赖一个没有计算过程的抽象条件密度。对于不属于此子类的连续观测或更一般时间分布，只有在另行提供有效的测度计算及数值外包围方法以后，才能宣称具有同样严格的可执行认证能力。特别是，联合测度限制及推前给出的是可测意义上的正确\emph{传播语义}，而不是保证任意输入分布的密度仍具有有限个可符号积分的分片；两者不能混为同一个可计算性主张。
+
+上述有限子类的计算可行性需要区别于一般分布下的存在性定义。下面将其表述为一个限于有限事件历史和离散观测的可计算结果。
+
+\begin{thesisproposition}[有限有理分段模型的类别质量可计算性]
+\label{prop:finite-rational-mass}
+设 LSTPN 满足假设~\ref{ass:probability-domain}，并且所有随机时间分布均有有限有理端点和有理系数分段多项式密度，所有即时选择权重、时间界及观测类别约束均为有理数。若观测类别为由可观测事件词、可获取的离散终止标志及有限个有理线性时间约束所确定的有限集合，则在有限分析时域内，每个联合假设--观测类别质量 \(Q_i^Y(\{a\})\) 均可通过有限次有理多面体上的多项式积分精确求出。
+\end{thesisproposition}
+
+\begin{proof}
+由假设~\ref{ass:probability-domain} 的有限发射深度和有限即时路径条件，在有界 Petri 网的有限离散结构上，分析时域内可枚举的离散发射历史总数有限。固定一条历史，给每次新使能时间变迁的独立原始抽样分配一个变量；发射时刻由获胜抽样及先前发射时刻的加减关系得到，因此该历史的发射先后、重新使能、故障窗口、首次完成及指定观测类别条件均可在有限个密度分片上转为有理线性不等式。每片的抽样域是有界有理多面体，原始独立抽样的联合密度是有理系数多项式。
+
+有界有理多面体可以分解为有限个有理单纯形。每个单纯形上的有理系数多项式，经有理仿射变换归约为标准单纯形上的多项式积分，结果为有理数。对该历史的全部分片求和，再按互斥发射历史和即时分支概率加权求和，即得到 \(Q_i^Y(\{a\})\)。精确同时发射的边界对绝对连续计时器具有零概率，不影响该概率质量；但支持层仍按闭支持保留边界。故所述质量存在有限精确算法。
+\end{proof}
+
+\subsection{联合观测测度与条件观测分布}
+
+第二章定义~\ref{def:conditional-observation-law} 已经给出联合假设--观测测度 \(Q_i^Y\)、假设质量 \(q_i\) 和条件观测分布 \(P_i^Y\)。本节不重新定义这些概率对象，而是说明它们怎样由完整路径事件展开具体构造。
+
+设 \(\mathcal L\) 为完整展开得到的全部终止叶集合，并令 \(\mathcal L_i=\{h\in\mathcal L:\Omega_h\subseteq H_i\}\)。终止叶必须覆盖 \(z_c,z_e,z_d,z_h\) 四类语义结局；否则，未成功完成的运行质量会在构造条件分布时被无故丢弃。对任意可测观测集合 \(B\subseteq\mathcal Y\)，路径事件给出的联合测度和假设质量可以写成式~\eqref{eq:terminal-observation-measure}。
+\begin{equation}
+\begin{aligned}
+Q_i^Y(B)
+&=
+\sum_{h\in\mathcal L_i}
+\nu_h\!\left(\{Y\in B\}\right),\\
+q_i
+&=
+\sum_{h\in\mathcal L_i}\|\nu_h\|.
+\end{aligned}
+\label{eq:terminal-observation-measure}
+\end{equation}
+在 \(q_i>0\) 时，再按第二章式~\eqref{eq:conditional-laws} 归一化得到 \(P_i^Y\)。这里必须坚持“先构造联合质量，再按假设归一化”的顺序。若在路径展开中途先对某个局部分支进行假设归一化，再把不同历史相加，会改变各历史在同一假设中的相对权重，因而不能保证最终得到正确的条件观测分布。
+
+完整展开下，式~\eqref{eq:terminal-observation-measure} 可以直接得到精确的条件观测分布；实际连续模型通常还需要限制展开预算和数值积分精度，因此下一节进一步构造未展开质量与数值积分共同作用下的概率指标包围。
+
+\section{概率指标的数值包围与保守判定}
+
+\subsection{未展开概率质量与区间安全归一化}
+
+在有限分析时域内，支持图虽然可以在假设~\ref{ass:probability-domain} 和有限精确分区条件下完整构造，但路径事件数量仍可能随并发竞争、重汇合和数值细分迅速增长。为控制实际计算，可以给概率展开设置节点处理预算 \(\kappa\)。当预算耗尽时，已经到达显式终止结局的路径事件形成保留叶集合 \(\widehat{\mathcal L}\)，尚未继续展开的前沿节点形成未解析集合 \(\mathcal U\)。
+
+对 \(i\in\{0,1\}\)，令 \(\widehat{\mathcal L}_i\) 表示已经明确分类为 \(H_i\) 的保留终止叶。由这些叶子构成的保留联合观测测度和保留假设质量分别记为 \(\widehat Q_i^Y\) 与 \(\widehat q_i\)。未解析节点不能直接丢弃，因为它们中的运行可能最终属于任一假设。令 \(u_i(h)\in\{0,1\}\) 表示当前支持信息是否允许 \(\Omega_h\) 与 \(H_i\) 相交，则未解析联合质量的有效上界定义为式~\eqref{eq:unresolved-joint-mass}。
+\begin{equation}
+\varepsilon_{i,\mathrm{joint}}^{\mathrm{rem}}
+=
+\sum_{h\in\mathcal U}
+u_i(h)\,
+\|\nu_h\|.
+\label{eq:unresolved-joint-mass}
+\end{equation}
+
+任意有限展开都必须把已经终止的路径事件与尚未解析的前沿同时保留。忽略零概率的精确同时发射集合后，它们满足式~\eqref{eq:finite-expansion-partition}。
+\begin{equation}
+\Omega_{H_A}
+=
+\left(\biguplus_{h\in\widehat{\mathcal L}}\Omega_h\right)
+\uplus
+\left(\biguplus_{h\in\mathcal U}\Omega_h\right),
+\qquad
+1=
+\sum_{h\in\widehat{\mathcal L}}\|\nu_h\|
++
+\sum_{h\in\mathcal U}\|\nu_h\|.
+\label{eq:finite-expansion-partition}
+\end{equation}
+因此，停止继续展开不会把前沿变成系统终止，也不会丢失其概率质量；该质量只作为尚不能定位到具体观测区域的上界来源。
+
+式~\eqref{eq:unresolved-joint-mass} 不要求未解析节点最终一定属于 \(H_i\)，只要当前还不能排除，就按最坏情况把其全部质量计入该假设的上界。因此，可以对假设质量和任意观测集合的联合质量建立式~\eqref{eq:joint-mass-enclosure} 的区间。
+\begin{equation}
+\begin{aligned}
+\underline q_i
+&=
+\widehat q_i,\\
+\overline q_i
+&=
+\min\!\left\{
+1,\,
+\widehat q_i+
+\varepsilon_{i,\mathrm{joint}}^{\mathrm{rem}}
+\right\},\\
+\underline Q_i^Y(B)
+&=
+\widehat Q_i^Y(B),\\
+\overline Q_i^Y(B)
+&=
+\min\!\left\{
+\overline q_i,\,
+\widehat Q_i^Y(B)+
+\varepsilon_{i,\mathrm{joint}}^{\mathrm{rem}}
+\right\}.
+\end{aligned}
+\label{eq:joint-mass-enclosure}
+\end{equation}
+
+由于 \(H_0\uplus H_1=\Omega_{H_A}\)，故 \(q_0+q_1=1\)。在对条件分布作归一化及判断适用性以前，应先对所有已认证假设质量区间执行互补约束收紧。记旧区间为 \([\underline q_i,\overline q_i]\)，\(j=1-i\)，则同时取
+\begin{equation}
+\begin{aligned}
+\underline q_i^{\,\mathrm{new}}&=\max\{\underline q_i,1-\overline q_j\},\\
+\overline q_i^{\,\mathrm{new}}&=\min\{\overline q_i,1-\underline q_j\},\qquad i=0,1.
+\end{aligned}
+\label{eq:complementary-hypothesis-mass-tightening}
+\end{equation}
+之后均使用收紧后的有效区间（仍记为 \([\underline q_i,\overline q_i]\)）；必要时同步收紧 \(0\leq Q_i^Y(B)\leq q_i\)。式~\eqref{eq:complementary-hypothesis-mass-tightening} 由另一假设质量的互补关系直接推出，不会排除任何真实模型值。若收紧后出现下界大于上界，说明所提供的区间证据彼此矛盾，应报告\emph{证据无效}而不是把它当作性质未决或返回确定结论。比如当两类质量原始区间均为 \([0,1/2]\) 时，互补收紧给出 \(q_0=q_1=1/2\)；不应把这一输入描述为数学上无法判断两类质量是否为正。若实现选择不执行该可行收紧而继续返回未决，其结果仍可能保守可靠，但不能据此声称已完整利用现有证据。
+
+由于 \(P_i^Y=Q_i^Y/q_i\)，联合质量区间不能使用同方向端点直接相除。若 \(\underline q_i>0\)，区间安全归一化采用式~\eqref{eq:interval-safe-normalization}。
+\begin{equation}
+\frac{\underline Q_i^Y(B)}
+{\overline q_i}
+\leq
+P_i^Y(B)
+\leq
+\min\!\left\{
+1,\,
+\frac{\overline Q_i^Y(B)}
+{\underline q_i}
+\right\}.
+\label{eq:interval-safe-normalization}
+\end{equation}
+若尚不能证明 \(\underline q_i>0\)，则相应条件分布的数值包围暂时只能保守取为 \([0,1]\)，直到后续展开获得正的假设质量下界。由未解析联合质量还可以得到未解析条件质量上界 $\varepsilon_i^{\mathrm{rem}}$，后续 Bayes 错误和覆盖率上界都必须显式计入该部分质量。上述端点要求是\emph{经过有效误差控制的区间数}，而不是无证据的浮点近似；若某个保留叶的质量积分不能得到已证外包围，则不得把其浮点结果写入 $\widehat Q_i^Y$，应保留在未解析质量中。若连相应前沿总质量也无法得到有效包围，只能使用 $q_i\in[0,1]$ 及 $Q_i^Y(B)\in[0,1]$ 等普适区间。只要 $q_i>0$ 尚未被有效区间证明，所有条件诊断数值仍不适用确定的真假判定。
+
+\subsection{Bayes 错误的上下界}
+
+第二章式~\eqref{eq:bayes-error} 通过两类先验加权条件密度的逐点最小值积分定义 \(P_e^\star\)。若观测空间既含离散终止原子，又含连续时间变量，实际计算可以把已解析观测空间分解为有限离散原子集合 \(\mathcal A_Y\) 和一组可递归细分的低维连续单元 \(\mathcal C_Y\)。
+
+对原子 \(a\in\mathcal A_Y\)，设条件原子质量满足有效区间；对连续单元 \(C\in\mathcal C_Y\)，利用区间安全归一化和局部数值积分得到先验加权密度 \(\lambda_i(y)=\pi_i f_i(y)\) 的有效上下界。由于函数 \((x_0,x_1)\mapsto\min\{x_0,x_1\}\) 对两个变量均单调不减，局部密度包围可以传播为每个原子和连续单元对 Bayes 错误贡献的上下界。将所有已解析贡献相加，并把未解析条件质量按照最坏情况加入上界，可以得到式~\eqref{eq:bayes-enclosure}。
+\begin{equation}
+P_e^-
+\leq
+P_e^\star
+\leq
+P_e^+.
+\label{eq:bayes-enclosure}
+\end{equation}
+
+根据命题~\ref{prop:finite-rational-mass}，在上述严格可计算子类的有限观测情形，风险上下界还有直接可执行的表达式。设有限观测类别集合为 \(\mathcal A\)。当已经证明 \(\underline q_i>0\) 时，对每个类别 \(a\in\mathcal A\)，由式~\eqref{eq:interval-safe-normalization} 分别求得 \(p_{i,a}=P_i^Y(\{a\})\) 的有效界 \([\underline p_{i,a},\overline p_{i,a}]\)。由逐项单调性可构造
+\begin{equation}
+\begin{aligned}
+P_e^-&=\sum_{a\in\mathcal A}\min\{\pi_0\underline p_{0,a},\pi_1\underline p_{1,a}\},\\
+P_e^+&=\min\!\left\{\min(\pi_0,\pi_1),\sum_{a\in\mathcal A}\min\{\pi_0\overline p_{0,a},\pi_1\overline p_{1,a}\}\right\}.
+\end{aligned}
+\label{eq:finite-observation-bayes-bounds}
+\end{equation}
+完整展开且各联合类别质量精确时，\(\underline p_{i,a}=\overline p_{i,a}\)，上述两界与真实最小 Bayes 错误相等；预算不足时，它们仍为有效的保守界。对于连续观测，不能直接将一个单元的总质量界当作逐点密度界，而必须另行给出有效密度包围及积分外包围规则。
+
+式~\eqref{eq:bayes-enclosure} 的意义是“真实模型风险必定位于认证区间内”，而不是对现实系统未知参数给出统计置信区间。这里的上下界来自给定 LSTPN 模型、数值积分包围和未解析概率质量的确定性传播，不能解释为对物理系统真实故障率的不确定性置信水平。
+
+当某个连续单元导致 \(P_e^+-P_e^-\) 过宽时，可以进一步细分其观测区域或继续展开对应路径事件；当未解析质量是主要误差来源时，则优先增加 \(\kappa\)。因此，Bayes 风险区间的收紧具有明确的误差来源，而不是单纯依靠增加 Monte Carlo 样本。
+
+\subsection{可靠诊断覆盖率的上下界}
+
+可靠覆盖率的难点与 Bayes 平均错误不同。根据定义~\ref{def:diagnostic-coverage}，只有整个观测区域能够证明后验错误不超过 \(\delta\) 时，该区域的确定质量才可以计入覆盖率下界。令
+\(r(y)=\min\{\eta_{\boldsymbol\pi}(y),1-\eta_{\boldsymbol\pi}(y)\}\)
+表示单点后验错误。对任一已解析连续单元 \(C\)，由条件观测密度区间得到 \(r(y)\) 的有效包围 \([\underline r_C,\overline r_C]\)。
+
+为区分已认证接受、已认证拒绝和当前未决单元，定义三类单元集合如式~\eqref{eq:coverage-cell-classes}。
+\begin{equation}
+\begin{aligned}
+\mathcal C_\delta^{+}
+&=
+\{C\in\mathcal C_Y:\overline r_C\leq\delta\},\\
+\mathcal C_\delta^{-}
+&=
+\{C\in\mathcal C_Y:\underline r_C>\delta\},\\
+\mathcal C_\delta^{\circ}
+&=
+\mathcal C_Y\setminus
+\left(
+\mathcal C_\delta^{+}
+\cup
+\mathcal C_\delta^{-}
+\right).
+\end{aligned}
+\label{eq:coverage-cell-classes}
+\end{equation}
+对 \(\mathcal C_\delta^{+}\)，其整个单元都满足可靠度要求，因此认证质量可以加入 \(\Gamma_\delta^-\)；对 \(\mathcal C_\delta^{-}\)，整个单元都不满足要求，因此不对覆盖率贡献质量；对 \(\mathcal C_\delta^{\circ}\)，当前不能确定其内部哪些点满足要求，所以其质量不加入下界，但可以加入上界。离散原子按同样逻辑处理，未解析路径事件质量也只加入覆盖率上界。最终得到式~\eqref{eq:coverage-enclosure}。
+\begin{equation}
+\Gamma_\delta^-
+\leq
+\Gamma_\delta
+\leq
+\Gamma_\delta^+.
+\label{eq:coverage-enclosure}
+\end{equation}
+
+在有限观测类别 \(a\in\mathcal A\) 中，令 \(u_{i,a}=\pi_i p_{i,a}\)、\(m_a=u_{0,a}+u_{1,a}\)；由有效的 \(p_{i,a}\) 上下界可得 \(u_{i,a}\) 与 \(m_a\) 的有效上下界。对 \(m_a>0\)，单点错误概率满足 \(r_a=\min(u_{0,a},u_{1,a})/m_a\)。若 \(\underline m_a>0\)，可取保守界
+\begin{equation}
+\begin{aligned}
+\underline r_a&=\frac{\min\{\underline u_{0,a},\underline u_{1,a}\}}{\overline m_a},\\
+\overline r_a&=\min\!\left\{\frac12,\frac{\min\{\overline u_{0,a},\overline u_{1,a}\}}{\underline m_a}\right\};
+\end{aligned}
+\label{eq:finite-observation-posterior-bounds}
+\end{equation}
+若 \(\underline m_a=0\)，则保守取 \([\underline r_a,\overline r_a]=[0,1/2]\)。由此将 \(\overline r_a\leq\delta\) 的类别作为已认证可靠类别，将 \(\underline r_a>\delta\) 的类别作为已认证不可靠类别，其余类别为未决。以 \(A\) 表示已认证可靠类别、\(U\) 表示尚未决类别，则
+\begin{equation}
+\sum_{a\in A}\underline m_a
+\leq\Gamma_\delta\leq
+\min\!\left\{1,\sum_{a\in A\cup U}\overline m_a\right\}.
+\label{eq:finite-observation-coverage-bounds}
+\end{equation}
+该构造直接计算可靠覆盖的上下界，而不把由平均错误得到的 Markov 型保守下界误当成覆盖达标的必要条件。全部类别概率及舍入方向均有效时，式~\eqref{eq:finite-observation-bayes-bounds}--\eqref{eq:finite-observation-coverage-bounds} 可作为本章有限观测子类的严格计算步骤。
+
+如果相关积分或联合测度计算失败且没有其他有效证据可以收紧这些量，风险与覆盖率必须回退至始终有效的平凡区间 $[P_e^-,P_e^+]=[0,\min\{\pi_0,\pi_1\}]$、$[\Gamma_\delta^-,\Gamma_\delta^+]=[0,1]$；只有已经核实的局部区间才能使这些平凡区间收紧。上述 $P_e^+$ 上界来自不使用任何观测而始终预测先验较大类的决策规则。此种回退不会凭空产生确定结论，但允许完成违反等\emph{独立于积分}的证据继续生效。
+
+因此，覆盖率下界是“已经证明可靠”的观测质量，而覆盖率上界是“尚不能排除为可靠”的最大观测质量。对未决单元继续进行数值细分，可以把其中一部分逐渐转入认证接受或认证拒绝集合，从而收紧式~\eqref{eq:coverage-enclosure}。
+
+\subsection{\probstatus{1}、\probstatus{0} 与 \probstatus{\perp} 判定规则}
+
+概率诊断首先需要判断问题是否适用。定义概率验证算法接口如式~\eqref{eq:probability-interface}。
+\begin{equation}
+\mathcal A_P:\mathfrak I_P\rightarrow\mathfrak O_P,
+\qquad
+\mathcal A_P(N^{\mathrm s},\mathfrak T,\Theta,\mathfrak P,\mathfrak B_P)
+=\bigl(a_P,v_P,\mathcal E_P,\mathcal U_P\bigr).
+\label{eq:probability-interface}
+\end{equation}
+其中，模型概率分布与即时权重属于 \(N^{\mathrm s}\)，输入首先必须满足定义~\ref{def:risk-bounded-diagnosability} 的诊断规格参数域；\(\mathfrak P\) 规定条件测度表示、积分包围与误差传播规则，\(\mathfrak B_P\) 是支持构造、路径展开和数值细分的计算界；\(a_P\in\{1,0,\perp\}\) 表示适用性已证成立、已证不成立及尚未判明：只有在已证明 \(q_0>0\) 且 \(q_1>0\) 时令 \(a_P=1\)，并定义 \(v_P\in\{1,0,\perp\}\)；只有在已证明至少一个 \(q_i=0\) 时令 \(a_P=0\)；其余情况令 \(a_P=\perp\)。当 \(a_P\neq1\) 时令 \(v_P=\varnothing\)，不得把适用性未决解释为已证明不适用。\(\mathcal E_P\) 保存完成违反见证或风险界的证明依据，\(\mathcal U_P\) 保存尚未解析的支持、概率前沿与数值单元。
+
+完成支持分析与概率数值包围后，最终结论必须同时满足第二章定义~\ref{def:risk-bounded-diagnosability} 的三个条件。记支持阶段的故障后完成判定为 \(v_c\in\{1,0,\perp\}\)。三值判定规则列于表~\ref{tab:three-way-decision}。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{风险有界任务完成诊断的三值判定规则}
+\label{tab:three-way-decision}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.3cm}>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.1cm}}
+\hline
+判定层次 & 认证条件 & 输出\\
+\hline
+不适用 & 已证明某个 \(\overline q_i=0\) & \(a_P=0,\ v_P=\varnothing\)\\
+适用性未决 & 无零质量证明，但某个 \(\underline q_i=0\) & \(a_P=\perp,\ v_P=\varnothing\)\\
+完成约束 & \(a_P=1,\ v_c=0\) & \(v_P=0\)\\
+风险与覆盖 & \(a_P=1,\ v_c=1\)、\(P_e^+\leq\varepsilon\) 且 \(\Gamma_\delta^-\geq\gamma\) & \(v_P=1\)\\
+风险违反 & \(a_P=1,\ P_e^->\varepsilon\) & \(v_P=0\)\\
+覆盖违反 & \(a_P=1,\ \Gamma_\delta^+<\gamma\) & \(v_P=0\)\\
+其余情况 & \(a_P=1\)，但 \(v_c=\perp\) 或风险界未决 & \(v_P=\perp\)\\
+\hline
+\end{tabularx}
+\end{table}
+
+表~\ref{tab:three-way-decision} 的前提是输入参数有效，假设质量区间经过互补一致性检查，全部参与确定结论的证据经过独立于提交方标志的数学核验。先检查适用性，再进行性质判定。准确的返回优先级可以不依赖数值积分是否成功，统一写为
+\begin{equation}
+ v_P=\begin{cases}
+ 0,& v_c=0\ \vee\ P_e^->\varepsilon\ \vee\ \Gamma_\delta^+<\gamma,\\
+ 1,& v_c=1\ \wedge\ P_e^+\leq\varepsilon\ \wedge\ \Gamma_\delta^-\geq\gamma,\\
+ \perp,&\text{其余情况},
+ \end{cases}\qquad (a_P=1).
+\label{eq:probability-verdict-priority}
+\end{equation}
+该式的上下界均指有效区间，包括计算失败时的平凡回退区间；只要已有足够的完成违反证据，即使风险积分失败也应返回 $v_P=0$，但若适用性尚未证实，仍只能令 $v_P=\varnothing$。仅在 $a_P=1$ 时，\probstatus{1} 表示已经证明全部规格成立，\probstatus{0} 表示至少一个规格得到真实违反证据，\probstatus{\perp} 表示当前数值或支持信息不足以完成判定。适用性未决 \(a_P=\perp\) 与性质未决 \(v_P=\perp\) 属于不同问题；二者均不能被解释为性质本身存在第三种真值。
+
+为了把支持验证、路径事件展开、数值包围和三值判定连接成一个可执行过程，算法~\ref{alg:probability-verifier} 给出风险有界任务完成概率验证的完整流程。算法始终先保留联合质量，再进行假设条件化与风险计算，从而避免在路径展开中途归一化造成不同历史相对权重失真。
+
+\begin{thesisalgorithm}{风险有界任务完成概率验证算法}
+\label{alg:probability-verifier}
+\begin{algorithmic}[1]
+\Require LSTPN \(N^{\mathrm{s}}\)，任务规格 \(\mathfrak T\)，诊断规格 \(\Theta\)，概率规则 \(\mathfrak P\)，计算界 \(\mathfrak B_P\)
+\Ensure \((a_P,v_P,\mathcal E_P,\mathcal U_P)\in\mathfrak O_P\)
+\State 核查模型、诊断规格及数值规则的定义域；不合法输入作为输入错误拒绝，不计为 \(a_P,v_P\) 的任何值
+\State 构造受监视状态类并检查普遍 \(B_c\) 有界完成条件
+\If{发现故障后完成违反见证}
+  \State 置 \(v_c\gets0\)，保存完成违反见证；暂不返回性质结论
+\ElsIf{支持构造尚不能证明完成约束}
+  \State 置 \(v_c\gets\perp\)，并保留未解析支持
+\Else
+  \State 置 \(v_c\gets1\)
+\EndIf
+\State 构造正常/故障定时验证器并完成等观测支持分析
+\State 初始化单位质量根路径事件、待展开队列、保留终止叶集合与未解析集合
+\While{待展开队列非空且未达到 \(\mathfrak B_P\) 规定的路径界}
+  \State 取出一个路径事件节点
+  \If{当前节点已到达显式终止结局}
+    \State 将其加入保留终止叶集合
+  \Else
+    \State 按即时冲突或随机竞争规则生成互斥子路径事件，并保持持续使能年龄
+    \State 将合法子事件加入待展开队列
+  \EndIf
+\EndWhile
+\State 将预算耗尽后仍未展开的前沿节点记入未解析集合
+\State 将全部已核验的叶质量、前沿质量与有效数值外包围汇总为 $q_i,Q_i^Y$ 的区间
+\If{某个概率核或积分不可用}
+  \State 记录失败对象，忽略其未经认证的数值；对无法认证的部分使用普适质量区间
+\EndIf
+\State 对 $q_0+q_1=1$ 的质量区间按式~\eqref{eq:complementary-hypothesis-mass-tightening} 收紧，并核查与 $Q_i^Y$ 的联合约束
+\If{有效证据互相矛盾、模型不能通过证书核验或区间出现空集}
+  \State 抛出证据错误并终止本次调用；不得因证书自带 ``valid'' 标志继续判定或返回任何确定性质结论
+\EndIf
+\State 仅利用核验后的有效 $q_i,Q_i^Y$ 区间，按式~\eqref{eq:interval-safe-normalization} 做区间安全归一化
+\If{已证明 \(\overline q_0=0\) 或 \(\overline q_1=0\)}
+  \State \Return \((0,\varnothing,\mathcal E_P,\mathcal U_P)\)
+\ElsIf{尚不能证明 \(\underline q_0>0\) 且 \(\underline q_1>0\)}
+  \State \Return \((\perp,\varnothing,\mathcal E_P,\mathcal U_P)\)
+\EndIf
+\State 构造已核验的风险区间与覆盖区间；缺少有效计算时分别回退到 $[0,\min\{\pi_0,\pi_1\}]$ 与 $[0,1]$
+\If{$v_c=0$ 或 $P_e^->\varepsilon$ 或 $\Gamma_\delta^+<\gamma$}
+  \State \Return $(1,0,\mathcal E_P,\mathcal U_P)$
+\ElsIf{$v_c=1$ 且 $P_e^+\leq\varepsilon$ 且 $\Gamma_\delta^-\geq\gamma$}
+  \State \Return $(1,1,\mathcal E_P,\mathcal U_P)$
+\Else
+  \State \Return $(1,\perp,\mathcal E_P,\mathcal U_P)$
+\EndIf
+\end{algorithmic}
+\end{thesisalgorithm}
+
+算法~\ref{alg:probability-verifier} 与表~\ref{tab:three-way-decision} 使用相同判定语义。前者给出从支持检查到有依据的概率区间及判定结果的执行顺序，后者概括最终阈值关系；二者共同作为下一节正确性与复杂度分析的对象。
+
+\section{算法正确性与复杂度分析}
+
+\subsection{路径事件完备性与概率质量守恒}
+
+前述概率传播依赖一个关键事实：完整展开后的终止叶必须构成整个运行空间的概率分割。如果不同叶子仍有正概率交叠，式~\eqref{eq:terminal-observation-measure} 会重复计数；如果某类终止结局被遗漏，则 \(q_0+q_1\) 可能小于 1，条件观测分布也会失去归一性。局部互斥性已经由引理~\ref{lem:path-event-partition} 给出，下面进一步说明递归展开后的全局概率质量守恒。
+
+\begin{thesisproposition}[完整路径事件展开的概率质量守恒]
+\label{prop:path-event-mass-conservation}
+设路径事件展开从单位质量根事件开始，并持续到每一条分支均到达显式终止结局；概率传播操作精确，且假设~\ref{ass:probability-domain} 成立。则全部终止路径事件两两互斥，并在忽略零概率精确同时发射集合后覆盖完整运行空间。令 \(\mathcal L\) 和 \(\mathcal L_i\) 分别为全部终止叶及属于 \(H_i\) 的终止叶，则式~\eqref{eq:mass-conservation} 成立。
+\begin{equation}
+\begin{aligned}
+\sum_{h\in\mathcal L}\|\nu_h\|&=1,\\
+q_i&=
+\sum_{h\in\mathcal L_i}\|\nu_h\|
+=
+\Pr(H_i),\\
+q_0+q_1&=1,\qquad
+P_i^Y(\mathcal Y)=1\quad(q_i>0).
+\end{aligned}
+\label{eq:mass-conservation}
+\end{equation}
+\end{thesisproposition}
+
+\begin{proof}
+根事件表示完整运行空间，因此初始质量为 1。对任意非终止节点，如果当前为即时分支，不同即时选择形成离散互斥分割，按权重归一化以后全部子质量之和等于父质量；如果当前为时间竞争分支，由引理~\ref{lem:path-event-partition}，除零概率精确同时发射集合外，各合法子路径事件两两互斥并覆盖父事件，式~\eqref{eq:path-event-mass-transfer} 又把父测度限制并推送到这些子事件，因此子质量之和仍等于父质量。
+
+对展开树递归应用上述关系，任意有限层都保持总质量不变。由于展开持续到每条分支进入 \(z_c,z_e,z_d,z_h\) 中的一类语义终止，不会因为“未成功完成”而丢弃质量，全部终止叶的总质量仍为 1。按照定义~\ref{def:probability-hypotheses} 的包含边界把终止叶划分为 \(H_0\) 与 \(H_1\)，两类互斥且覆盖完整运行空间，因此 \(q_i=\Pr(H_i)\) 且 \(q_0+q_1=1\)。最后，式~\eqref{eq:terminal-observation-measure} 把各假设下的全部终止质量推送到观测空间，除以 \(q_i>0\) 后得到总质量为 1 的条件观测分布。
+\end{proof}
+
+命题~\ref{prop:path-event-mass-conservation} 也解释了为什么支持图中的状态合并不能直接替代路径事件展开。支持图可以在可达性意义下合并同类状态，而概率质量守恒要求每一份概率来源在到达终止叶以前保持互斥历史身份；两种表示服务于不同分析目标。
+
+\subsection{风险界与三值判定的正确性}
+
+有限预算下的概率分析不会强行给出单点估计，而是保留局部积分误差、条件归一化误差和未解析路径质量。要使表~\ref{tab:three-way-decision} 的 \probstatus{1} 与 \probstatus{0} 具有认证意义，必须证明这些误差经过所有运算后仍然包围真实 \(P_e^\star\) 与 \(\Gamma_\delta\)。下面给出本章概率数值阶段的总体正确性结果。
+
+\begin{thesistheorem}[有效概率区间与三值判定的条件可靠性]
+\label{thm:probability-certificate-soundness}
+假设支持分析及受监视状态类操作精确、路径概率按式~\eqref{eq:path-event-mass-transfer} 的正确联合测度传播；所有保留离散原子质量、连续单元密度和数值积分区间均为有效外包围，且各未解析条件质量上界 \(\varepsilon_i^{\mathrm{rem}}\) 有效。对于有限离散观测，允许按式~\eqref{eq:finite-observation-bayes-bounds}--\eqref{eq:finite-observation-coverage-bounds} 直接构造数值界；对于连续观测，要求存在有效的局部逐点密度和积分包围。则概率分析返回的上下界满足式~\eqref{eq:certificate-inclusion}。
+\begin{equation}
+P_e^\star\in[P_e^-,P_e^+],
+\qquad
+\Gamma_\delta\in
+[\Gamma_\delta^-,\Gamma_\delta^+].
+\label{eq:certificate-inclusion}
+\end{equation}
+在已证明 $q_0,q_1>0$、所有被实际用于判定的上下界均为有效外包围（缺少认证时采用平凡界）、且适用性状态为 $a_P=1$ 时，按照表~\ref{tab:three-way-decision} 与式~\eqref{eq:probability-verdict-priority} 输出的每一个 \probstatus{1} 或 \probstatus{0} 均为可靠结论；\probstatus{\perp} 表示性质尚未判定。若 \(a_P=0\) 或 \(a_P=\perp\)，算法不对原二元性质给出 \(v_P\) 的真假结论。
+\end{thesistheorem}
+
+\begin{proof}
+先考虑 Bayes 错误。对每个已解析离散原子和连续观测单元，条件观测质量或密度的有效区间包含真实值。函数 \((x_0,x_1)\mapsto\min\{x_0,x_1\}\) 对两个非负自变量均单调不减，因此对两个先验加权质量或密度分别进行区间替换以后，所得局部最小值区间包含真实 Bayes 错误贡献。对离散原子求和、对连续单元积分都保持该包含关系。未解析条件质量按照最坏情况只扩张上界，不会抬高下界，于是得到 \(P_e^-\leq P_e^\star\leq P_e^+\)。
+
+再考虑可靠覆盖率。若某个单元属于式~\eqref{eq:coverage-cell-classes} 的 \(\mathcal C_\delta^{+}\)，则该单元内所有观测的后验错误均不超过 \(\delta\)，其认证质量可以安全加入覆盖率下界；若属于 \(\mathcal C_\delta^{-}\)，则该单元内没有观测满足可靠度要求；\(\mathcal C_\delta^{\circ}\) 中的单元和未解析路径质量可能包含满足条件的部分，也可能完全不满足，因此不计入下界而全部允许进入上界。离散原子按同样规则处理，从而得到 \(\Gamma_\delta^-\leq\Gamma_\delta\leq\Gamma_\delta^+\)。这证明式~\eqref{eq:certificate-inclusion}。
+
+若输出 \probstatus{1}，由 $v_c=1$ 已经完整排除故障后完成违反，且由式~\eqref{eq:certificate-inclusion} 有 $P_e^\star\leq P_e^+\leq\varepsilon$ 和 $\Gamma_\delta\geq\Gamma_\delta^-\geq\gamma$，所以三个规格条件全部成立。若输出 \probstatus{0}，按式~\eqref{eq:probability-verdict-priority}，或者 $v_c=0$ 已有真实时间运行见证，或者 $P_e^\star\geq P_e^->\varepsilon$，或者 $\Gamma_\delta\leq\Gamma_\delta^+<\gamma$；因此至少一个条件必被违反。特别地，这三个否定理由彼此独立，不需要其余风险区间已经算出，故任何积分预算失败都不能掩盖一个有效的完成违反证据。$v_P=\perp$ 则只表示仍缺少足够证据，不推断原性质真假。若 $q_i$ 的正质量尚未证实，算法先输出相应适用性状态，故不会对未定义的条件分布作真假断言。对质量区间的互补收紧直接来自 $q_0+q_1=1$，只排除不可能的端点，不会改变任何真实 $q_i$；而对于互补收紧后出现的空区间或其他自相矛盾的数值证据，算法按输入/证据错误拒绝，不将其错误纳入本定理的已认证输入域。
+\end{proof}
+
+定理~\ref{thm:probability-certificate-soundness} 的“可靠”是模型条件下的确定性认证：只要输入的 LSTPN、观测映射、局部数值区间和未解析质量上界满足上述条件，真实模型指标必然位于返回区间中。它不等同于从有限现场样本估计未知真实分布时的统计置信保证；第六章实际数据部分将把模型条件下的风险认证与经验数据上的性能评估分别报告。
+
+\subsection{输出敏感复杂度与适用条件}
+
+本章方法的计算量由实际生成的符号对象数量决定，而不能简单写成关于原始库所数和变迁数的多项式界。设 \(N_\xi\)、\(N_\times\) 与 \(N_\Omega\) 分别表示实际生成的受监视状态类数、定时验证器状态数和路径事件节点数；\(n_\alpha\) 表示一个节点中最大活动时间变量数；\(N_c\) 表示单个路径事件节点上的最大数值单元数。若一次 \(n\) 维时间域操作的代价为 \(C_Z(n)\)，第 \(h\) 个路径事件保留其联合测度表示所需的变量维数与分片结构复杂度记为 \(k_h\)，相应一次联合测度限制与更新的代价为 \(C_\mu(k_h)\)，数值积分代价为 \(C_{\mathrm{int}}(k_h)\)，并记 \(k_{\max}=\max_h k_h\)，则三个主要阶段的输出敏感时间复杂度可保守写为式~\eqref{eq:probability-complexity}。这里 \(k_h\) 不只包含当前使能时钟，还允许包含为精确表示历史条件而必须保留的辅助变量。
+\begin{equation}
+O\!\left(
+N_\xi |T| C_Z(n_\alpha)
++
+N_\times |T|^2 C_Z(2n_\alpha)
++
+N_\Omega\left(C_\mu(k_{\max})+N_c C_{\mathrm{int}}(k_{\max})\right)
+\right).
+\label{eq:probability-complexity}
+\end{equation}
+当时间域使用 DBM 时，规范化等典型操作满足 \(C_Z(n)=O(n^3)\)。设 \(M_\mu(k)\) 为存储给定历史条件联合测度所需的空间，主要存储需求可表示为式~\eqref{eq:probability-storage}。这里没有对 \(C_\mu,C_{\mathrm{int}},M_\mu\) 无依据地声称多项式复杂度。
+\begin{equation}
+O\!\left(
+N_\xi n_\alpha^2
++
+N_\times(2n_\alpha)^2
++
+N_\Omega\left(M_\mu(k_{\max})+N_c\right)
+\right).
+\label{eq:probability-storage}
+\end{equation}
+式~\eqref{eq:probability-complexity}--\eqref{eq:probability-storage} 是以实际生成对象数和联合测度表示代价为参数的保守规模界，而不是一般问题的多项式最坏情况保证。验证器需要组合 \(H_1/H_0\) 支持，路径事件阶段又主动拒绝合并不同概率历史，加上连续观测区域可能反复细分，因此 \(N_\times\)、\(N_\Omega\) 和 \(N_c\) 都可能随并发程度和有限诊断时域呈指数增长。
+
+方法的精确支持结论依赖第二章假设~\ref{ass:probability-domain} 以及有限精确符号分区条件。当前概率传播还使用新使能原始随机延迟相互独立的假设，并要求连续数值包围能够在有限原子和可递归细分的低维单元上实施。更一般的相关随机时钟、高维观测或不能由有限 DBM 分区精确表示的观测关系并不会使第二章的风险定义失效，但需要替换相应的符号表示或概率积分模块；本章给出的实现复杂度和认证定理不能在缺少有效局部包围时直接外推。特别地，上述有限有理分段多项式分布和有限观测分区给出了能够构造精确类别质量的明确子类；对一般绝对连续分布与任意连续观测，风险定义和条件性正确性定理仍然成立，但不据此宣称已经具备统一的精确数值实现。
+
+\section{算例分析}
+
+为展示从支持验证到概率风险判定的完整过程，本节继续使用第二章表~\ref{tab:running-example-transitions} 的并行任务示例。这样可以在同一个模型上对比“支持层是否存在等观测运行”与“这些等观测运行实际承载多少概率质量”，并为第五章讨论逻辑层和概率层之间的关系保留统一参照。
+
+示例中，\(t_1\) 与 \(t_2\) 是初始即时选择，\(t_2\) 为指定故障，因此取 \(H_\psi=0\)。设 \(B_c=5\)、\(B_d=0\)，决策先验取 \(\pi_0=\pi_1=1/2\)，风险阈值取 \(\varepsilon=0.13\)，后验可靠度阈值取 \(\delta=0.15\)，可靠覆盖目标取 \(\gamma=0.8\)。故障支路完成延迟为 \(\max\{X_4,X_5\}\)，而 \(X_4\leq5\)、\(X_5\leq3\)，因此所有 \(a_4\in[3,4]\) 均满足普遍 \(B_c\) 有界完成，支持阶段有 \(v_c=1\)。
+
+在观测映射只保留任务完成时间的情况下，正常假设的完成时间为 \(Y_0=\max\{X_3,X_5\}\)，故障假设的完成时间为 \(Y_1=\max\{X_4,X_5\}\)。由第二章给定的均匀分布支持，可得
+\(\operatorname{supp}(Y_0)=[2,4]\)、
+\(\operatorname{supp}(Y_1)=[a_4,5]\)。
+因此定时验证器接受集在完成时间轴上的投影为式~\eqref{eq:example-support-overlap}。
+\begin{equation}
+\operatorname{proj}_Y\mathcal K
+=
+\begin{cases}
+[a_4,4], & a_4<4,\\
+\{4\}, & a_4=4.
+\end{cases}
+\label{eq:example-support-overlap}
+\end{equation}
+式~\eqref{eq:example-support-overlap} 表明，当 \(a_4<4\) 时存在正宽度支持重叠，而 \(a_4=4\) 时支持层仍保留单点临界观测 \(y=4\)。仅凭这一结果还无法判断该单点是否具有正概率质量。
+
+路径事件展开首先按照初始即时冲突把单位根事件划分为正常和故障两个分支。由于 \(w_1=w_2=1\)，模型诱导的假设质量为 \(q_0=q_1=1/2\)。在 \(H_0\) 下，时间竞争由 \(X_3\) 与 \(X_5\) 的先后顺序划分为两个正概率路径事件以及一个零概率同时完成边界；在 \(H_1\) 下，由于 \(X_4\geq a_4\geq3\) 且 \(X_5\leq3\)，除 \(a_4=3\) 时可能出现的零概率边界 \(X_4=X_5=3\) 外，几乎处处有 \(X_5<X_4\)，因此 \(Y_1=X_4\) 几乎处处成立。
+
+完整展开没有未解析质量，归一化后的条件完成时间密度分别为式~\eqref{eq:example-density-normal} 和式~\eqref{eq:example-density-fault}。
+\begin{equation}
+f_0(y)
+=
+\begin{cases}
+\dfrac{2y-3}{4}, & 2\leq y<3,\\
+\dfrac{1}{2}, & 3\leq y\leq4,\\
+0, & \mathrm{otherwise}.
+\end{cases}
+\label{eq:example-density-normal}
+\end{equation}
+\begin{equation}
+f_1(y)
+=
+\begin{cases}
+\dfrac{1}{5-a_4}, & a_4\leq y\leq5,\\
+0, & \mathrm{otherwise}.
+\end{cases}
+\label{eq:example-density-fault}
+\end{equation}
+式~\eqref{eq:example-density-normal} 在 \([2,3)\) 上来自 \(X_3\) 与 \(X_5\) 的最大值分布，在 \([3,4]\) 上则简化为常数 \(1/2\)；式~\eqref{eq:example-density-fault} 说明故障假设下完成时间与 \(X_4\) 的均匀分布一致。两个密度均积分为 1，因此在本例中式~\eqref{eq:bayes-enclosure} 和式~\eqref{eq:coverage-enclosure} 的区间收缩为精确单点值。
+
+表~\ref{tab:example-probability-results} 给出三个代表性 \(a_4\) 取值的最终诊断结果。表中“公共支持”列来自定时验证器，“Bayes 错误”和“可靠覆盖”则来自完整路径事件概率传播。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{并行任务示例的概率诊断结果}
+\label{tab:example-probability-results}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{1.0cm}>{\centering\arraybackslash}p{2.2cm}>{\centering\arraybackslash}p{1.8cm}>{\centering\arraybackslash}p{2.0cm}>{\raggedright\arraybackslash}X}
+\hline
+\(a_4\) & 公共支持 & \(P_e^\star\) & \(\Gamma_{0.15}\) & 认证结论\\
+\hline
+3 & \([3,4]\) & \(1/4\) & \(1/2\) & \probstatus{0}：风险与覆盖均违反\\
+3.5 & \([3.5,4]\) & \(1/8\) & \(17/24\) & \probstatus{0}：覆盖率违反\\
+4 & \(\{4\}\) & \(0\) & \(1\) & \probstatus{1}\\
+\hline
+\end{tabularx}
+\end{table}
+
+当 \(a_4=3\) 时，两类条件密度在 \([3,4]\) 上均为 \(1/2\)，重叠区间中的观测不能进一步区分两个假设，因此 \(P_e^\star=1/4>0.13\)，同时只有一半观测质量达到 \(\delta=0.15\) 的后验可靠度要求，故风险和覆盖条件均失败。
+
+当 \(a_4=3.5\) 时，公共支持缩小到 \([3.5,4]\)，最小 Bayes 错误下降为 \(1/8=0.125\)，已经满足 \(\varepsilon=0.13\)；但 \(\Gamma_{0.15}=17/24<0.8\)，可靠覆盖条件仍然失败。这说明较小的平均 Bayes 错误并不能自动保证足够比例的观测可以达到给定单次后验可靠度，两项指标必须分别认证。
+
+当 \(a_4=4\) 时，支持临界集仍包含 \(y=4\)，所以定时验证器接受集并不为空；但是式~\eqref{eq:example-density-normal} 和式~\eqref{eq:example-density-fault} 都是连续密度，单点 \(\{4\}\) 的概率质量为零，因此 \(P_e^\star=0\)、\(\Gamma_{0.15}=1\)，全部风险规格满足并返回 \probstatus{1}。这个例子直观说明了本章为什么必须把支持验证和概率质量传播分开：支持层保留零概率边界是正确的，概率层不给该边界分配正质量也是正确的。第五章将在更一般的语义对齐条件下讨论这种支持歧义与概率风险不等价的原因。
+
+\section{本章小结}
+
+本章针对风险有界任务完成可诊断性建立了由支持验证、历史保持概率展开和保守数值认证组成的分析方法。年龄保持的受监视状态类与正常/故障定时验证器用于检查故障后有界完成和等观测支持；在概率层，互斥路径事件保留不同随机执行历史，使即时冲突、随机竞争和持续使能剩余分布下的概率质量能够在不发生重复计数的条件下传播，并由终止事件构造两类条件观测分布。
+
+针对有限展开和数值积分带来的不确定性，本章进一步利用未解析概率质量和区间安全归一化构造 \(P_e^\star\) 与 \(\Gamma_\delta\) 的认证上下界，据此形成 \probstatus{1}、\probstatus{0} 和 \probstatus{\perp} 三值判定。任何只在预先给定的有限路径集合或有限观测记录上计算风险的具体方法，均只是接口~\eqref{eq:probability-interface} 在受限运行空间上的实例；除非另行证明该集合覆盖 \(\Omega_{H_A}\) 或把遗漏质量纳入 \(\mathcal U_P\)，否则不能替代本章的一般 LSTPN 验证结论。并行任务示例表明，正宽度支持重叠、可靠覆盖不足以及零概率边界接触会对应不同的概率诊断结果，为下一章分析逻辑歧义与概率风险的关系提供了统一基础。
+
+% 第5章 任务完成逻辑诊断与概率诊断的关联分析
+\chapter{任务完成逻辑诊断与概率诊断的关联分析}
+
+\section{引言}
+
+第三章与第四章分别从支持可行性和概率质量两个层面研究任务完成故障诊断。第三章关心的是：在给定的观测词长度界和完成时间界内，正常首次完成运行与故障首次完成运行是否可能产生完全相同的任务完成观测。第四章进一步在随机时间模型上讨论：这些可行的等观测行为究竟承载多少概率质量，以及由条件观测分布诱导的最小 Bayes 错误和可靠诊断覆盖率是否满足既定风险规格。两章使用的分析对象具有明显联系，但结论不能直接等同。
+
+这种差异最直观地体现在第四章并行任务示例的端点情形。支持层在 \(a_4=4\) 时仍保留公共完成时间 \(y=4\)，因此正常运行和故障运行在可行性意义上并未完全分离；然而，由于两类完成时间分布均为连续分布，这一单点公共支持不承载正概率质量，最终仍有 \(P_e^\star=0\) 与 \(\Gamma_\delta=1\)。这说明“逻辑上存在可混淆运行”与“概率上存在实际诊断风险”属于两个不同层次的问题。
+
+另一方面，两层结果也并非毫无联系。若第三章已经证明在给定任务完成边界和观测条件下不存在任何正常--故障等观测运行，那么在概率模型只是给同一时间支持赋予概率质量、且两层故障分类和完成边界保持一致时，第四章不应重新产生正概率歧义。换言之，逻辑无歧义应当给出概率完美诊断的充分条件。要把这一判断写成严格结论，首先必须说明第三章和第四章究竟在比较同一组运行、同一个故障事件以及同一个任务完成观测。
+
+因此，本章不提出第三套故障诊断算法，而是研究前两章方法之间的理论接口。这里的跨层充分关系仅在比较域、真正外部观测及两类测度集中条件均满足时使用；它既不证明概率风险积分在一般模型上可有限步计算，也不把已知的 Bayes 决策恒等式或观测粗化性质作为本文独立发明的概率工具。首先给出故障语义、完成边界、时间支持和观测映射的对齐条件；随后证明逻辑无歧义能够推出条件观测分布相互奇异以及零 Bayes 错误和完整可靠覆盖；在此基础上，通过零概率边界、正概率支持重叠和共享离散原子分析逆向关系失效的原因；进一步讨论确定性观测粗化对 Bayes 错误和可靠覆盖的不同影响；最后回到贯穿全文的并行任务示例，对第三章和第四章的结论进行联合解释。
+
+\section{两类诊断问题的语义对齐条件}
+
+\subsection{故障语义对齐}
+
+第三章使用运行级故障历史 \(\chi_f(\rho)\) 区分正常运行与故障运行：只要首次任务完成以前曾发生 \(T_f\) 中的指定故障，就保持故障类别 \(\mathrm F\)。第四章则根据故障首次发生时刻与截止时刻 \(H_\psi\) 的关系，把运行划分为 \(H_0\) 和 \(H_1\)。因此，如果直接把“\(\chi_f(\rho)=\mathrm F\)”与“\(\rho\in H_1\)”视为同一件事，必须额外保证比较域中的故障分类窗口没有把第三章已经计入的故障排除在外。
+
+在本章需要进行跨层比较的运行集合中，要求第三章的故障历史分类与第四章的二元假设分类一致。具体地，对每条参与比较的首次完成运行 \(\rho\)，有 \(\chi_f(\rho)=\mathrm F\) 当且仅当 \(\rho\in H_1\)，并且 \(\chi_f(\rho)=\mathrm N\) 当且仅当 \(\rho\in H_0\)。这并不要求所有应用场景都把 \(H_\psi\) 取到整个任务完成时域末端，而只要求当前用于建立跨层推导的比较域满足这一对应关系。
+
+如果这一条件不成立，则同一条运行可能在第三章中被视为故障运行，却因为故障发生晚于 \(H_\psi\) 而在第四章中仍属于 \(H_0\)。此时，两章虽然都使用同一个指定故障集合 \(T_f\)，实际比较的故障类别已经不同，不能再从一个层面的判定结果推出另一个层面的结论。
+
+\subsection{完成边界对齐}
+
+故障分类一致以后，还必须保证两章使用的任务完成边界描述同一个物理事件。第三章以首次进入完成标识集合 \(\mathcal M_c\) 作为运行截断点，第四章则通过指定完成变迁集合 \(T_c\) 记录故障后的任务完成。对于需要进行联合分析的模型，要求首次进入 \(\mathcal M_c\) 与相应指定完成变迁的首次发射一一对应。
+
+这一要求还包含运行范围的一致性。第四章参与概率比较的完成运行在截断到首次完成以后，应当属于第三章的 \(\mathcal R^c_{L,H}(N,\mathfrak T)\)。也就是说，概率层用于构造条件观测分布的完成行为不能超出逻辑层已经验证的观测词长度和完成时间范围。反过来，本章并不要求第三章的 \(L,H\) 与第四章的 \(H_\psi,B_c,B_d,H_A\) 逐项相等，因为这些参数承担不同职责；真正需要一致的是最终被拿来比较的首次完成运行域。
+
+若第四章允许 \(B_d>0\) 并继续采集完成后的附加信息，则只有在观测映射 \(\psi\) 不使用这些完成后信息，或者第三章也相应扩展任务完成观测时，才能维持下面的严格跨层关系。否则，第四章可能利用第三章根本没有观测到的信息区分两条运行，两个诊断问题已经发生改变。
+
+\subsection{观测映射与时间支持对齐}
+
+第三章的任务完成观测固定为 \(\omega_c(\rho)=(\lambda(\rho),\tau(\rho))\)，而第四章允许一般可测映射 \(Y=\psi(\bar\omega)\)。因此，判断两条运行在概率层是否等观测，与判断它们在逻辑层是否等观测，只有在观测映射具有一致的区分能力时才能互相转换。
+
+用于建立严格推导时，本文要求存在一个定义在当前任务完成观测域上的可测单射 \(g\)，使已完成概率运行满足 \(Y(\rho)=g(\omega_c(\rho^c))\)，其中 \(\rho^c\) 表示首次完成截断。单射性意味着在当前比较域内有
+\(Y(\rho_1)=Y(\rho_2)\) 当且仅当
+\(\omega_c(\rho_1)=\omega_c(\rho_2)\)。
+最直接的情形是概率层直接采用第三章的任务完成观测；有限重编码但不丢失区分信息的映射也满足要求。
+
+除观测映射外，还需要对齐两层时间支持。概率层 LSTPN 中每个时间变迁分布 \(F_t\) 的支持应当与逻辑层 TPN 所使用的闭区间 \(I(t)=[a_t,b_t]\) 一致，并采用相同的持续使能强时间语义。这样，概率层只是对第三章已经允许的时间行为赋予概率质量，而不会额外增加或删除支持可行运行。
+
+前述三个方面共同决定后续跨层结论是否成立。为避免在每个定理中重复列出这些条件，下面把它们集中成一个对齐假设。
+
+\begin{thesisassumption}[两层诊断语义对齐条件]
+\label{ass:cross-layer-alignment}
+逻辑诊断模型与概率诊断模型满足以下条件：其一，两层具有相同的离散结构、指定故障集合和持续使能强时间支持，且每个随机时间分布的支持等于对应逻辑发射区间；其二，在参与比较的完成运行域上，\(\chi_f(\rho)=\mathrm F\) 当且仅当 \(\rho\in H_1\)，\(\chi_f(\rho)=\mathrm N\) 当且仅当 \(\rho\in H_0\)；其三，首次进入 \(\mathcal M_c\) 与指定完成变迁的首次发射描述同一任务完成边界，所有参与概率比较的完成运行在首次完成截断后均属于 \(\mathcal R^c_{L,H}(N,\mathfrak T)\)；其四，对参与比较的\emph{每条已完成概率运行}，将其截断于第一次任务完成时，概率观测均满足 \(Y(\rho)=g(\omega_c(\rho^{c}))\)，其中 \(\rho^c\) 表示首次完成截断、\(g\) 可测且单射；在尚未完成的运行上，诊断观测必须与所有已完成运行的诊断观测可区分，且区分信息来自真实可获取的外部完成信号，而非内部死锁标志。用于区分两类运行的完成/未完成观测集合须可测；两类假设下全部可行运行各自形成的观测值集合也应为可测集合，且对应条件观测分布在该集合上集中。后一项在有限离散观测子类中直接满足；对于一般连续观测，不得未经核实就把可达集投影视为可测。
+\end{thesisassumption}
+
+假设~\ref{ass:cross-layer-alignment} 是本章从第三章结论推导第四章结论的接口条件，而不是第三、四章各自成立所必需的额外模型假设。若实际应用采用不同故障窗口、更细或更粗的观测映射，前两章的方法仍可分别使用，只是不能直接套用下一节的跨层充分关系。
+
+\section{逻辑无歧义到概率零风险的充分关系}
+
+\subsection{条件观测分布相互奇异的充分条件}
+
+第二章命题~\ref{prop:critical-pair-characterization} 已经表明，第三章的逻辑可诊断性等价于 \(\mathcal K_{L,H}(N,\mathfrak T)=\varnothing\)。第四章则通过 \(\mathcal K(B_c,B_d,\psi)\) 描述概率层支持临界运行对。两者之间真正需要证明的是：在假设~\ref{ass:cross-layer-alignment} 成立时，概率层一旦存在等观测正常--故障运行，就一定能够在逻辑层找到对应临界运行对。只有这样，逻辑临界集为空才足以排除概率支持歧义。
+
+\begin{thesistheorem}[逻辑无歧义到概率完美诊断的充分关系]
+\label{thm:logical-to-perfect-probability}
+设假设~\ref{ass:cross-layer-alignment} 成立，概率模型满足普遍 \(B_c\) 有界完成，并且 \(q_0>0,q_1>0\)。若逻辑模型满足 \((L,H)\) 有界任务完成可诊断性，则式~\eqref{eq:cross-layer-support-chain} 成立。
+\begin{equation}
+\mathcal K_{L,H}(N,\mathfrak T)=\varnothing
+\Longrightarrow
+\mathcal K(B_c,B_d,\psi)=\varnothing
+\Longrightarrow
+P_0^Y\perp P_1^Y.
+\label{eq:cross-layer-support-chain}
+\end{equation}
+进一步，对任意 \(\delta\in(0,1/2)\)，均有式~\eqref{eq:cross-layer-perfect-risk}。
+\begin{equation}
+P_e^\star=0,
+\qquad
+\Gamma_\delta=1.
+\label{eq:cross-layer-perfect-risk}
+\end{equation}
+\end{thesistheorem}
+
+\begin{proof}
+先证明式~\eqref{eq:cross-layer-support-chain} 的第一步。假设 \(\mathcal K(B_c,B_d,\psi)\neq\varnothing\)，则存在 \(\rho_1\in H_1\) 与 \(\rho_0\in H_0\)，前者满足 \(B_c\) 有界完成，两者具有相同概率观测。由普遍故障后有界完成与完成边界对齐，\(\rho_1\) 可以截断为参与逻辑比较的首次完成运行。此时必须区分 \(\rho_0\) 是否已经完成：若尚未完成，假设~\ref{ass:cross-layer-alignment} 的完成/未完成观测可区分条件直接与 \(Y(\rho_1)=Y(\rho_0)\) 矛盾。故 \(\rho_0\) 也必须完成。将两条运行在首次完成处截断，依据同一假设的故障语义与分析域对齐条件，二者分别是 \(\mathcal R^c_{L,H}(N,\mathfrak T)\) 中的正常和故障运行；又因为两条完整概率运行的观测均由其首次完成截断的 \(\omega_c\) 经相同单射 \(g\) 得到，其概率观测相等推出逻辑任务完成观测相等。因此构成第三章的临界运行对，与 \(\mathcal K_{L,H}(N,\mathfrak T)=\varnothing\) 矛盾。故概率支持临界集为空。
+
+再证明第二步。普遍 $B_c$ 有界完成保证 $H_1$ 中的所有相关运行都满足完成要求，因而都属于支持临界集允许比较的故障侧运行。设 $A_i=Y(H_i)$ 为第 $i$ 个假设下的可达观测值集合，按假设~\ref{ass:cross-layer-alignment}，$A_i$ 为可测集合且 $P_i^Y(A_i)=1$。若 $\mathcal K(B_c,B_d,\psi)=\varnothing$，那么 $A_0\cap A_1=\varnothing$：否则公共观测值在两个假设下各有一条运行实现，立即形成支持临界对，与前提矛盾。故 $P_0^Y$ 和 $P_1^Y$ 分别集中在互不相交的可测集合，按相互奇异的定义得到 $P_0^Y\perp P_1^Y$。这一步使用的是明确规定的可测集中条件，不是无根据地把任意连续状态投影当作可测事件。该结论依赖假设~\ref{ass:cross-layer-alignment} 对完成状态的真实外部可观测性要求；若只是算法内部区分“完成”与“死锁”，而诊断器不能观测该区别，则不能使用这一推论。
+
+最后取支配测度 \(\mu=P_0^Y+P_1^Y\)。相互奇异意味着
+\(\min\{\pi_0p_0(y),\pi_1p_1(y)\}=0\) 对 \(\mu\)-几乎处处成立，因此第二章式~\eqref{eq:bayes-error} 给出 \(P_e^\star=0\)。同理，后验概率几乎处处只能取 \(0\) 或 \(1\)，所以任意 \(\delta\in(0,1/2)\) 下所有正概率观测都属于可靠观测集合，由式~\eqref{eq:coverage} 得 \(\Gamma_\delta=1\)。
+\end{proof}
+
+定理~\ref{thm:logical-to-perfect-probability} 把第三章和第四章的结论第一次严格连接起来。第三章在完整验证条件下输出 \logicstatus{1}，意味着逻辑临界集为空；只要假设~\ref{ass:cross-layer-alignment} 与普遍故障后有界完成同时成立，就可以进一步得到概率层的完美分离。相反，第三章输出 \logicstatus{\perp} 时并没有证明临界集为空，不能使用该定理；第三章输出 \logicstatus{0} 时只证明至少存在一个支持层临界运行对，也不能据此直接推断概率风险为正。
+
+\subsection{零 Bayes 错误与完整可靠覆盖}
+
+式~\eqref{eq:cross-layer-perfect-risk} 的意义不仅是两个数值指标达到最优端点，还说明逻辑无歧义是一个比当前风险阈值更强的充分条件。只要诊断规格满足通常的 \(\varepsilon\geq0\) 与 \(\gamma\leq1\)，则 \(P_e^\star=0\) 自动满足任何非负错误上界，\(\Gamma_\delta=1\) 自动满足任何不超过 1 的覆盖目标。因此，在两层严格对齐且故障后完成要求已经满足时，逻辑 \logicstatus{1} 可以直接推出概率风险条件通过。
+
+但是，这一结论没有给出逆向关系。概率层只要求“几乎处处”能够可靠区分两个假设，而第三章的逻辑性质要求支持中不存在任何一个等观测正常--故障运行对。前者允许零概率异常集合存在，后者连单点边界也不能忽略。也正因为这一差别，概率完美诊断并不足以推出逻辑临界集为空，下一节从三种不同的支持结构分析这种非等价性。
+
+\section{逻辑歧义与概率风险的非等价性}
+
+\subsection{零概率边界接触}
+
+最直接的逆向反例来自第四章并行任务示例的端点情形 \(a_4=4\)。此时正常与故障完成时间支持分别为 \([2,4]\) 和 \([4,5]\)，公共支持退化为单点 \(\{4\}\)。从第三章逻辑诊断的角度，只要正常运行和故障运行都能够在完成时间 4 到达任务完成边界，二者就构成等观测临界运行对，因此逻辑临界集非空。
+
+概率层的结论却不同。第四章式~\eqref{eq:example-density-normal} 和式~\eqref{eq:example-density-fault} 给出的两类条件观测分布均具有连续密度，所以单点集合 \(\{4\}\) 在两个假设下的概率质量都为零。于是该支持交点虽然必须被定时验证器保留，却不会对 Bayes 错误积分产生正贡献。第四章表~\ref{tab:example-probability-results} 因而得到 \(P_e^\star=0\) 与 \(\Gamma_{0.15}=1\)。
+
+这一现象说明，逻辑层的临界运行对是“存在性”对象：只要某个时间取值可行，就必须纳入判断；概率层则按照测度对这些可行行为加权，零测度公共集合不会增加平均分类错误。第四章所依据的风险诊断理论也明确指出，非空支持临界集可以只由连续发射时间分布下的零概率边界组成，因此“无临界对”是概率完美诊断的充分条件，而不是必要条件。
+
+\subsection{正概率支持重叠}
+
+当公共支持不再是零测度边界，而是在两类条件观测分布下都承载正概率质量时，支持歧义才会实际进入 Bayes 风险积分。并行任务示例在 \(a_4=3\) 时，公共完成时间支持为 \([3,4]\)，两类条件密度在该区间上都等于 \(1/2\)。因此，公共区域不仅在支持上非空，而且在两个假设下都具有正概率质量，最终得到 \(P_e^\star=1/4\)。
+
+当 \(a_4=3.5\) 时，公共支持缩小为 \([3.5,4]\)，相应 Bayes 错误下降为 \(1/8\)，但可靠覆盖率仍只有 \(17/24\)，低于第四章采用的 \(\gamma=0.8\)。这表明即使支持重叠区域缩小并使平均判错风险达到目标，仍可能有较大比例的观测无法达到给定单次后验可靠度。Bayes 错误和可靠覆盖率衡量的是不同的概率诊断要求，不能只根据公共支持宽度推断二者的变化。
+
+更一般地，仅知道某个可测大区域 $A$ 同时满足 $P_0^Y(A)>0$ 与 $P_1^Y(A)>0$，\emph{并不足以}推出正的 Bayes 错误：两类概率可以集中于该区域内互不相交的可测子集。由 $\pi_0,\pi_1>0$ 和式~\eqref{eq:bayes-error}，严格的充要判据是
+\begin{equation}
+P_e^\star>0
+\quad\Longleftrightarrow\quad
+\mu\bigl(\{y:p_0(y)>0\ \wedge\ p_1(y)>0\}\bigr)>0.
+\label{eq:positive-bayes-overlap}
+\end{equation}
+证明如下：被积函数非负，且在且仅在两个密度同时严格为正的点上严格为正；对非负可测函数，积分严格大于零当且仅当函数严格正的集合具有正测度。该判据等价于两类条件测度并非相互奇异，但并不要求公共支持包含一个正宽度区间。即使公共支持面积很大，也可能只在两类测度各自不同的子集上有质量。支持集合只能回答“哪些观测可能由两类运行共同产生”，不能确定这些观测在条件分布中出现得多频繁，更不能单独确定后验可靠度。因此，从逻辑 \logicstatus{0} 到概率 \probstatus{0} 不存在一般有效的直接推导。
+
+\subsection{离散原子与连续密度对诊断风险的影响}
+
+前两小节说明，同样是公共支持，正宽度连续重叠与单点连续边界可以产生完全不同的概率风险。还需要进一步区分一种情况：公共支持虽然只包含一个观测点，但该点本身是条件观测分布的离散原子。第四章使用支配测度 \(\mu=P_0^Y+P_1^Y\) 而不是只使用 Lebesgue 密度，正是为了同时容纳连续观测和离散终止结果。
+
+为了明确单点公共支持在两种概率结构下的区别，下面给出一个局部风险贡献结果。它只讨论一个共享观测点，不要求整个观测分布都是离散或连续。
+
+\begin{thesisproposition}[共享单点支持的概率风险贡献]
+\label{prop:shared-point-risk}
+设 \(y_0\) 同时属于 \(P_0^Y\) 与 \(P_1^Y\) 的支持，决策先验满足 \(\pi_0,\pi_1>0\)。若
+\(P_0^Y(\{y_0\})=P_1^Y(\{y_0\})=0\)，则共享单点 \(y_0\) 对 \(P_e^\star\) 的概率质量贡献为零。若 \(y_0\) 是两个条件观测分布的共享原子，记
+\(m_i=P_i^Y(\{y_0\})>0\)，则该原子对 Bayes 错误的贡献以及在该点的后验故障概率分别满足式~\eqref{eq:shared-atom-risk}。
+\begin{equation}
+\begin{aligned}
+\Delta P_e^\star(y_0)
+&=
+\min\{\pi_0m_0,\pi_1m_1\},\\
+\eta_{\boldsymbol\pi}(y_0)
+&=
+\frac{\pi_1m_1}
+{\pi_0m_0+\pi_1m_1}.
+\end{aligned}
+\label{eq:shared-atom-risk}
+\end{equation}
+因此，该共享原子会产生严格正的 Bayes 错误贡献；它是否计入 \(C_\delta\) 取决于
+\(\min\{\eta_{\boldsymbol\pi}(y_0),1-\eta_{\boldsymbol\pi}(y_0)\}\leq\delta\) 是否成立。
+\end{thesisproposition}
+
+\begin{proof}
+若两个条件观测分布在单点 \(\{y_0\}\) 上的质量都为零，则该单点在支配测度 \(\mu=P_0^Y+P_1^Y\) 下同样为零测度集合。对第二章式~\eqref{eq:bayes-error} 的积分而言，零测度集合不能产生正贡献，因此共享单点对 \(P_e^\star\) 的贡献为零。
+
+若 \(m_0,m_1>0\)，则 \(\mu(\{y_0\})=m_0+m_1\)。在该原子处，Radon--Nikodym 密度满足
+\(p_i(y_0)=m_i/(m_0+m_1)\)。把这一关系代入 Bayes 错误积分中该原子的离散贡献，可得
+该原子的离散贡献为
+\(\min\{\pi_0m_0/(m_0+m_1),\pi_1m_1/(m_0+m_1)\}(m_0+m_1)
+=\min\{\pi_0m_0,\pi_1m_1\}\)，从而得到式~\eqref{eq:shared-atom-risk} 的第一式。第二式由后验概率定义直接得到。由于 \(\pi_i>0\) 且 \(m_i>0\)，第一式严格大于零。可靠观测集合的判断则直接由定义~\ref{def:diagnostic-coverage} 得出。
+\end{proof}
+
+命题~\ref{prop:shared-point-risk} 说明，“公共支持只有一个点”本身并不足以判断风险是否为零。真正决定该点概率意义的是条件观测测度是否在该点具有原子质量。连续密度下的单点边界可以是零风险的，而由终止类别、离散传感结果或显式离散观测形成的共享原子则能够单独产生正 Bayes 错误。这也是第五章不能只用几何支持交集大小描述概率歧义的原因。
+
+\section{观测粗化条件下的风险与覆盖变化}
+
+\subsection{量化观测与观测映射变化}
+
+前述跨层充分关系要求概率观测与第三章任务完成观测具有相同区分能力。实际诊断中，为降低传感器精度要求、通信负担或连续时间观测的数值复杂度，常常会把精细观测进一步量化或合并。例如，精确完成时间 \(Y\) 可以被映射为时间区间编号，或者多个不同的事件--时间组合可以被归并为同一个离散观测符号。
+
+设原始观测为 \(Y\)，粗化后的观测为 \(Z=g(Y)\)，其中 \(g\) 为确定性可测映射。若 \(g\) 不是单射，则原本不同的 \(Y\) 值可能变成相同的 \(Z\) 值。对同一组系统运行而言，只要两条运行在 \(Y\) 下等观测，它们在 \(Z\) 下也一定等观测；而原本可以由 \(Y\) 区分的运行，在粗化以后可能新增为等观测对。因此，若分别以 \(\mathcal K_Y\) 和 \(\mathcal K_Z\) 表示在相同运行域、相同故障与完成语义下由 \(Y\) 和 \(Z\) 诱导的支持临界对集合，则有式~\eqref{eq:coarsening-critical-inclusion}。
+\begin{equation}
+\mathcal K_Y
+\subseteq
+\mathcal K_Z.
+\label{eq:coarsening-critical-inclusion}
+\end{equation}
+式~\eqref{eq:coarsening-critical-inclusion} 只是观测等价关系被合并后的直接结果，它说明观测粗化不会删除已有支持临界对，但可能产生新的支持歧义。
+
+在概率层，确定性粗化还意味着 \(Z\) 所包含的信息不超过 \(Y\)。在统计决策理论中，这可以看作一个实验通过确定性后处理退化为信息更少的实验，是 Blackwell 实验比较思想的一个特例\cite{Blackwell1953}。对于本文采用的固定决策先验和零--一损失，能够得到一个直接而严格的单调性结论。
+
+\begin{thesistheorem}[观测粗化下最小 Bayes 错误的单调性]
+\label{thm:bayes-coarsening}
+设 \(Z=g(Y)\) 为 \(Y\) 的确定性可测粗化，并在两个观测问题中使用相同的决策先验 \(\boldsymbol\pi\) 与零--一损失。分别记只允许使用 \(Y\) 和只允许使用 \(Z\) 的最小 Bayes 错误为 \(P_{e,Y}^\star\) 与 \(P_{e,Z}^\star\)，则式~\eqref{eq:bayes-coarsening} 成立。
+\begin{equation}
+P_{e,Y}^\star
+\leq
+P_{e,Z}^\star.
+\label{eq:bayes-coarsening}
+\end{equation}
+\end{thesistheorem}
+
+\begin{proof}
+设 \(\mathcal D_Y\) 为所有基于 \(Y\) 的可测二元决策规则集合，\(\mathcal D_Z\) 为所有基于 \(Z\) 的可测二元决策规则集合。对任意 \(d_Z\in\mathcal D_Z\)，由于 \(Z=g(Y)\)，复合规则 \(d_Z\circ g\) 是一个合法的 \(Y\)-决策规则。因此，使用 \(Z\) 能够实现的每一个决策策略，都可以在观察 \(Y\) 时通过先计算 \(g(Y)\) 再执行同一规则实现；反过来，一般的 \(Y\)-决策规则未必只依赖 \(g(Y)\)。
+
+所以，基于 \(Z\) 的可实现规则集合等价于 \(\mathcal D_Y\) 中只通过 \(g(Y)\) 变化的一个子类。在同一个先验和零--一损失下，对较大的规则集合取最小期望错误不可能得到更大的最小值，故 \(P_{e,Y}^\star\leq P_{e,Z}^\star\)，即式~\eqref{eq:bayes-coarsening}。
+\end{proof}
+
+定理~\ref{thm:bayes-coarsening} 给出了一个与支持临界集包含关系一致的结论：丢失确定性观测信息不会改善最优平均分类错误。它并不要求 \(Y\) 与 \(Z\) 都是连续观测，也不要求 \(g\) 是时间量化；只要 \(Z\) 是 \(Y\) 的确定性函数，并且比较时保持相同的先验和损失函数，结论就成立。
+
+需要注意，这一结论讨论的是同一个概率模型上的观测后处理。如果改变的不只是观测映射，而是同时重新拟合时间分布、重新定义假设先验或改变故障分类窗口，那么新旧问题已经不再满足定理~\ref{thm:bayes-coarsening} 的比较条件。
+
+\subsection{错误风险与可靠覆盖的不同响应}
+
+Bayes 错误具有定理~\ref{thm:bayes-coarsening} 的单调性，并不意味着可靠诊断覆盖率 \(\Gamma_\delta\) 也具有相同方向的单调关系。原因在于，Bayes 错误是所有观测上的平均最小错误，而覆盖率是在给定后验错误阈值 \(\delta\) 后，对“足够可靠”区域进行截取所得的概率质量。粗化会把多个精细观测的后验概率取条件平均，这种平均既可能把两个可靠但方向相反的观测合并成不可靠观测，也可能把一个完全可靠观测与一个略超阈值观测合并后仍落入可靠区间。
+
+表~\ref{tab:coverage-coarsening-examples} 给出两个离散观测反例。两种情形均取等决策先验，并假设表中各精细观测具有相同的先验加权观测质量，可靠度阈值取 \(\delta=0.15\)。粗化后的后验概率等于被合并观测后验概率按其观测质量加权的平均值。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{观测粗化对可靠诊断覆盖率的两种可能影响}
+\label{tab:coverage-coarsening-examples}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{1.0cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}p{2.1cm}>{\centering\arraybackslash}p{2.1cm}}
+\hline
+情形 & 精细观测后验概率 & 粗化后后验概率 & 粗化前 \(\Gamma_\delta\) & 粗化后 \(\Gamma_\delta\)\\
+\hline
+A & \(0.1,\ 0.9\) & 合并为 \(0.5\) & \(1\) & \(0\)\\
+B & \(0,\ 0.2,\ 0.8,\ 1\) & 分组为 \(0.1,\ 0.9\) & \(1/2\) & \(1\)\\
+\hline
+\end{tabularx}
+\end{table}
+
+情形 A 中，两个精细观测的后验错误都为 \(0.1\)，均满足 \(\delta=0.15\)，所以粗化前覆盖率为 1；两者合并以后后验概率变为 \(0.5\)，后验错误上升到 \(0.5\)，粗化后覆盖率降为 0。情形 B 中，精细观测的后验概率为 \(0,0.2,0.8,1\)，只有后验为 0 和 1 的两类观测满足可靠度要求，因此粗化前覆盖率为 \(1/2\)；若分别把 \(0\) 与 \(0.2\)、\(0.8\) 与 \(1\) 合并，在等质量条件下得到的新后验为 \(0.1\) 和 \(0.9\)，两个粗化观测反而都满足可靠度要求，覆盖率上升为 1。
+
+因此，在固定 \(\delta\) 下，\(\Gamma_\delta\) 对一般确定性观测粗化既可能下降，也可能上升，不存在与式~\eqref{eq:bayes-coarsening} 类似的统一单调方向。这个结论进一步说明，第四章同时保留 Bayes 错误和可靠覆盖率是必要的：前者描述平均最优分类风险，后者描述能够达到指定后验可靠度的观测比例，两者对信息合并的响应机制并不相同。
+
+从诊断设计角度看，观测粗化不能只根据“平均错误是否仍然满足目标”来评价。即使 \(P_e^\star\) 的变化很小，\(\Gamma_\delta\) 也可能因为后验分布重新聚合而显著变化。第六章若对时间量化或观测精度进行敏感性实验，将分别报告这两个指标，而不会把它们合并为单一性能分数。
+
+\section{并行任务示例的联合解析}
+
+前两节分别从理论和抽象反例说明了逻辑支持歧义与概率风险之间的关系，本节重新回到第二章建立的并行任务示例，但不重复第四章已经完成的条件密度推导，而是把同一模型在逻辑层和概率层的结论并列起来。这样可以直接观察：当时间支持逐步由正宽度重叠缩小为单点接触时，第三章性质与第四章概率指标如何发生不同变化。
+
+逻辑层仍采用第二章给出的 \(L=1,H=5\)，观测为完成标号 \(c\) 与总完成时间。正常完成时间支持为 \([2,4]\)，故障完成时间支持为 \([a_4,5]\)。因此，对于 \(a_4=3,3.5,4\)，两类支持分别在 \([3,4]\)、\([3.5,4]\) 和 \(\{4\}\) 上相交，三个模型都存在正常--故障等观测首次完成运行，逻辑层均为 \logicstatus{0}。
+
+概率层沿用第四章的诊断规格
+\(\pi_0=\pi_1=1/2\)、
+\(\varepsilon=0.13\)、
+\(\delta=0.15\) 和
+\(\gamma=0.8\)。
+表~\ref{tab:joint-layer-example} 汇总两层结论。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{并行任务示例的逻辑诊断与概率诊断联合结果}
+\label{tab:joint-layer-example}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{1.0cm}>{\centering\arraybackslash}p{2.1cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{4.8cm}>{\raggedright\arraybackslash}X}
+\hline
+\(a_4\) & 公共完成时间支持 & 逻辑结论 & 概率指标 & 概率结论\\
+\hline
+3 & \([3,4]\) & \logicstatus{0} & \(P_e^\star=1/4,\ \Gamma_{0.15}=1/2\) & \probstatus{0}：错误风险和覆盖均违反\\
+3.5 & \([3.5,4]\) & \logicstatus{0} & \(P_e^\star=1/8,\ \Gamma_{0.15}=17/24\) & \probstatus{0}：覆盖率违反\\
+4 & \(\{4\}\) & \logicstatus{0} & \(P_e^\star=0,\ \Gamma_{0.15}=1\) & \probstatus{1}\\
+\hline
+\end{tabularx}
+\end{table}
+
+表~\ref{tab:joint-layer-example} 展示了三种具有代表性的跨层关系。第一种是 \(a_4=3\)：公共支持具有正宽度并承载较大的共享概率质量，逻辑层 \logicstatus{0} 与概率层 \probstatus{0} 同时出现。第二种是 \(a_4=3.5\)：逻辑层仍为 \logicstatus{0}，平均 Bayes 错误已经满足目标，但可靠覆盖率仍不达标，因此概率层仍为 \probstatus{0}。第三种是 \(a_4=4\)：逻辑临界对仍然存在，却只对应连续分布下的零概率边界，概率层因此达到 \(P_e^\star=0,\Gamma_{0.15}=1\) 并返回 \probstatus{1}。由此可以直接得到
+\(v_L=0\not\Rightarrow v_P=0\)；
+真正需要进入概率风险判断的是公共支持所承载的条件概率质量，而不仅是临界运行对是否存在。
+
+同一个例子还可以说明决策先验只作用于概率层而不改变逻辑支持结构。固定 \(a_4=3\) 时，两类条件密度在公共区间 \([3,4]\) 上相同，因此该区间中的观测本身不提供进一步区分信息，后验故障概率等于决策先验 \(\pi_1\)。当 \(\pi_1\) 分别取 \(0.1,0.5,0.9\) 时，最小 Bayes 错误分别为 \(0.05,0.25,0.05\)，对应的 \(\Gamma_{0.15}\) 分别为 \(1,1/2,1\)。也就是说，第三章看到的公共支持和 \logicstatus{0} 结论完全不变，第四章的风险与覆盖却会随决策先验显著变化。
+
+这里需要谨慎解释后一现象。当 \(\pi_1=0.1\) 或 \(0.9\) 时，公共区间中的后验可靠度提高，并不是因为新的观测信息使正常与故障运行变得更容易区分，而是因为决策规格事先赋予了某一假设更大的先验权重。因此，概率层的“高置信度”既可能来自观测分离，也可能部分来自先验偏置；在实际应用中需要把决策先验的来源与观测模型本身的区分能力分别报告。
+
+综合表~\ref{tab:joint-layer-example} 与先验敏感性可以得到一个更清晰的层次关系：逻辑层只关注支持中是否存在正常--故障等观测运行，不受这些运行在随机模型中的概率大小和决策先验影响；概率层则在相同支持基础上进一步考虑条件分布形状、离散原子或连续质量以及决策先验。因此，第三章和第四章不是两个相互竞争的诊断定义，而是对同一任务完成故障诊断对象从“可行性”到“概率重要性”的递进分析。
+
+\section{本章小结}
+
+本章建立了第三章逻辑诊断与第四章概率诊断之间的理论接口。只有在故障分类、任务完成边界、时间支持和观测映射相互对齐时，两层结论才能直接比较；在这些条件下，逻辑层不存在有界临界运行对能够推出概率支持分离，进而得到零最小 Bayes 错误和完整可靠诊断覆盖。
+
+这一关系并非双向等价：连续时间支持若只在零概率边界接触，可以出现逻辑 \logicstatus{0} 与概率 \probstatus{1} 并存；共享离散原子或正概率重叠则可能产生实际诊断风险。对于确定性观测粗化，最小 Bayes 错误不会下降，而可靠诊断覆盖率不存在统一单调方向。下一章将通过基准模型、消融分析、闭式概率案例、关键语义敏感性实验和实际加工记录检验上述方法及其关系。
+
+% 第6章 实验验证与实际加工记录分析
+\chapter{实验验证与实际加工记录分析}
+
+\section{引言}
+
+第三章至第五章分别给出了任务完成逻辑诊断、概率风险诊断及其关联分析。本章从实验角度检验这些方法在有限模型、概率计算和实际加工记录上的表现，重点回答三个问题：逻辑验证结果是否与独立参照保持一致，时间筛选能否减少不必要的精确求解；概率方法中的历史保持和持续使能年龄是否会实质影响风险计算；在实际加工记录上，模型条件风险认证与经验风险--覆盖评价能否形成相互补充的证据。
+
+本章据此分为实验设计、逻辑诊断验证、概率诊断验证和实际加工记录分析四部分。逻辑实验用于检查判定一致性与精确求解开销；概率实验使用闭式案例和语义反例检验概率传播；PyScrew 加工记录则用于评价模型适配、风险证书以及选择性诊断表现。不同实验回答的问题不同，因此模型条件认证结果与数据层经验指标分别报告。
+
+\section{实验设计与评价方法}
+
+\subsection{实验环境与实现设置}
+
+逻辑实验、概率计算和实际数据评价采用一致的预设配置，并保存模型、运行命令和结果文件。主要软件环境与计算预算见表~\ref{tab:chap6-runtime-env}。运行时间用于描述当前实现的计算开销，不作为跨平台性能比较的依据。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{第六章实验的软件环境与主要计算预算}
+\label{tab:chap6-runtime-env}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}X}
+\hline
+项目 & 配置\\
+\hline
+操作系统 & Linux 7.0.0-1006-aws，x86\_64，glibc 2.43\\
+Python & 3.14.4\\
+主要数值库 & NumPy 2.5.3，SciPy 1.18.1，scikit-learn 1.9.1，mpmath 1.3.0\\
+LP 求解器 & scipy.optimize.linprog(method="highs")\\
+外部时间网工具 & TINA 4.0.0\\
+逻辑实验并行方式 & 4 个工作进程，每个进程的原生线程限制为 1\\
+逻辑实例预算 & 60 s；TINA 适配查询预算为 25 s\\
+概率积分预算 & 两条独立积分路径，每条每实例最多 32768 个数值单元、15 s，取两个合法区间的交集\\
+\hline
+\end{tabularx}
+\end{table}
+
+逻辑实验记录 \logicstatus{1}、\logicstatus{0}、\logicstatus{\perp}、状态类规模、同步状态规模、终止路径对数量、LP 调用次数和运行资源信息。概率实验以闭式指标、风险认证结果和语义敏感性结果为主要证据，所有 \probstatus{1}、\probstatus{0} 与 \probstatus{\perp} 均按照第四章给出的判定规则解释。
+
+\subsection{逻辑诊断评价指标与对照方法}
+
+逻辑诊断以第三章定义的 \(v_{\mathrm L}(N,\mathfrak T,L,H)\) 为判定输出。对于 \logicstatus{0}，发现首个合法歧义见证后即可结束当前实例；对于 \logicstatus{1}，则需要完整排除分析域中的临界运行对。\logicstatus{\perp} 表示当前搜索没有完整终止，不能解释为可诊断或不可诊断。
+
+实验设置四种逻辑实现：第三章完整方法、完整历史保持参照、去除同步筛选的实现以及去除时间包围筛选的实现。四种实现使用相同的 TPN、故障变迁、完成标识、\(L,H\) 和实例时间预算，用于检查筛选阶段是否改变最终判定。精确求解开销则以耦合 LP 调用次数衡量，并重点比较完整方法、完整历史保持参照与关闭时间包围三种设置。
+
+此外，本文参考已有时间 Petri 网可诊断性验证思想\cite{Pencole2022}，使用 TINA 4.0.0 构造与本文有限时间窗和任务完成边界相容的查询，作为时间语义和完成约束的一致性辅助检查。
+
+\subsection{概率诊断评价指标与对照方法}
+
+概率诊断报告模型条件下的 \(P_e^\star\)、\(\Gamma_\delta\) 及其认证区间。当上下界足以确定风险和覆盖阈值关系时返回 \probstatus{1} 或 \probstatus{0}；当合法区间仍跨越阈值时返回 \probstatus{\perp}；若样本条件不足以建立当前工况模型，则单独记为数据不足。
+
+概率实验采用三类证据。闭式并行模型用于核对风险指标及端点行为；历史重汇合和年龄更新反例用于检验概率质量传播语义；PyScrew 数据用于评价严格风险证书和经验选择性错误率。在经验比较中，本文方法与逻辑回归、随机森林和直方图梯度提升使用相同的四阶段增量输入；经验覆盖率表示按置信度选择后被接受记录的比例，与模型条件可靠诊断覆盖率 \(\Gamma_\delta\) 分别解释。
+
+\section{逻辑诊断方法验证}
+
+\subsection{基准模型与实验设置}
+
+逻辑主实验包含 52 个 TPN 基准模型，其中 16 个为人工构造的微型模型，36 个为按冻结协议生成的批量模型。与仅给出“模型组成”相比，正文更需要让读者看到这些模型在数值层面的构成。为此，表~\ref{tab:chap6-logic-benchmark-config} 汇总两类模型的规模来源、取值范围与对应诊断边界；16 个微型模型的逐例结构信息见附录表~\ref{tab:app-logic-micro}，36 个协议生成模型的逐例参数见附录表~\ref{tab:app-logic-generated}。
+
+\begin{table}[htbp]
+\centering
+\caption{逻辑主实验基准模型的构成与参数空间}
+\label{tab:chap6-logic-benchmark-config}
+\renewcommand{\arraystretch}{1.14}
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.25cm}>{\centering\arraybackslash}p{0.85cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{2.55cm}}
+\hline
+模型子集 & 数量 & 具体配置 & 诊断边界\\
+\hline
+微型模型 & 16 & 独立 YAML 定义；结构规模覆盖 4--7 个库所、4--7 个变迁，用于覆盖可人工核查的语义边界情形 & $L\in\{2,3,5\}$，$H\in\{8,10,15,20\}$\\
+协议生成子集 $j=1$ & 27 & $m\in\{2,3,4\}$，$j=1$，$ops\_per\_part=2$，$wip\_bound=1$，$u\in\{0.1,0.3,0.5\}$，故障位置数为 1，时间区间宽度因子 $w\in\{0.5,1.0,1.5\}$，可调比例 0.1，随机种子 0 & $L=6$，$H\in\{16.5,18.0,19.5\}$\\
+协议生成子集 $j=2$ & 9 & $m=2$，$j=2$，其余固定参数与 $j=1$ 相同；该子集用于补充双工件设置下的时间完成边界行为 & $L=10$，$H\in\{33.0,36.0,39.0\}$\\
+总计 & 52 & 16 个微型模型与 36 个协议生成模型 & 4 种实现共 208 次调用\\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+
+从附录表~\ref{tab:app-logic-generated} 可以进一步看到，36 个协议生成模型并非对所有参数做全笛卡尔积枚举，而是由冻结批次保留下来的 36 个有效参数点构成；其中 $j=2,m=2,u=0.5$ 的 3 个实例给出了 \logicstatus{0}，其余生成实例均为 \logicstatus{1}。这种“正文给出参数空间，附录给出逐例配置”的组织方式既保留了实验设计的完整性，也避免在正文中堆叠过长明细表。
+
+52 个模型分别在四种逻辑实现下运行，共形成 208 次调用。四种实现共享相同模型输入、诊断边界和停止条件，因此判定结果可以直接用于一致性比较。
+
+\subsection{验证结论一致性分析}
+
+四种逻辑实现的判定统计见表~\ref{tab:chap6-logic-verdicts}。每一种实现都得到 40 个 \logicstatus{1}、11 个 \logicstatus{0} 和 1 个 \logicstatus{\perp}，本文方法与完整历史保持参照在 52 个模型上判定完全一致。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{52 个 TPN 基准模型的逻辑判定结果}
+\label{tab:chap6-logic-verdicts}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}}
+\hline
+方法 & \logicstatus{1} & \logicstatus{0} & \logicstatus{\perp} & 总数\\
+\hline
+本文方法 & 40 & 11 & 1 & 52\\
+历史保持参照 & 40 & 11 & 1 & 52\\
+去除同步筛选 & 40 & 11 & 1 & 52\\
+去除时间包围筛选 & 40 & 11 & 1 & 52\\
+\hline
+\end{tabularx}
+\end{table}
+
+表~\ref{tab:chap6-logic-verdicts} 表明，同步筛选和时间包围的引入没有改变当前基准集上的最终 \logicstatus{1}/\logicstatus{0} 语义。\logicstatus{0} 实例允许在获得首个合法见证后结束，\logicstatus{1} 则要求相关搜索完整结束；四种实现中的同一实例均保留为 \logicstatus{\perp}，也与第三章对计算未完成状态的定义一致。该实验用于验证最终实现与理论判定逻辑的一致性，而第三章的正确性证明仍是一般结论的依据。
+
+\subsection{时间筛选消融与精确求解开销}
+
+耦合 LP 调用次数直接反映最终精确确认阶段的求解负担。表~\ref{tab:chap6-logic-lp-calls} 比较本文方法、完整历史保持参照以及关闭时间包围三种设置。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{52 个逻辑模型上的耦合 LP 调用统计}
+\label{tab:chap6-logic-lp-calls}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.4cm}>{\centering\arraybackslash}p{3.4cm}}
+\hline
+方法 & LP 调用总数 & 与本文方法的差异\\
+\hline
+本文方法 & 11 & --\\
+历史保持参照 & 60 & 多 49 次\\
+去除时间包围筛选 & 15 & 多 4 次\\
+\hline
+\end{tabularx}
+\end{table}
+
+完整方法的 LP 调用由历史保持参照的 60 次降为 11 次，说明分层筛选能够把多数不需要精确耦合的路径对阻挡在 LP 阶段之前；关闭时间包围以后调用数上升到 15 次，进一步表明完成时长外包围具有独立的提前排除作用。同步筛选主要用于限制结构候选，其完备性已经由第三章理论结果保证，本文不使用 LP 调用数这一末端指标单独评价其结构层收益。
+
+表~\ref{tab:chap6-logic-lp-calls} 给出了全部基准模型上的最终耦合 LP 调用总数，但仅由最终汇总值还不能观察精确求解负担随分析深度的变化。为进一步考察观测长度上限 \(L\) 对精确验证开销的影响，本文统计不同 \(L\) 取值下三种实现的累计耦合 LP 调用数，结果如图~\ref{fig:chap6-lp-vs-L} 所示。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.90\textwidth,trim=20 10 30 70,clip]{fig_ch6_lp_vs_L.eps}
+\caption{不同观测长度上限下的累计耦合 LP 调用数}
+\label{fig:chap6-lp-vs-L}
+\end{figure}
+
+由图~\ref{fig:chap6-lp-vs-L} 可见，随着 \(L\) 增大，三种实现需要进入精确验证阶段的累计 LP 调用数总体增加，但本文方法在各观测长度下始终保持最低调用量，去除时间包围后的调用量则持续高于完整方法。到 \(L=10\) 时，本文方法、去除时间包围和历史保持参照的累计调用数分别为 11、15 和 60，与表~\ref{tab:chap6-logic-lp-calls} 的最终汇总结果一致。这说明时间包围对精确求解入口的削减作用并非只出现在单一观测长度设置下。
+
+
+\subsection{相关时间诊断方法对比}
+
+本文进一步使用 TINA 对与本文语义能够对齐的有限完成查询进行辅助检查。在 31 个有效查询上，TINA 适配结果与独立检查 31/31 一致。该对照只比较有限任务完成查询的一致性，不把不同工具的绝对运行时间作为性能结论。结果说明，在可对齐的分析范围内，本文采用的时间语义和完成约束没有因实现方式不同而产生系统性判定差异。
+
+\section{概率诊断方法验证}
+
+\subsection{闭式解析案例与端点情形}
+
+第四章并行任务示例可以直接计算 \(P_e^\star\) 和 \(\Gamma_\delta\)，因此适合作为概率实现的基准检查。表~\ref{tab:chap6-analytic-cases} 统一采用 \(\varepsilon=0.13\)、\(\delta=0.15\) 和 \(\gamma=0.8\)。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{闭式并行案例的概率指标与判定}
+\label{tab:chap6-analytic-cases}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.5cm}>{\centering\arraybackslash}p{2.5cm}>{\centering\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}X}
+\hline
+\(a_4\) & \(P_e^\star\) & \(\Gamma_{0.15}\) & 结果\\
+\hline
+3 & \(1/4\) & \(1/2\) & \probstatus{0}：风险与覆盖均违反\\
+3.5 & \(1/8\) & \(17/24\) & \probstatus{0}：覆盖率违反\\
+4 & \(0\) & \(1\) & \probstatus{1}\\
+\hline
+\end{tabularx}
+\end{table}
+
+当 \(a_4=3\) 时，正宽度公共支持产生非零平均错误且可靠覆盖不足；当 \(a_4=3.5\) 时，平均 Bayes 错误已低于目标，但覆盖条件仍未满足；当 \(a_4=4\) 时，两类支持只在零概率边界接触，得到 \(P_e^\star=0\) 与 \(\Gamma_{0.15}=1\)。这组结果既验证了第四章对两项风险指标的区分，也与第五章“逻辑支持歧义不必然导致概率 \probstatus{0}”的结论一致。
+
+\subsection{符号重汇合与概率质量保持验证}
+
+为了检验历史保持的必要性，设置状态类重汇合反例。在 \(a_4=3\) 的测试中，若不同执行历史重汇合以后直接累加并再次传播同一来源质量，则 \(H_0\) 的总概率质量会由正确的 1.0 错增为 2.0，说明简单状态合并会造成重复计数。
+
+采用第四章的互斥路径事件以后，每个随机历史只沿对应子事件传播，重汇合仅表示后续支持状态相同而不删除事件身份。完整终止叶因此保持命题~\ref{prop:path-event-mass-conservation} 给出的质量守恒关系。该实验从数值层面验证了历史保持对于正确概率传播的必要性。
+
+\subsection{语义敏感性验证}
+
+持续使能年龄是概率语义中的另一关键因素。取接近风险判定边界的 \(a_4=3.48\) 进行敏感性检查：若错误地在其他变迁发射后重置持续使能变迁年龄，Bayes 错误会由正确语义下的 \(0.13\) 变为约 \(0.296449\)，可靠覆盖率由约 \(0.698947\) 降为约 \(0.155162\)。
+
+该对比不是另一种诊断算法，而是对时间语义的受控扰动。结果表明，持续使能年龄和历史互斥性都会实质影响概率质量及最终风险指标，因此第四章的年龄保持与路径事件构造是概率诊断语义的一部分，而非单纯的实现选择。
+
+\section{实际加工记录案例分析}
+
+\subsection{数据来源与预处理}
+
+实际数据部分使用 PyScrew 加工记录。该数据来自 Zenodo 发布的数据集 \textit{Screw Driving Dataset -- s04\_variations-in-assembly-conditions-2} 及其配套研究论文\cite{WestDeuse2025PyScrewDataset,WestDeuse2024HICSS}。原始记录保留了自动拧紧工位在四阶段控制程序下的时间信息，阶段顺序为 Finding、Thread forming、Pre-tightening 和 Tightening 1.4；每个 JSON 文件对应一次独立的物理拧紧操作，采样频率为 833.33 Hz。
+
+为了让读者清楚区分“原始数据规模”“固定划分结果”和“本文最终进入概率诊断流程的平衡子集”，表~\ref{tab:chap6-pyscrew-data} 对来源、划分与完成记录口径统一汇总。与只给出总记录数相比，这种写法能够直接说明本文并非在全部 5000 条记录上无差别建模，而是在工件级固定划分基础上，进一步构造了 32 个工况、每工况 50 条标定样本和 50 条历史评价样本的平衡子集。32 个工况的完整来源映射见附录表~\ref{tab:app-pyscrew-map}。
+
+\begin{table}[htbp]
+\centering
+\caption{PyScrew 数据来源、划分口径与最终样本构成}
+\label{tab:chap6-pyscrew-data}
+\renewcommand{\arraystretch}{1.18}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.45cm}>{\raggedright\arraybackslash}p{4.65cm}>{\raggedright\arraybackslash}X}
+\hline
+项目 & 数值或口径 & 说明\\
+\hline
+数据集与来源 & \textit{Screw Driving Dataset -- s04\_variations-in-assembly-conditions-2}；Zenodo DOI: 10.5281/zenodo.16031381 & 来源与许可见文献\cite{WestDeuse2025PyScrewDataset,WestDeuse2024HICSS}\\
+原始记录粒度 & 5000 个 JSON 操作文件 & 每个 JSON 对应一次完整拧紧操作，共 2500 个工件，每个工件左/右各一次\\
+原始类别与阶段 & 25 个实验类别，每类 200 次操作；四个阶段；833.33 Hz & 25 类由 1 个对照类别和 24 个物理误差类别组成；原始阶段顺序为 Finding、Thread forming、Pre-tightening 和 Tightening 1.4\\
+预先固定划分 & calibration 2500；held-out 2500 & 以工件为单位固定划分，左右侧始终随同一工件进入同一子集，避免配对信息泄漏\\
+最终平衡 32 工况子集 & calibration 1600；historical 1600 & 由 16 个物理类别与左右位置组合而成，每个工况在标定集和历史评价集各保留 50 条操作记录\\
+完成记录数 & 标定完成 1446；历史评价完成 1457 & 历史评价完成记录中，正常机械条件 $y=0$ 为 762 条，改变条件 $y=1$ 为 695 条；另有 143 条未完成记录不进入完成后概率诊断分母\\
+本文统一输入 & 四阶段增量特征 & 概率模型与分类基线共享相同四阶段输入，不把总加工时间重复作为额外特征\\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+
+仅有数据来源和样本量汇总还不足以说明 32 个工况在数值层面的差异。为给出可直接阅读的代表性数据，表~\ref{tab:chap6-pyscrew-representative} 列出 5 个代表性工况的物理类别、认证结果以及四阶段中位时长。完整的 32 工况四阶段中位时长见附录表~\ref{tab:app-pyscrew-stage}。
+
+\begin{table}[htbp]
+\centering
+\caption{代表性 PyScrew 工况的阶段时长与风险证书}
+\label{tab:chap6-pyscrew-representative}
+\renewcommand{\arraystretch}{1.15}
+\small
+
+% ---------- 第一部分：工况及风险证书 ----------
+\begin{tabularx}{\textwidth}{
+    >{\raggedright\arraybackslash}p{2.0cm}
+    >{\raggedright\arraybackslash}X
+    >{\centering\arraybackslash}p{1.8cm}
+    >{\centering\arraybackslash}p{1.6cm}
+    >{\centering\arraybackslash}p{1.8cm}}
+\hline
+工况 & 物理类别 & 证书 & $P_e^+$ & $\Gamma_{0.15}^-$ \\
+\hline
+\texttt{101\_left}  & \texttt{101\_deformed-thread}          & $\probstatus{0}$    & 0.403 & 0.004 \\
+\texttt{202\_right} & \texttt{202\_broken-contact-surface}  & $\probstatus{\perp}$ & 0.081 & 0.792 \\
+\texttt{205\_left}  & \texttt{205\_different-material}      & $\probstatus{1}$    & 0.025 & 0.948 \\
+\texttt{303\_left}  & \texttt{303\_less-glass-fiber}        & $\probstatus{\perp}$ & 0.095 & 0.738 \\
+\texttt{405\_left}  & \texttt{405\_decreased-temperature}   & $\probstatus{1}$    & 0.074 & 0.812 \\
+\hline
+\end{tabularx}
+
+\vspace{0.8em}
+
+% ---------- 第二部分：四阶段时长 ----------
+\begin{tabularx}{\textwidth}{
+    >{\raggedright\arraybackslash}p{2.0cm}
+    >{\centering\arraybackslash}X
+    >{\centering\arraybackslash}X
+    >{\centering\arraybackslash}X
+    >{\centering\arraybackslash}X}
+\hline
+工况 & Finding & Thread forming & Pre-tightening & Tightening 1.4 \\
+\hline
+\texttt{101\_left}  & 93 & 650 & 217.5 & 490 \\
+\texttt{202\_right} & 92 & 650 & 210   & 477 \\
+\texttt{205\_left}  & 92 & 650 & 234   & 178 \\
+\texttt{303\_left}  & 92 & 650 & 238.5 & 394 \\
+\texttt{405\_left}  & 92 & 650 & 211.5 & 319 \\
+\hline
+\end{tabularx}
+
+\normalsize
+\end{table}
+表~\ref{tab:chap6-pyscrew-representative} 反映出两个对后续建模很关键的经验事实。第一，Finding 与 Thread forming 阶段在不同工况之间非常稳定，前者中位值基本集中在 92--93 tick，后者几乎固定在 650 tick；第二，真正拉开工况差异的主要是 Pre-tightening 与 Tightening 1.4 两个阶段，尤其是最终拧紧阶段的中位时长，从 205\_left 的 178 tick 到 101\_left 的 490 tick 差异明显。因而，正文不仅要说明“使用了四阶段特征”，还应让读者看到这些阶段在代表性工况上的实际数值范围。
+
+\subsection{时间分布拟合与模型适配}
+
+PyScrew 的概率模型采用标签保持的有限路径条件分布。每个工况下的有限即时路径具有归一化有理权重；给定路径以后，各阶段原语采用有限支持的三角分布或均匀分布，并按照第四章的持续使能随机时间语义传播。正常条件和改变条件保留各自标签，同时允许共享有限背景结构。
+
+模型适配在工件级外层 5 折上完成，左右侧使用相同工件折号。条件内最小类别样本数设为 5，内层 3 折在预设的 \(\lambda\in\{0.1,1,10\}\) 中选择。决策先验固定为 \(\pi_0=\pi_1=1/2\)，风险规格采用 \(\varepsilon=0.13\)、\(\delta=0.15\) 和 \(\gamma=0.8\)。满足样本条件的工况按照第四章的区间认证流程构造 \(P_e^\star\) 与 \(\Gamma_\delta\) 上下界。
+
+\subsection{模型条件下的风险判定结果}
+
+32 个工况的风险认证结果汇总见表~\ref{tab:chap6-pyscrew-cert-summary}。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{PyScrew 32 个工况的历史风险判定记录（待按新版数值条件复核）}
+\label{tab:chap6-pyscrew-cert-summary}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{4.0cm}>{\centering\arraybackslash}p{3cm}>{\raggedright\arraybackslash}X}
+\hline
+证书状态 & 工况数 & 含义\\
+\hline
+\probstatus{1} & 3 & 风险上界和可靠覆盖下界均满足规格\\
+\probstatus{0} & 25 & 至少一个风险规格具有严格违反证据\\
+\probstatus{\perp} & 3 & 合法上下界仍跨越至少一个规格阈值\\
+数据不足 & 1 & 标定样本不足以建立当前工况模型\\
+\hline
+\end{tabularx}
+\end{table}
+
+表~\ref{tab:chap6-pyscrew-cert-summary} 是历史工况的三值计算记录，用于说明既有模型拟合下不同结果的分布；其中 \probstatus{1}、\probstatus{0}、\probstatus{\perp} 是当时记录的判定标签，并不自动构成本轮已完成独立数值复验的有效证书。只有重新确认每一工况的模型、观测映射及积分外包围均满足第四章前提，才能升级为正式认证结论。数据不足状态仍与性质判定及数值未决分别记录。
+
+表~\ref{tab:chap6-pyscrew-cert-summary} 给出了各类证书状态的数量分布，但不能反映不同工况相对于风险阈值和可靠覆盖阈值的具体位置。为同时观察两项认证指标，将能够形成概率证书的工况映射到 \((\Gamma_\delta^-,P_e^+)\) 平面，如图~\ref{fig:chap6-risk-coverage-cert} 所示。图中的竖直线对应可靠覆盖要求 \(\gamma=0.8\)，水平线对应风险目标 \(\varepsilon=0.13\)；图例中的“满足”“不满足”和“界限不足”分别对应 \probstatus{1}、\probstatus{0} 和 \probstatus{\perp}。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.90\textwidth,trim=30 12 8 70,clip]{fig_ch6_risk_coverage_cert.eps}
+\caption{PyScrew 工况的历史风险--可靠诊断覆盖计算结果}
+\label{fig:chap6-risk-coverage-cert}
+\end{figure}
+
+图~\ref{fig:chap6-risk-coverage-cert} 将离散证书状态进一步还原为风险--覆盖平面中的相对位置。位于可靠覆盖阈值右侧且风险阈值下方的工况同时满足两项规格；明显位于规格区域之外的工况被判为 \probstatus{0}；认证区间尚不足以完成全部阈值比较的工况保留为 \probstatus{\perp}。因此，该图不仅给出证书类别，还能够反映不同工况相对于目标规格边界的距离和分布特征。
+
+
+\subsection{经验风险—覆盖性能对比}
+
+除模型条件风险证书外，本节在相同四阶段增量输入上比较本文概率评分与逻辑回归、随机森林和直方图梯度提升。三种基线均使用预设超参数，并且不依据历史评价集重新调参。逻辑回归采用 \(C=1\) 和类别平衡权重；随机森林使用 200 棵树、最大深度 5；直方图梯度提升采用 100 次迭代和最大深度 3。
+
+在标定数据的工件级外层 5 折中，共有 1413 条记录同时获得四种方法的有效外层预测。表~\ref{tab:chap6-pyscrew-oof} 给出受试者工作特征曲线下面积（Area Under the Receiver Operating Characteristic Curve, AUROC）、平衡准确率、Brier 分数和负对数似然（Negative Log-Likelihood, NLL）。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{PyScrew 标定集外层预测的共同样本结果}
+\label{tab:chap6-pyscrew-oof}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{2.6cm}>{\centering\arraybackslash}p{1.6cm}>{\centering\arraybackslash}p{1.6cm}}
+\hline
+方法 & AUROC & 平衡准确率 & Brier & NLL\\
+\hline
+本文概率模型 & 0.8499 & 0.7541 & 0.1569 & 0.4733\\
+逻辑回归 & 0.8228 & 0.7336 & 0.1704 & 0.5196\\
+随机森林 & 0.8426 & 0.7551 & 0.1617 & 0.4867\\
+梯度提升 & 0.8300 & 0.7400 & 0.1882 & 0.6108\\
+\hline
+\end{tabularx}
+\end{table}
+
+本文概率模型在共同外层预测上的 AUROC、Brier 和 NLL 取得四种方法中的最佳结果，平衡准确率与随机森林接近。随后，在 1457 条历史评价完成记录上比较不同经验覆盖率下的选择性错误率，结果见表~\ref{tab:chap6-retrospective-risk}。
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{历史评价集上的经验覆盖率--选择性错误率}
+\label{tab:chap6-retrospective-risk}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}>{\centering\arraybackslash}p{1.5cm}}
+\hline
+方法 & 20\% & 40\% & 60\% & 80\% & 95\%\\
+\hline
+本文方法 & 0.34\% & 2.75\% & 10.53\% & 19.23\% & 23.34\%\\
+逻辑回归 & 2.41\% & 4.98\% & 9.84\% & 17.42\% & 21.46\%\\
+随机森林 & 0.69\% & 5.15\% & 11.10\% & 18.20\% & 22.04\%\\
+梯度提升 & 2.41\% & 6.36\% & 11.33\% & 18.54\% & 23.27\%\\
+\hline
+\end{tabularx}
+\end{table}
+
+表~\ref{tab:chap6-retrospective-risk} 给出了五个经验覆盖率水平下的选择性错误率。为进一步观察覆盖率提高时各方法的风险变化趋势，图~\ref{fig:chap6-empirical-risk-coverage} 分别将本文方法与逻辑回归、随机森林和梯度提升进行配对比较。采用分图形式可以避免多条曲线集中在同一坐标系中造成遮挡，并更清楚地显示不同基线与本文方法之间的相对变化。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth,trim=20 20 25 55,clip]{fig_ch6_empirical_risk_coverage.eps}
+\caption{本文方法与不同分类基线的经验风险--覆盖曲线}
+\label{fig:chap6-empirical-risk-coverage}
+\end{figure}
+
+由图~\ref{fig:chap6-empirical-risk-coverage} 可见，在 20\% 和 40\% 的低覆盖区域，本文方法相对于三种基线均保持较低的选择性错误率；随着经验覆盖率提高，各曲线逐渐接近，并在部分中高覆盖点出现基线方法错误率略低的情况。因此，这组结果支持本文方法在低覆盖、高置信选择区域具有较好的经验风险表现，但不支持其在全部覆盖水平上均严格优于所有分类基线。
+
+\subsection{结果解释与适用边界}
+
+模型条件风险证书与经验风险--覆盖曲线具有不同含义。前者只有在给定概率模型、决策先验、观测映射和积分外包围\emph{均经有效核验}时，才是对 $P_e^\star$ 与 $\Gamma_\delta$ 的认证；后者是历史评价记录中按照置信度选择样本后的经验错误率。这里的 $3/25/3/1$ 工况分类是历史实验归档中的判定记录，而非本轮新独立实现已经逐工况重算的结果。由于当前并无证明全部工况模型均满足命题~\ref{prop:finite-rational-mass} 的有理分片条件、也没有逐工况完整的有效积分证书复验，暂不能把这组历史数目用作对一般 LSTPN 严格认证可执行性的独立证据。两类结果必须分别追溯与验收，不得相互替代。
+
+历史评价结果是在模型和超参数确定以后进行的回顾性评价，因此表~\ref{tab:chap6-retrospective-risk} 中的错误率用于描述当前数据集上的表现。模型条件概率界的统计外推、数据标签与物理故障之间的对应关系以及跨设备泛化问题在第七章研究局限中集中讨论。
+
+\section{综合讨论}
+
+逻辑实验从实现层面支持了第三章分层验证的两个核心判断：结构和时间筛选不会改变基准模型上的最终判定，而完成时长包围能够减少进入耦合 LP 的路径对。TINA 有限完成查询的对照结果又从独立工具角度补充检查了时间语义和完成约束的一致性。
+
+概率实验说明第四章中两个看似实现性的设计实际上具有语义作用。若在状态重汇合后直接合并历史，概率质量会发生重复计数；若错误重置持续使能年龄，风险指标会产生明显偏移。闭式并行案例则进一步说明 Bayes 错误与可靠覆盖需要分别认证，并再次验证了零概率边界接触下支持歧义与概率风险不等价。
+
+PyScrew 实验把模型条件认证与数据层经验评价放在同一数据流程下进行。在有效模型与严格数值外包围条件下，证书可用于判断给定工况模型是否满足风险规格；经验风险--覆盖曲线则描述按置信度选择记录时的历史标签错误变化。当前历史工况证书仍需与第四章修订后的数值条件逐项对照，故不能把未重验的旧标签视为本轮已认证的数学结论。
+
+\section{本章小结}
+
+本章通过基准 TPN 模型、闭式概率案例、关键语义反例和 PyScrew 加工记录验证了第三至第五章的方法。结果表明，逻辑分层验证能够保持判定一致性并减少精确求解调用；历史保持与持续使能年龄会实质影响概率计算；实际加工记录上的模型条件证书与经验风险--覆盖评价能够形成互补证据。
+
+% 第7章 结论与展望
+\chapter{结论与展望}
+
+\section{研究工作总结}
+
+本文围绕任务首次完成边界上的故障诊断问题，研究了在部分可观测并发系统中如何利用有限事件信息和任务总完成时间判断指定故障历史。全文以统一的任务完成边界和持续使能时间语义为基础，形成了“逻辑支持验证--概率风险量化--跨层关系分析--实验验证”的研究路线。
+
+在逻辑层，本文定义 \((L,H)\) 有界任务完成可诊断性，并以临界运行对刻画正常与故障完成运行是否可能产生相同任务观测。围绕这一判定目标，构造任务完成状态类图、观测同步器、历史保持路径展开和完成时长包围，最后通过耦合 LP 对候选临界对进行精确确认，从而形成由结构筛选到时间精确验证的完整方法。
+
+在概率层，本文基于 LSTPN 引入故障假设窗口、故障后有界完成、条件观测分布、最小 Bayes 错误和可靠诊断覆盖率。概率传播以互斥历史事件上的活动计时器联合测度为依据；有理分段多项式分布和有限观测给出可计算子类，其他情形的严格数值结论须以有效积分外包围为前提。进一步地，本文在外部观测及完成边界满足明确的可测对齐条件下分析逻辑歧义与概率风险的关系，建立逻辑无歧义到概率完美诊断的充分方向，并说明零概率边界使其逆向一般不成立。
+
+实验部分从模型和数据两个层面检验上述方法。已选定的逻辑基准模型仅给出该有限基准集合中的历史判定一致性和时间筛选开销记录；闭式概率案例与语义反例用于核对特定数学关系、挑战错误实现，不承担整个 LSTPN 模型类别上的性能推断。PyScrew 加工记录展示模型拟合、历史工况风险判定与经验风险--覆盖评价的应用流程，但历史工况证书尚需按照第四章修订后的数值有效性条件逐项重新验收。
+
+\section{主要研究结论}
+
+综合全文理论分析与实验结果，可以得到以下四方面主要结论。
+
+第一，任务首次完成可以作为连接故障历史、事件顺序和总完成时间的统一诊断边界。在这一边界上，以“可观测事件顺序加总完成时间”作为逻辑观测，既保留了纯事件词忽略的时间区分信息，又不要求获得全部中间事件时间戳。固定发射序列的完成时间集合具有区间结构，因此任务完成观测歧义可以进一步转化为临界运行对的存在性问题。
+
+第二，有界任务完成逻辑诊断可以采用“结构筛选--时间包围--精确确认”的分层过程。候选覆盖和时间包围可靠性保证筛选阶段不会删除真实临界对，路径可行域与耦合 LP 的精确性保证最终歧义见证对应合法强时间运行。实验结果进一步表明，这种分层处理在保持基准模型判定一致性的同时减少了进入精确 LP 阶段的路径对。
+
+第三，随机时间条件下的诊断风险必须建立在正确的概率事件结构上。持续使能年龄决定条件剩余分布，不同执行历史即使重汇合到相同符号状态也不能无条件合并概率质量。历史保持的路径事件与有效数值区间可以为 \(P_e^\star\) 和 \(\Gamma_\delta\) 建立条件可靠的上下界；该结论要求概率传播本身正确，且连续观测的积分区间已被验证。只有满足这些条件时，才能把“模型满足规格”“模型违反规格”和“当前证据不足”区分为 \probstatus{1}、\probstatus{0} 和 \probstatus{\perp}。
+
+第四，逻辑歧义与概率风险存在明确但非对称的层次关系。语义对齐时，逻辑临界集为空足以推出两类条件观测分布相互奇异，并得到 \(P_e^\star=0\) 与 \(\Gamma_\delta=1\)；反之，支持临界集非空并不必然产生正概率诊断风险。进一步地，确定性观测粗化不会降低最小 Bayes 错误，而可靠诊断覆盖率对一般观测粗化不存在统一单调方向。因此，支持可行性、平均错误风险和可靠覆盖应当作为相互关联但不可互相替代的诊断层次分别分析。
+
+\Needspace{5\baselineskip}
+\section{研究局限}
+
+本文方法首先受到模型与分析域假设的限制。逻辑层采用单服务器、持续使能的强时间语义，并在给定 \(L,H\) 的首次完成运行范围内验证；有限分析界本身不能排除零时间循环。概率层进一步要求模型有界、有限时域内具有有限发射深度，并以独立绝对连续的原始发射延迟为主要对象；一般历史条件下的剩余计时器不再被假设独立。具有有理分段多项式时延与有限离散观测的受限子类可按本文给出的构造进行严格计算；更一般的连续观测仍需要单独构造并验证积分外包围，不能由测度传播的数学存在性自动推出具备有限步可执行的严格认证；此外，第四章的增量定时验证器仅适用于具有有限精确观测状态更新的映射，任意可测观测函数并不自动满足这一条件。新使能原始时延之间的相关性、复杂离散--连续混合分布以及观测缺失、噪声和在线变化等情况尚未纳入统一处理框架。
+
+其次，逻辑路径历史和概率路径事件都可能随并发度、不可观行为和执行历史增长，数值积分还会引入额外观测单元，因此现有算法仍属于输出敏感方法。第六章的基准模型能够支持判定一致性和筛选作用分析，但尚不能替代统一硬件、单因素控制下的大规模扩展性实验，对更复杂并发系统的计算边界仍需进一步研究。
+
+最后，现有概率证书主要认证固定 LSTPN 及其给定分布参数下的风险指标，参数估计误差和模型偏差尚未一并传播到认证区间。PyScrew 案例中的标签表示受控机械条件，也不提供真实故障首次发生时刻；现有评价主要说明给定数据协议下的可实施性，而跨设备、跨批次和前瞻性场景中的泛化能力仍需要更丰富的工业数据验证。
+
+\Needspace{5\baselineskip}
+\section{未来工作}
+
+后续可以首先从可扩展性角度改进逻辑和概率验证。逻辑层可利用偏序、并发独立性、对称性和组合分解减少等价历史展开，并研究更紧的时间包围和增量式耦合约束；概率层可进一步研究按概率质量与风险贡献驱动的自适应展开、安全历史聚合和并行区间积分，以降低路径事件增长带来的计算负担。
+
+第二，可以扩展随机时间模型及风险认证范围。未来可考虑离散--连续混合分布、相关随机计时器、共享环境变量和阶段间统计依赖，并把参数估计误差、有限样本不确定性或分布族不确定性纳入认证过程，构造同时反映数值误差与模型不确定性的稳健风险区间。
+
+第三，可以由验证给定观测进一步走向诊断观测设计和在线诊断。时间量化精度、可观事件选择、传感器配置和完成后附加观测长度均可视为设计变量，在观测成本、Bayes 风险和可靠覆盖之间进行联合优化；同时可根据任务执行中的观测前缀增量更新同步状态、路径可行域和条件风险，使任务完成时的严格诊断与任务过程中的提前预警相结合。
+
+最后，需要在具有真实故障时刻和更丰富工况标签的工业数据上继续验证方法，并采用跨批次、跨设备或前瞻性评价协议检验模型泛化能力。结合现场控制逻辑、工艺约束和数字孪生模型建立更完整的 TPN/LSTPN，可进一步评估本文任务完成诊断框架在实际制造系统中的适用条件和推广价值。
+
+%============== 参考文献 ==============%
+
+% 生成参考文献, 两种方式任选一种
+
+% 第一种方式, 使用 bib 文件
+%\nocite{*}  % 可以显示全部参考文献
+\bibliography{reference_revised,reference_revised_localadditions}
+
+%------------------------------------%
+
+% 第二种方式, 手动添加文献信息
+%\input{data/bibliography}
+
+%=============== 附录 ================%
+
+% 添加附录, 如不需要可以注释
+\appendix
+\chapter{第六章补充实验配置与数据说明}
+
+\section{逻辑实验补充配置}
+
+正文表~\ref{tab:chap6-logic-benchmark-config} 已经给出 52 个逻辑基准模型的总体构成。为了支持复核和后续引用，本节把不宜全部放入正文的逐例配置转入附录。附录表~\ref{tab:app-logic-micro} 给出 16 个微型模型的来源标识、结构规模和诊断边界；附录表~\ref{tab:app-logic-generated} 给出 36 个协议生成模型的逐例参数点。其中，协议生成模型中未再重复列出 $ops\_per\_part=2$、$wip\_bound=1$、故障位置数为 1、可调比例 0.1 和随机种子 0 等固定项，而只保留对区分模型最关键的 $m$、$j$、不可观测比例 $u$、时间区间宽度因子 $w$ 以及对应的 $(L,H)$。
+
+\begin{center}
+\small
+\setlength{\tabcolsep}{3.8pt}
+\begin{longtable}{>{\centering\arraybackslash}p{1.05cm}>{\raggedright\arraybackslash}p{6.80cm}>{\centering\arraybackslash}p{1.05cm}>{\centering\arraybackslash}p{1.05cm}>{\centering\arraybackslash}p{0.65cm}>{\centering\arraybackslash}p{0.75cm}>{\centering\arraybackslash}p{1.05cm}}
+\caption{16 个微型逻辑基准模型的结构与诊断边界}\label{tab:app-logic-micro}\\
+\hline
+模型 & 来源标识 & 库所数 & 变迁数 & $L$ & $H$ & 判定\\
+\hline
+\endfirsthead
+\multicolumn{7}{c}{表\thetable（续）}\\
+\hline
+模型 & 来源标识 & 库所数 & 变迁数 & $L$ & $H$ & 判定\\
+\hline
+\endhead
+\texttt{M01} & \texttt{M01\_running\_example} & 5 & 5 & 5 & 20 & $\logicstatus{0}$\\
+\texttt{M02} & \texttt{M02\_interval\_overlap} & 5 & 5 & 2 & 10 & $\logicstatus{0}$\\
+\texttt{M03} & \texttt{M03\_singleton\_overlap} & 5 & 5 & 2 & 8 & $\logicstatus{0}$\\
+\texttt{M04} & \texttt{M04\_distinct\_labels} & 7 & 6 & 2 & 10 & $\logicstatus{1}$\\
+\texttt{M05} & \texttt{M05\_recovery\_ver} & 5 & 5 & 2 & 10 & $\logicstatus{1}$\\
+\texttt{M06} & \texttt{M06\_persistent\_clock} & 6 & 4 & 2 & 15 & $\logicstatus{1}$\\
+\texttt{M07} & \texttt{M07\_urgency\_infeasible} & 5 & 5 & 2 & 15 & $\logicstatus{1}$\\
+\texttt{M08} & \texttt{M08\_first\_entry} & 6 & 7 & 3 & 10 & $\logicstatus{1}$\\
+\texttt{M09} & \texttt{M09\_pos\_duration\_chain} & 5 & 4 & 2 & 10 & $\logicstatus{1}$\\
+\texttt{M10} & \texttt{M10\_zero\_time\_cycle} & 4 & 5 & 2 & 10 & $\logicstatus{\perp}$\\
+\texttt{M11} & \texttt{M11\_disjoint\_enclosures} & 5 & 5 & 2 & 10 & $\logicstatus{1}$\\
+\texttt{M12} & \texttt{M12\_overlapping\_enclosures} & 5 & 5 & 2 & 10 & $\logicstatus{0}$\\
+\texttt{M13} & \texttt{M13\_repair\_failure\_tcap} & 6 & 6 & 2 & 10 & $\logicstatus{0}$\\
+\texttt{M14} & \texttt{M14\_repair\_success\_tdelta} & 5 & 5 & 2 & 10 & $\logicstatus{0}$\\
+\texttt{M15} & \texttt{M15\_repair\_failure\_greedy} & 6 & 6 & 2 & 10 & $\logicstatus{0}$\\
+\texttt{M16} & \texttt{M16\_repair\_failure\_lex\_tie} & 5 & 5 & 2 & 10 & $\logicstatus{0}$\\
+\hline
+\end{longtable}
+\end{center}
+\normalsize
+
+附录表~\ref{tab:app-logic-micro} 的作用不是简单罗列模型编号，而是说明微型模型承担的是语义边界验证角色：它们结构小、边界清晰，便于与第三章的正确性分析对应。例如，\texttt{M10\_zero\_time\_cycle} 是全文中唯一保留为 \logicstatus{\perp} 的微型模型，它提醒读者当前分析域不能把计算未终止与不可诊断等同起来。
+
+\begin{center}
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{5.9cm}>{\centering\arraybackslash}p{0.7cm}>{\centering\arraybackslash}p{0.7cm}>{\centering\arraybackslash}p{0.85cm}>{\centering\arraybackslash}p{0.85cm}>{\centering\arraybackslash}p{0.75cm}>{\centering\arraybackslash}p{0.95cm}>{\centering\arraybackslash}p{1.0cm}}
+\caption{36 个协议生成逻辑模型的逐例配置}\label{tab:app-logic-generated}\\
+\hline
+模型 & $m$ & $j$ & $u$ & $w$ & $L$ & $H$ & 判定\\
+\hline
+\endfirsthead
+\multicolumn{8}{c}{表\thetable（续）}\\
+\hline
+模型 & $m$ & $j$ & $u$ & $w$ & $L$ & $H$ & 判定\\
+\hline
+\endhead
+\texttt{RMT\_j1\_m2\_u0.1\_w0.5} & 2 & 1 & 0.1 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.1\_w1.0} & 2 & 1 & 0.1 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.1\_w1.5} & 2 & 1 & 0.1 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.3\_w0.5} & 2 & 1 & 0.3 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.3\_w1.0} & 2 & 1 & 0.3 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.3\_w1.5} & 2 & 1 & 0.3 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.5\_w0.5} & 2 & 1 & 0.5 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.5\_w1.0} & 2 & 1 & 0.5 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m2\_u0.5\_w1.5} & 2 & 1 & 0.5 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.1\_w0.5} & 3 & 1 & 0.1 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.1\_w1.0} & 3 & 1 & 0.1 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.1\_w1.5} & 3 & 1 & 0.1 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.3\_w0.5} & 3 & 1 & 0.3 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.3\_w1.0} & 3 & 1 & 0.3 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.3\_w1.5} & 3 & 1 & 0.3 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.5\_w0.5} & 3 & 1 & 0.5 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.5\_w1.0} & 3 & 1 & 0.5 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m3\_u0.5\_w1.5} & 3 & 1 & 0.5 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.1\_w0.5} & 4 & 1 & 0.1 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.1\_w1.0} & 4 & 1 & 0.1 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.1\_w1.5} & 4 & 1 & 0.1 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.3\_w0.5} & 4 & 1 & 0.3 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.3\_w1.0} & 4 & 1 & 0.3 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.3\_w1.5} & 4 & 1 & 0.3 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.5\_w0.5} & 4 & 1 & 0.5 & 0.5 & 6 & 16.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.5\_w1.0} & 4 & 1 & 0.5 & 1 & 6 & 18 & $\logicstatus{1}$\\
+\texttt{RMT\_j1\_m4\_u0.5\_w1.5} & 4 & 1 & 0.5 & 1.5 & 6 & 19.5 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.1\_w0.5} & 2 & 2 & 0.1 & 0.5 & 10 & 33 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.1\_w1.0} & 2 & 2 & 0.1 & 1 & 10 & 36 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.1\_w1.5} & 2 & 2 & 0.1 & 1.5 & 10 & 39 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.3\_w0.5} & 2 & 2 & 0.3 & 0.5 & 10 & 33 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.3\_w1.0} & 2 & 2 & 0.3 & 1 & 10 & 36 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.3\_w1.5} & 2 & 2 & 0.3 & 1.5 & 10 & 39 & $\logicstatus{1}$\\
+\texttt{RMT\_j2\_m2\_u0.5\_w0.5} & 2 & 2 & 0.5 & 0.5 & 10 & 33 & $\logicstatus{0}$\\
+\texttt{RMT\_j2\_m2\_u0.5\_w1.0} & 2 & 2 & 0.5 & 1 & 10 & 36 & $\logicstatus{0}$\\
+\texttt{RMT\_j2\_m2\_u0.5\_w1.5} & 2 & 2 & 0.5 & 1.5 & 10 & 39 & $\logicstatus{0}$\\
+\hline
+\end{longtable}
+\end{center}
+\normalsize
+
+附录表~\ref{tab:app-logic-generated} 则与正文中的主结论形成互补：正文负责说明生成协议的参数空间，附录负责保留每个实例的具体取值与对应结论。这样做的好处是，读者既可以在正文快速把握实验设计，也可以在附录中直接核对某个具体实例（例如 \texttt{RMT\_j2\_m2\_u0.5\_w1.0}）的配置和判定结果。
+
+\section{PyScrew 工况来源映射与阶段统计}
+
+正文表~\ref{tab:chap6-pyscrew-data} 和表~\ref{tab:chap6-pyscrew-representative} 已经给出了 PyScrew 的数据来源、样本口径以及代表性工况的具体数值。为了进一步支持复核，本节补充 32 个工况的完整来源映射与四阶段中位时长。附录表~\ref{tab:app-pyscrew-map} 说明每个工况由哪一个物理类别和左右位置组合而来；附录表~\ref{tab:app-pyscrew-stage} 给出每个工况完成校准样本的四阶段中位时长，单位保持为冻结结果中的 tick，不自行换算为秒。
+
+\begin{center}
+\small
+\setlength{\tabcolsep}{4.0pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{2.20cm}>{\raggedright\arraybackslash}p{6.10cm}>{\centering\arraybackslash}p{1.10cm}>{\centering\arraybackslash}p{1.50cm}>{\centering\arraybackslash}p{1.70cm}}
+\caption{PyScrew 32 个工况的来源映射与样本量配置}\label{tab:app-pyscrew-map}\\
+\hline
+工况 & 物理类别 & 位置 & 标定样本数 & 历史评价样本数\\
+\hline
+\endfirsthead
+\multicolumn{5}{c}{表\thetable（续）}\\
+\hline
+工况 & 物理类别 & 位置 & 标定样本数 & 历史评价样本数\\
+\hline
+\endhead
+\texttt{101\_left} & \texttt{101\_deformed-thread} & left & 50 & 50\\
+\texttt{101\_right} & \texttt{101\_deformed-thread} & right & 50 & 50\\
+\texttt{102\_left} & \texttt{102\_filed-screw-tip} & left & 50 & 50\\
+\texttt{102\_right} & \texttt{102\_filed-screw-tip} & right & 50 & 50\\
+\texttt{103\_left} & \texttt{103\_glued-screw-tip} & left & 50 & 50\\
+\texttt{103\_right} & \texttt{103\_glued-screw-tip} & right & 50 & 50\\
+\texttt{104\_left} & \texttt{104\_coated-screw} & left & 50 & 50\\
+\texttt{104\_right} & \texttt{104\_coated-screw} & right & 50 & 50\\
+\texttt{105\_left} & \texttt{105\_worn-out-screw} & left & 50 & 50\\
+\texttt{105\_right} & \texttt{105\_worn-out-screw} & right & 50 & 50\\
+\texttt{201\_left} & \texttt{201\_damaged-contact-surface} & left & 50 & 50\\
+\texttt{201\_right} & \texttt{201\_damaged-contact-surface} & right & 50 & 50\\
+\texttt{202\_left} & \texttt{202\_broken-contact-surface} & left & 50 & 50\\
+\texttt{202\_right} & \texttt{202\_broken-contact-surface} & right & 50 & 50\\
+\texttt{205\_left} & \texttt{205\_different-material} & left & 50 & 50\\
+\texttt{205\_right} & \texttt{205\_different-material} & right & 50 & 50\\
+\texttt{301\_left} & \texttt{301\_plastic-pin-screw-hole} & left & 50 & 50\\
+\texttt{301\_right} & \texttt{301\_plastic-pin-screw-hole} & right & 50 & 50\\
+\texttt{303\_left} & \texttt{303\_less-glass-fiber} & left & 50 & 50\\
+\texttt{303\_right} & \texttt{303\_less-glass-fiber} & right & 50 & 50\\
+\texttt{304\_left} & \texttt{304\_glued-screw-hole} & left & 50 & 50\\
+\texttt{304\_right} & \texttt{304\_glued-screw-hole} & right & 50 & 50\\
+\texttt{305\_left} & \texttt{305\_gap-between-parts} & left & 50 & 50\\
+\texttt{305\_right} & \texttt{305\_gap-between-parts} & right & 50 & 50\\
+\texttt{402\_left} & \texttt{402\_surface-moisture} & left & 50 & 50\\
+\texttt{402\_right} & \texttt{402\_surface-moisture} & right & 50 & 50\\
+\texttt{403\_left} & \texttt{403\_plastic-chip} & left & 50 & 50\\
+\texttt{403\_right} & \texttt{403\_plastic-chip} & right & 50 & 50\\
+\texttt{404\_left} & \texttt{404\_increased-temperature} & left & 50 & 50\\
+\texttt{404\_right} & \texttt{404\_increased-temperature} & right & 50 & 50\\
+\texttt{405\_left} & \texttt{405\_decreased-temperature} & left & 50 & 50\\
+\texttt{405\_right} & \texttt{405\_decreased-temperature} & right & 50 & 50\\
+\hline
+\end{longtable}
+\end{center}
+\normalsize
+
+附录表~\ref{tab:app-pyscrew-map} 的核心作用，是把正文中的工况编号与可解释的物理类别对应起来。例如，\texttt{205\_left} 对应 \texttt{205\_different-material} 的左侧位置，\texttt{405\_left} 对应 \texttt{405\_decreased-temperature} 的左侧位置。只有把这种来源映射交代清楚，读者才能理解正文中的风险证书究竟是针对哪些实际机械条件而给出的。
+
+\begin{center}
+\small
+\setlength{\tabcolsep}{4.0pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{2.50cm}>{\centering\arraybackslash}p{0.80cm}>{\centering\arraybackslash}p{1.60cm}>{\centering\arraybackslash}p{2.45cm}>{\centering\arraybackslash}p{2.45cm}>{\centering\arraybackslash}p{2.45cm}}
+\caption{PyScrew 32 个工况完成校准样本的四阶段中位时长（tick）}\label{tab:app-pyscrew-stage}\\
+\hline
+工况 & $n$ & Finding & Thread forming & Pre-tightening & Tightening 1.4\\
+\hline
+\endfirsthead
+\multicolumn{6}{c}{表\thetable（续）}\\
+\hline
+工况 & $n$ & Finding & Thread forming & Pre-tightening & Tightening 1.4\\
+\hline
+\endhead
+\texttt{101\_left} & 50 & 93 & 650 & 217.5 & 490\\
+\texttt{101\_right} & 44 & 92 & 650 & 244.5 & 393\\
+\texttt{102\_left} & 49 & 93 & 650 & 190 & 499\\
+\texttt{102\_right} & 45 & 92 & 650 & 235 & 387\\
+\texttt{103\_left} & 48 & 93 & 650 & 268.5 & 523.5\\
+\texttt{103\_right} & 46 & 93 & 650 & 305 & 422\\
+\texttt{104\_left} & 49 & 93 & 650 & 233 & 545\\
+\texttt{104\_right} & 29 & 93 & 650 & 258 & 409\\
+\texttt{105\_left} & 36 & 93 & 650 & 247.5 & 531.5\\
+\texttt{105\_right} & 39 & 92 & 650 & 335 & 440\\
+\texttt{201\_left} & 50 & 92 & 650 & 217 & 522\\
+\texttt{201\_right} & 49 & 93 & 650 & 260 & 428\\
+\texttt{202\_left} & 44 & 93 & 650 & 205.5 & 543\\
+\texttt{202\_right} & 38 & 92 & 650 & 210 & 477\\
+\texttt{205\_left} & 50 & 92 & 650 & 234 & 178\\
+\texttt{205\_right} & 48 & 92 & 650 & 263 & 204.5\\
+\texttt{301\_left} & 39 & 92 & 650 & 207 & 473\\
+\texttt{301\_right} & 49 & 93 & 650 & 229 & 398\\
+\texttt{303\_left} & 48 & 92 & 650 & 238.5 & 394\\
+\texttt{303\_right} & 25 & 93 & 650 & 247 & 402\\
+\texttt{304\_left} & 50 & 93 & 650 & 214 & 504\\
+\texttt{304\_right} & 49 & 93 & 650 & 245 & 418\\
+\texttt{305\_left} & 50 & 92 & 650 & 208 & 492\\
+\texttt{305\_right} & 50 & 92 & 650 & 292 & 417\\
+\texttt{402\_left} & 49 & 92 & 650 & 226 & 535\\
+\texttt{402\_right} & 47 & 92 & 650 & 237 & 409\\
+\texttt{403\_left} & 50 & 92 & 650 & 233.5 & 487\\
+\texttt{403\_right} & 47 & 92 & 650 & 304 & 383\\
+\texttt{404\_left} & 36 & 93 & 650 & 204.5 & 510\\
+\texttt{404\_right} & 44 & 93 & 650 & 222 & 418.5\\
+\texttt{405\_left} & 50 & 92 & 650 & 211.5 & 319\\
+\texttt{405\_right} & 49 & 93 & 650 & 244 & 308\\
+\hline
+\end{longtable}
+\end{center}
+\normalsize
+
+附录表~\ref{tab:app-pyscrew-stage} 从完整 32 工况角度补充了正文中的代表性样例。整体上，Finding 和 Thread forming 阶段的中位时长跨工况变化很小，而 Pre-tightening 与 Tightening 1.4 的差异更明显，这与正文对代表性工况的解读一致。把完整统计移入附录后，正文可以聚焦于解释这些差异为什么会影响风险认证，而附录则保留足够的数值细节供审阅和答辩时查验。
+
+% 如已有单独附录文件，可在此后继续输入
+% \input{data/appendix}
+
+
+
+%====================================%
+
+\backmatter % 结束章节自动编号
+
+% 攻读学位期间的研究成果
+\input{data/publications}
+
+% 致谢
+\input{data/acknowledgement}
+
+
+\end{document}
+

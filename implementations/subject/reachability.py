@@ -221,9 +221,10 @@ def explore_merged(model, node_budget, constraint_budget=None):
     """Quotient exploration over (marking, per-transition activation age).
 
     States with identical marking and identical per-transition activation
-    ages share one expansion; every incoming sequence keeps its own exact
-    difference-constraint system and observation word, so completion
-    intervals stay exact.  Payload growth is reported, never hidden.
+    ages share one expansion.  Every incoming sequence shares its parent's
+    immutable constraint prefix and stores only this step's delta; the chain
+    is materialized only when completion intervals are requested.  Stored
+    payload growth is reported, never hidden.
     """
     if type(node_budget) is not int or node_budget < 1:
         raise ValueError('positive integer node budget required')
@@ -257,9 +258,11 @@ def explore_merged(model, node_budget, constraint_budget=None):
 
     root_ages = {k: -1 for k in enabled(marking0)}
     root_key = key_of(marking0, root_ages)
-    # node: key -> {'marking':, 'ages':, 'payload': [item], 'expanded': bool}
+    # node: key -> {'marking':, 'ages':, 'payload': [item], 'expanded_upto': int}
+    # payload item: parent pointer + this step's constraint delta.
     nodes = {root_key: dict(marking=marking0, ages=root_ages, expanded_upto=0,
-                            payload=[dict(seq=(), cons=[], word=(), fault=None, completed=None)])}
+                            payload=[dict(seq=(), delta=(), parent=None, word=(),
+                                          fault=None, completed=None)])}
     order = deque([root_key])
     in_queue = {root_key}
     terminals = []
@@ -298,24 +301,22 @@ def explore_merged(model, node_budget, constraint_budget=None):
                 i = len(item['seq']) + 1
                 age = ages[name]
                 base = 0 if age == -1 else (i - 1 - age)
-                cons = list(item['cons'])
-                cons.append((base, i, hi))
-                cons.append((i, base, -lo))
+                delta = [(base, i, hi), (i, base, -lo)]
                 if i > 1:
-                    cons.append((i, i - 1, F(0)))
+                    delta.append((i, i - 1, F(0)))
                 if immediate:
                     prev = i - 1 if i > 1 else 0
-                    cons.append((i, prev, F(0)))
-                    cons.append((prev, i, F(0)))
-                cons.append((0, i, ha))
-                cons.append((i, 0, F(0)))
+                    delta.append((i, prev, F(0)))
+                    delta.append((prev, i, F(0)))
+                delta.append((0, i, ha))
+                delta.append((i, 0, F(0)))
                 child['payload'].append(dict(
-                    seq=item['seq'] + (name,), cons=cons,
+                    seq=item['seq'] + (name,), delta=tuple(delta), parent=item,
                     word=item['word'] if label is None else item['word'] + (label,),
                     fault=item['fault'] if item['fault'] is not None else (i if is_fault else None),
                     completed=i if is_completion else item['completed']))
                 payload_items += 1
-                total_constraints[0] += len(cons)
+                total_constraints[0] += len(delta)
                 if constraint_budget is not None and total_constraints[0] > constraint_budget:
                     pending = [dict(reason='CONSTRAINT_MEMORY_BUDGET',
                                     total_constraints=total_constraints[0],
@@ -341,15 +342,28 @@ def explore_merged(model, node_budget, constraint_budget=None):
                 node_budget=node_budget, constraint_budget=constraint_budget)
 
 
+def _materialize_payload_constraints(item):
+    """Rebuild the exact old constraint list from newest to oldest deltas."""
+    if 'cons' in item:  # read-only compatibility with pre-sharing explorations
+        return item['cons']
+    segments = []
+    cursor = item
+    while cursor is not None:
+        segments.append(cursor['delta'])
+        cursor = cursor['parent']
+    return [constraint for delta in reversed(segments) for constraint in delta]
+
+
 def merged_completion_intervals(model, exploration):
-    """Exact completion intervals from stored per-sequence constraints."""
+    """Exact completion intervals from shared per-sequence constraints."""
     hp, _bc, ha, _m, edges, _g = _validate(model)
     rows = []
     for t in exploration['terminals']:
         if t['terminal'] != 'FIRST_COMPLETION':
             continue
         n = len(t['seq'])
-        feasible, lo, hi = _solve_difference(t['cons'], n + 1, n)
+        cons = _materialize_payload_constraints(t)
+        feasible, lo, hi = _solve_difference(cons, n + 1, n)
         rows.append(dict(sequence=list(t['seq']), word=list(t['word']),
                          fault_step=t['fault'], completion_step=t['completed'],
                          feasible=feasible,

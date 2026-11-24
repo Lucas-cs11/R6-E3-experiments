@@ -1,0 +1,86 @@
+name: E3-06 external acquisition probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: [tina, prism, oris, sklearn]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Probe download
+        env:
+          TOOL: ${{ matrix.tool }}
+        run: |
+          python3 -B - <<'PY'
+          import hashlib, json, os, subprocess, sys, urllib.request
+          from pathlib import Path
+
+          tool = os.environ['TOOL']
+          out = Path(os.environ['RUNNER_TEMP']) / f'acquire-{tool}'
+          out.mkdir(parents=True, exist_ok=True)
+          CANDIDATES = {
+              'tina': ['https://projects.laas.fr/tina/binaries/tina-4.0.0-amd64-linux.tgz'],
+              'prism': ['https://www.prismmodelchecker.org/ftp/prism-4.9-linux64.tar.gz',
+                        'https://www.prismmodelchecker.org/ftp/prism-4.8-linux64.tar.gz',
+                        'https://www.prismmodelchecker.org/ftp/prism-4.7-linux64.tar.gz'],
+              'oris': ['https://www.oris.di.unipi.it/'],
+              'sklearn': [],
+          }
+          KNOWN = {'tina': '5e1cbd7c2e043419037a3d265914042fde795563094f38ddd88b42444d4afa8c'}
+          result = {'tool': tool, 'attempts': [], 'status': 'NOT_ACQUIRED'}
+
+          def sha256(p):
+              h = hashlib.sha256()
+              with open(p, 'rb') as f:
+                  for chunk in iter(lambda: f.read(1 << 20), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          if tool == 'sklearn':
+              r = subprocess.run([sys.executable, '-m', 'pip', 'download', 'scikit-learn',
+                                  '--no-deps', '-d', str(out)], capture_output=True, text=True, timeout=600)
+              wheels = list(out.glob('*.whl'))
+              result['attempts'].append({'method': 'pip download', 'returncode': r.returncode,
+                                         'stderr_tail': r.stderr[-500:]})
+              if wheels:
+                  result.update(status='ACQUIRED', file=wheels[0].name, sha256=sha256(wheels[0]),
+                                size=wheels[0].stat().st_size)
+          else:
+              for url in CANDIDATES[tool]:
+                  dest = out / url.rsplit('/', 1)[-1].replace('.','_')[:60]
+                  try:
+                      req = urllib.request.Request(url, headers={'User-Agent': 'e3-acquire-probe/1.0'})
+                      with urllib.request.urlopen(req, timeout=120) as resp:
+                          data = resp.read()
+                      dest.write_bytes(data)
+                      digest = hashlib.sha256(data).hexdigest()
+                      attempt = {'url': url, 'http': 200, 'sha256': digest, 'size': len(data),
+                                 'content_type': resp.headers.get('Content-Type')}
+                      if tool in KNOWN and digest != KNOWN[tool]:
+                          attempt['sha_mismatch'] = f'expected {KNOWN[tool]}'
+                      result['attempts'].append(attempt)
+                      if 'sha_mismatch' not in attempt and ('tgz' in url or 'tar.gz' in url or 'whl' in url):
+                          result.update(status='ACQUIRED', file=dest.name, sha256=digest, size=len(data))
+                          break
+                      if tool == 'oris':
+                          result.update(status='REGISTRATION_OR_HTML_ONLY', note='landing page fetched, no direct binary')
+                          break
+                  except Exception as exc:
+                      result['attempts'].append({'url': url, 'error': f'{type(exc).__name__}: {exc}'})
+          (out / 'acquisition.json').write_text(json.dumps(result, indent=2))
+          print(json.dumps(result, indent=2))
+          PY
+      - name: Upload acquisition evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-06-acquire-${{ matrix.tool }}
+          path: ${{ runner.temp }}/acquire-${{ matrix.tool }}/
+          if-no-files-found: error

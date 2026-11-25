@@ -99,6 +99,15 @@ class EnginePathTests(unittest.TestCase):
                            outputs['MAIN']['path_stats']['expansions'])
         self.assertEqual(len({tuple(row['call_sequence']) for row in outputs.values()}), 4)
         print(json.dumps({method: row['path_stats'] for method, row in outputs.items()}, sort_keys=True))
+    def test_duplicate_fault_histories_remain_proven_after_sync(self):
+        model = load('engine_duplicate_fault.json')
+        reference = reference_engine(model, 100)
+        self.assertEqual(reference['verdict'], '1')
+        outputs = [run_path(model, method, 100) for method in METHODS]
+        self.assertEqual({row['verdict'] for row in outputs}, {'1'})
+        main = next(row for row in outputs if row['method'] == 'MAIN')
+        self.assertEqual(main['path_stats']['sync_pairs'], 1)
+        self.assertEqual(len(main['trace']), 1)
 
 
 if __name__ == '__main__':

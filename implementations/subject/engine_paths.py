@@ -65,16 +65,25 @@ def _has_noncompletion_self_loop(model):
                for transition in model['transitions'].values())
 
 
-def _diagnose(exploration, rows, deadline):
+def _diagnose(exploration, rows, deadline, use_envelope):
     if exploration['status'] != 'EXHAUSTED_FOR_MODEL':
         return 'PERP'
     fault_terminals = [row for row in exploration['terminals'] if row.get('fault') is not None]
     if any(row['terminal'] == 'DEADLOCK' for row in fault_terminals):
         return '0'
-    fault_rows = [row for row in rows if row['fault_step'] is not None and row['feasible']]
-    if any(F(row['completion_interval'][1]) > deadline for row in fault_rows):
+    fault_rows = [row for row in rows if row['fault_step'] is not None]
+    if any(not row['feasible'] for row in fault_rows):
+        return 'PERP'
+    if use_envelope:
+        grouped = defaultdict(list)
+        for row in fault_rows:
+            grouped[tuple(row['word'])].append(F(row['completion_interval'][1]))
+        if any(max(bounds) > deadline for bounds in grouped.values()):
+            return '0'
+    elif any(F(row['completion_interval'][1]) > deadline for row in fault_rows):
         return '0'
-    if fault_rows and len(fault_terminals) == len(fault_rows):
+    if (fault_terminals and fault_rows and
+            all(row['terminal'] == 'FIRST_COMPLETION' for row in fault_terminals)):
         return '1'
     return 'PERP'
 
@@ -117,7 +126,7 @@ def _execute(model, method, node_budget):
         envelope_splits = _envelope_split(rows, deadline)
         call_sequence.append('TIME_ENVELOPE')
     call_sequence.append('DIAGNOSE')
-    verdict = _diagnose(exploration, all_rows, deadline)
+    verdict = _diagnose(exploration, rows, deadline, method in ('MAIN', 'NO_SYNC'))
     state_classes = base_classes + len({tuple(row['sequence']) for row in rows}) + envelope_splits
     stats = dict(expansions=expansions, state_classes=state_classes,
                  sync_pairs=sync_pairs, lp_calls=len(all_rows),

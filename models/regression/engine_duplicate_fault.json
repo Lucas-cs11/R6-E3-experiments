@@ -1,0 +1,14 @@
+{
+  "places": ["s", "a", "b", "done"],
+  "initial_marking": {"s": 1, "a": 0, "b": 0, "done": 0},
+  "completion_markings": [{"done": 1}],
+  "L": "1", "H": "2", "diagnosis_window": "1", "distribution_version": "deterministic",
+  "arcs": [["s", "fa"], ["fa", "a"], ["a", "ca"], ["ca", "done"],
+           ["s", "fb"], ["fb", "b"], ["b", "cb"], ["cb", "done"]],
+  "transitions": {
+    "fa": {"pre": {"s": 1}, "post": {"a": 1}, "interval": [0, 0], "is_fault": true, "is_adjustable": false, "immediate": true, "label": null},
+    "fb": {"pre": {"s": 1}, "post": {"b": 1}, "interval": [0, 0], "is_fault": true, "is_adjustable": false, "immediate": true, "label": null},
+    "ca": {"pre": {"a": 1}, "post": {"done": 1}, "interval": [1, 1], "is_fault": false, "is_adjustable": false, "immediate": false, "label": "done"},
+    "cb": {"pre": {"b": 1}, "post": {"done": 1}, "interval": [1, 1], "is_fault": false, "is_adjustable": false, "immediate": false, "label": "done"}
+  }
+}

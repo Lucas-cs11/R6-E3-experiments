@@ -1,0 +1,62 @@
+"""R6-08 single entry: exact interval feasibility and optional bound certificates."""
+import json
+from fractions import Fraction as F
+
+from ap41_intervals import evaluate
+from r6_components import make_acceptance_record as _component_acceptance_record
+
+
+_PATCHES = {
+    'LOOSE_UPPER_CERTIFY': dict(
+        component_id='R6-08', old='intersect Pe with [0,min(pi0,pi1)]',
+        new='certify the raw Pe upper bound without natural-domain intersection'),
+}
+
+
+def mutation_patch(mutation_id):
+    return dict(_PATCHES[mutation_id], mutation_id=mutation_id,
+                mode='SPECIFIC_R608_SEMANTIC_MUTATION')
+
+
+def r608_evaluate(data, mutation=None):
+    """Run raw interval validation and joint feasibility before any certificate."""
+    result = evaluate(data)
+    if mutation == 'LOOSE_UPPER_CERTIFY' and result['status'] == 'CONDITIONAL_ONLY':
+        result['Pe'] = (F(data['Pe']['low']), F(data['Pe']['high']))
+        result['status'] = 'CERTIFIED'
+        result['certified'] = True
+        result['certificate'] = {'status': 'LOOSE_UPPER_CERTIFY'}
+    elif mutation is not None:
+        raise ValueError('unknown R6-08 mutation')
+    return result
+
+
+def _acceptance_projection(output):
+    """Preserve the complete result in the existing field-level comparator."""
+    canonical = json.dumps(output, sort_keys=True, default=str, separators=(',', ':'))
+    events = output.get('proof_trace', [])
+    certificate = output.get('certificate')
+    if isinstance(certificate, dict):
+        events = certificate.get('atoms', events)
+    return dict(status=output['status'], resolved=canonical, unresolved='0',
+                categories=[], frontier=[], events=events)
+
+
+def make_acceptance_record(component_id, case, subject_output, oracle_output,
+                           mutation_id, mutated_output):
+    """Reuse the self-computing component comparator without dropping R6-08 fields."""
+    proxy_case = dict(kind='mass')
+    packed_mutation = (mutated_output if isinstance(mutated_output, Exception)
+                       else _acceptance_projection(mutated_output))
+    record = _component_acceptance_record(
+        'R6-03', proxy_case, _acceptance_projection(subject_output),
+        _acceptance_projection(oracle_output), 'R603_DROP_FRONTIER_MASS', packed_mutation)
+    record.update(
+        original_case=case,
+        new_counterexample=mutation_patch(mutation_id),
+        subject_output=subject_output,
+        oracle_output=oracle_output,
+        mutation_patch=mutation_patch(mutation_id),
+        coverage_limitations=('Conditional AP41 interval feasibility plus restricted immediate '
+                              'word certificates; no general continuous-density certification.'))
+    return record

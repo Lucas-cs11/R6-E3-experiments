@@ -116,5 +116,91 @@ class R6ComponentBatch1Tests(unittest.TestCase):
         self.assertEqual(len(cases), 6)
 
 
+class R6ComponentBatch2Tests(unittest.TestCase):
+    def compare(self, component, model, case):
+        subject = run_case(component, model, case)
+        reference = reference_case(component, model, case)
+        self.assertEqual(subject['status'], reference['status'], case['case_id'])
+        if case['kind'] == 'timed' and subject['status'] == 'REPLAYED_HISTORY':
+            for key in ('terminal', 'outcome', 'first_fault_time', 'completion_time',
+                        'endpoint_enabled_to_fire'):
+                self.assertEqual(subject[key], reference[key], (case['case_id'], key))
+        elif case['kind'] == 'mass':
+            for key in ('resolved', 'unresolved', 'categories', 'frontier'):
+                self.assertEqual(subject[key], reference[key], (case['case_id'], key))
+        elif case['kind'] == 'endpoint':
+            self.assertEqual(subject['visited'], reference['visited'])
+            simplify = lambda rows: [(tuple(row['suffix']), row['result']['terminal'],
+                                      row['result']['outcome']) for row in rows]
+            self.assertEqual(simplify(subject['terminals']), simplify(reference['terminals']))
+            self.assertEqual(subject['pending'], reference['pending'])
+        return subject, reference
+
+    def test_r603_five_terminal_classes_and_mass_conservation(self):
+        model = load('r603_immediate.json')
+        full_case = dict(case_id='r603_full_three_branches', kind='mass', role='POSITIVE', budget=20)
+        full, _ = self.compare('R6-03', model, full_case)
+        terminal_classes = {row['terminal'] for row in full['categories']}
+        self.assertEqual(terminal_classes,
+                         {'FIRST_COMPLETION', 'NON_COMPLETION_TERMINAL', 'DEADLOCK'})
+        self.assertEqual({row['mass'] for row in full['categories']}, {'1/3'})
+        self.assertEqual(full['resolved'], '1')
+        self.assertFalse(any('after_done' in row['path'] for row in full['events']))
+
+        budget_case = dict(case_id='r603_budget_frontier', kind='mass', role='POSITIVE', budget=2)
+        bounded, _ = self.compare('R6-03', model, budget_case)
+        self.assertEqual(bounded['status'], 'UNRESOLVED')
+        self.assertEqual((bounded['resolved'], bounded['unresolved']), ('1/3', '2/3'))
+        self.assertEqual(len(bounded['frontier']), 2)
+        with self.assertRaisesRegex(ArithmeticError, 'path mass not conserved'):
+            run_case('R6-03', model, budget_case, mutation='R603_DROP_FRONTIER_MASS')
+
+        horizon_model = load('r603_horizon.json')
+        horizon_case = dict(case_id='r603_horizon_truncation', kind='timed', role='POSITIVE',
+                            history=history(('fault', 1), end=4))
+        horizon, _ = self.compare('R6-03', horizon_model, horizon_case)
+        self.assertEqual(horizon['terminal'], 'HORIZON_TRUNCATION')
+        invalid_case = dict(case_id='r603_completion_before_earliest', kind='timed', role='NEGATIVE',
+                            history=history(('fault', 1), ('complete', 4), end=4))
+        invalid, _ = self.compare('R6-03', horizon_model, invalid_case)
+        self.assertEqual(invalid['status'], 'INVALID_INPUT_OR_HISTORY')
+        record = make_acceptance_record('R6-03', full_case, full,
+                                        reference_case('R6-03', model, full_case),
+                                        'R603_DROP_FRONTIER_MASS', 1)
+        self.assertTrue(record['actual_network_trace'])
+        self.assertEqual(len((full_case, budget_case, horizon_case, invalid_case)), 4)
+
+    def test_r604_endpoint_closure_window_and_post_completion_fault(self):
+        model = load('r604_endpoint.json')
+        endpoint_case = dict(case_id='r604_right_endpoint_immediate_closure', kind='endpoint', role='POSITIVE',
+                             prefix=history(('fault', 1), end=2), budget=20)
+        endpoint, _ = self.compare('R6-04', model, endpoint_case)
+        branches = {tuple(row['suffix']): row['result'] for row in endpoint['terminals']}
+        self.assertEqual(branches[('advance', 'finish')]['outcome'], 'COMPLETED_IN_TIME')
+        self.assertEqual(branches[('advance', 'finish')]['completion_time'], '2')
+        self.assertEqual(branches[('advance', 'abort')]['terminal'], 'DEADLOCK')
+        self.assertEqual(endpoint['status'], 'EXHAUSTED_AT_ENDPOINT_FOR_PREFIX')
+        with self.assertRaises(RuntimeError):
+            run_case('R6-04', model, endpoint_case, mutation='R604_TRUNCATE_BEFORE_IMMEDIATE')
+
+        late_case = dict(case_id='r604_fault_after_completion', kind='timed', role='NEGATIVE',
+                         history=history(('fault', 1), ('advance', 2), ('finish', 2),
+                                         ('late_fault', 2), end=2))
+        late, _ = self.compare('R6-04', model, late_case)
+        self.assertEqual(late['status'], 'INVALID_INPUT_OR_HISTORY')
+
+        inconsistent = copy.deepcopy(model)
+        inconsistent['B_c'] = 0
+        invalid_case = dict(case_id='r604_inconsistent_Bc_HA', kind='timed', role='NEGATIVE',
+                            history=history(('fault', 1), end=2))
+        invalid, _ = self.compare('R6-04', inconsistent, invalid_case)
+        self.assertEqual(invalid['status'], 'INVALID_INPUT_OR_HISTORY')
+        record = make_acceptance_record('R6-04', endpoint_case, endpoint,
+                                        reference_case('R6-04', model, endpoint_case),
+                                        'R604_TRUNCATE_BEFORE_IMMEDIATE', 1)
+        self.assertTrue(record['actual_network_trace'])
+        self.assertEqual(len((endpoint_case, late_case, invalid_case)), 3)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,10 @@ source mutations are explicit test-only paths that replace one verified source
 line in memory; frozen infrastructure files are never edited.
 """
 import inspect
+from collections import defaultdict
+from fractions import Fraction as F
 
+from endpoint_closure import close_endpoint
 from immediate_mass import propagate
 from timed_trace import replay
 
@@ -19,11 +22,21 @@ _MUTATIONS = {
         component_id='R6-02', function=replay,
         old="completed is not None and completed - fault <= bc",
         new="completed is not None"),
+    'R603_DROP_FRONTIER_MASS': dict(
+        component_id='R6-03', function=propagate, kind='mass',
+        old="unresolved = sum((p for *_, p in queue), F(0))",
+        new="unresolved = F(0)"),
+    'R604_TRUNCATE_BEFORE_IMMEDIATE': dict(
+        component_id='R6-04', function=close_endpoint, kind='endpoint',
+        old="choices = immediate or ready",
+        new="choices = []"),
 }
 
 _LIMITATIONS = {
     'R6-01': 'Concrete strong-time histories plus finite immediate roots; not continuous-domain exhaustion.',
     'R6-02': 'Concrete completion histories and explicit external token; not all possible external environments.',
+    'R6-03': 'Finite immediate BFS and one concrete timed horizon; not a general LSTPN classification.',
+    'R6-04': 'Exhaustive zero-delay suffixes for one concrete prefix only; not continuous-schedule exhaustion.',
 }
 
 
@@ -35,7 +48,7 @@ def mutation_patch(mutation_id):
                 mode='IN_MEMORY_SOURCE_REPLACE')
 
 
-def _run_source_mutation(mutation_id, model, history):
+def _run_source_mutation(mutation_id, *args):
     spec = _MUTATIONS[mutation_id]
     function = spec['function']
     source = inspect.getsource(function)
@@ -43,23 +56,43 @@ def _run_source_mutation(mutation_id, model, history):
         raise RuntimeError(f'mutation anchor is not unique: {mutation_id}')
     namespace = dict(function.__globals__)
     exec(compile(source.replace(spec['old'], spec['new']), f'<{mutation_id}>', 'exec'), namespace)
-    return namespace[function.__name__](model, history)
+    return namespace[function.__name__](*args)
+
+
+def _classify_noncompletion(result, model):
+    predicate = model.get('noncompletion_marking')
+    if not predicate:
+        return result
+    masses = defaultdict(F)
+    for event in result['events']:
+        if (event['terminal'] == 'DEADLOCK' and
+                all(event['marking'].get(p, 0) >= w for p, w in predicate.items())):
+            event['terminal'] = 'NON_COMPLETION_TERMINAL'
+        if event['terminal']:
+            key = (event['hypothesis'], event['terminal'], tuple(event['word']))
+            masses[key] += F(event['mass'])
+    result['categories'] = [dict(hypothesis=h, terminal=t, word=w, mass=str(p))
+                            for (h, t, w), p in sorted(masses.items())]
+    return result
 
 
 def run_case(component_id, model, case, mutation=None):
     """Execute one model-driven case without consulting the independent oracle."""
     kind = case['kind']
+    if mutation is not None:
+        spec = _MUTATIONS[mutation]
+        if spec['component_id'] != component_id or spec.get('kind', 'timed') != kind:
+            raise ValueError('component/case-kind/mutation mismatch')
+        args = ((model, case['history']) if kind == 'timed' else
+                (model, case['budget']) if kind == 'mass' else
+                (model, case['prefix'], case['budget']))
+        return _run_source_mutation(mutation, *args)
     if kind == 'timed':
-        if mutation is not None:
-            spec = _MUTATIONS[mutation]
-            if spec['component_id'] != component_id:
-                raise ValueError('component/mutation mismatch')
-            return _run_source_mutation(mutation, model, case['history'])
         return replay(model, case['history'])
     if kind == 'mass':
-        if mutation is not None:
-            raise ValueError('mass mutation is not defined for this component')
-        return propagate(model, case['budget'])
+        return _classify_noncompletion(propagate(model, case['budget']), model)
+    if kind == 'endpoint':
+        return close_endpoint(model, case['prefix'], case['budget'])
     raise ValueError(f'unsupported component case kind: {kind}')
 
 

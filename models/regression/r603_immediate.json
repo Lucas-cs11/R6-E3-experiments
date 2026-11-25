@@ -1,0 +1,11 @@
+{
+  "initial": {"root": 1, "done": 0, "aborted": 0, "stuck": 0},
+  "completion_marking": {"done": 1},
+  "noncompletion_marking": {"aborted": 1},
+  "transitions": {
+    "abort": {"pre": {"root": 1}, "post": {"aborted": 1}, "weight": 1, "fault": false, "label": null, "immediate": true, "interval": [0, 0]},
+    "complete": {"pre": {"root": 1}, "post": {"done": 1}, "weight": 1, "fault": false, "label": "done", "immediate": true, "interval": [0, 0]},
+    "stuck": {"pre": {"root": 1}, "post": {"stuck": 1}, "weight": 1, "fault": true, "label": null, "immediate": true, "interval": [0, 0]},
+    "after_done": {"pre": {"done": 1}, "post": {"stuck": 1}, "weight": 1, "fault": true, "label": "late", "immediate": true, "interval": [0, 0]}
+  }
+}

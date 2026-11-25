@@ -1,0 +1,13 @@
+{
+  "H_psi": 1, "B_c": 1, "B_d": 0, "H_A": 2,
+  "initial": {"start": 1, "work": 0, "gate": 0, "done": 0, "aborted": 0},
+  "completion_marking": {"done": 1},
+  "transitions": {
+    "fault": {"pre": {"start": 1}, "post": {"work": 1}, "interval": [1, 1], "fault": true, "completion": false, "immediate": false, "label": null},
+    "advance": {"pre": {"work": 1}, "post": {"gate": 1}, "interval": [1, 1], "fault": false, "completion": false, "immediate": false, "label": null},
+    "finish": {"pre": {"gate": 1}, "post": {"done": 1}, "interval": [0, 0], "fault": false, "completion": true, "immediate": true, "label": "done"},
+    "abort": {"pre": {"gate": 1}, "post": {"aborted": 1}, "interval": [0, 0], "fault": false, "completion": false, "immediate": true, "label": null},
+    "ordinary": {"pre": {"gate": 1}, "post": {"done": 1}, "interval": [0, 1], "fault": false, "completion": true, "immediate": false, "label": "done"},
+    "late_fault": {"pre": {"done": 1}, "post": {"gate": 1}, "interval": [0, 0], "fault": true, "completion": false, "immediate": true, "label": "late"}
+  }
+}

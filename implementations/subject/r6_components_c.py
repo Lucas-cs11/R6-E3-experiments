@@ -3,6 +3,9 @@ import json
 from fractions import Fraction as F
 
 from ap41_intervals import evaluate
+from immediate_evidence import canonical
+from immediate_metrics import evaluate_word_metrics
+from immediate_mass_reference import distribution
 from r6_components import make_acceptance_record as _component_acceptance_record
 
 
@@ -10,6 +13,9 @@ _PATCHES = {
     'LOOSE_UPPER_CERTIFY': dict(
         component_id='R6-08', old='intersect Pe with [0,min(pi0,pi1)]',
         new='certify the raw Pe upper bound without natural-domain intersection'),
+    'TRUST_FLAG': dict(
+        component_id='R6-08', old='ignore evidence_valid and replay the pinned model/ledger',
+        new='accept evidence_valid=True despite MODEL_SHA_MISMATCH'),
 }
 
 
@@ -19,16 +25,41 @@ def mutation_patch(mutation_id):
 
 
 def r608_evaluate(data, mutation=None):
-    """Run raw interval validation and joint feasibility before any certificate."""
-    result = evaluate(data)
-    if mutation == 'LOOSE_UPPER_CERTIFY' and result['status'] == 'CONDITIONAL_ONLY':
-        result['Pe'] = (F(data['Pe']['low']), F(data['Pe']['high']))
-        result['status'] = 'CERTIFIED'
-        result['certified'] = True
-        result['certificate'] = {'status': 'LOOSE_UPPER_CERTIFY'}
-    elif mutation is not None:
+    """Run interval feasibility, optional evidence binding, then exact metrics."""
+    if mutation not in (None, 'LOOSE_UPPER_CERTIFY', 'TRUST_FLAG'):
         raise ValueError('unknown R6-08 mutation')
-    return result
+    algebraic = evaluate(data)
+    if algebraic['status'] != 'CONDITIONAL_ONLY':
+        return algebraic
+
+    evidence = data.get('immediate_evidence')
+    if evidence is not None:
+        metrics = evaluate_word_metrics(
+            evidence['model_bytes'].encode('utf-8'), canonical(evidence['ledger']),
+            model_sha256=evidence['model_sha256'], budget=evidence['budget'],
+            reference=distribution, pi1=data['pi1'], delta=data['delta'])
+        if metrics['status'] != 'EXACT_IMMEDIATE_WORD_METRICS':
+            if mutation == 'TRUST_FLAG' and data.get('evidence_valid') is True:
+                algebraic['certified'] = True
+                algebraic['certificate'] = {'status': 'TRUSTED_FLAG'}
+                algebraic['trust_flag_used'] = True
+                return algebraic
+            return dict(status=metrics['status'], certified=False,
+                        reason=metrics.get('reason'), certificate=None,
+                        algebraic=algebraic)
+        bounded_input = dict(data)
+        bounded_input['Pe'] = {'low': metrics['Pe'], 'high': metrics['Pe']}
+        bounded_input['Gamma'] = {'low': metrics['Gamma'], 'high': metrics['Gamma']}
+        algebraic = evaluate(bounded_input)
+        algebraic['certificate'] = metrics
+        algebraic['certified'] = False
+
+    if mutation == 'LOOSE_UPPER_CERTIFY':
+        algebraic['Pe'] = (F(data['Pe']['low']), F(data['Pe']['high']))
+        algebraic['status'] = 'CERTIFIED'
+        algebraic['certified'] = True
+        algebraic['certificate'] = {'status': 'LOOSE_UPPER_CERTIFY'}
+    return algebraic
 
 
 def _acceptance_projection(output):

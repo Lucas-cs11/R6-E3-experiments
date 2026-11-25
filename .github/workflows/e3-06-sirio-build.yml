@@ -18,11 +18,15 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '24'
       - name: Build (Maven project rooted at sirio/)
         run: |
+          set +e
           mvn -B -f sirio/pom.xml -DskipTests package 2>&1 | tee build.log
-          echo "BUILD_EXIT=${PIPESTATUS[0]}" | tee build.exit
+          rc=${PIPESTATUS[0]}
+          set -e
+          echo "BUILD_EXIT=$rc" | tee build.exit
+          test "$rc" -eq 0
       - name: Collect evidence
         if: always()
         run: |

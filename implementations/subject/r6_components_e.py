@@ -12,10 +12,17 @@ _PATCHES = {
     'CLIP_UPPER': dict(
         component_id='R6-09', old='reject a clipped density whose total mass is not one',
         new='retain clipped mass above one as an exact certificate'),
+    'UNSUPPORTED_AS_ZERO': dict(
+        component_id='R6-09', old='return UNSUPPORTED with a checkable reason',
+        new='turn an unsupported density into certified zero mass'),
 }
 
 
 class _EvidenceError(ValueError):
+    pass
+
+
+class _Unsupported(ValueError):
     pass
 
 
@@ -57,6 +64,13 @@ def _integrate_segments(segments, mutation=None):
     total = F(0)
     previous = None
     for index, segment in enumerate(segments):
+        if any(segment.get(key) is None or
+               (isinstance(segment.get(key), str) and segment[key].lower() in
+                ('inf', '+inf', '-inf', 'infinity', '+infinity', '-infinity'))
+               for key in ('low', 'high')):
+            raise _Unsupported('NON_FINITE_DOMAIN')
+        if not isinstance(segment.get('coefficients'), list):
+            raise _Unsupported('NON_RATIONAL_POLYNOMIAL')
         low, high = _number(segment['low']), _number(segment['high'])
         coefficients = [_number(value) for value in segment['coefficients']]
         if low >= high:
@@ -103,8 +117,15 @@ def _apply_case_mutation(model, case, mutation):
 
 def run_r609(model, case, mutation=None):
     """Integrate finite polynomial segments or rectangle products exactly."""
-    if mutation not in (None, 'DROP_SEGMENT_BOUNDARY', 'CLIP_UPPER'):
+    if mutation not in (None, 'DROP_SEGMENT_BOUNDARY', 'CLIP_UPPER', 'UNSUPPORTED_AS_ZERO'):
         raise ValueError('unknown R6-09 mutation')
+    if 'depth' in case and case['depth'] > model['max_depth']:
+        return dict(status='UNRESOLVED', certified=False, conditional_verdict=None,
+                    reason='DEPTH_LIMIT_EXCEEDED')
+    if 'time' in case and (F(case['time']) > F(model['max_time']) or
+                           F(case['time']) > F(model['H_A'])):
+        return dict(status='UNRESOLVED', certified=False, conditional_verdict=None,
+                    reason='HORIZON_LIMIT_EXCEEDED')
     try:
         model = _apply_case_mutation(model, case, mutation)
         if model['kind'] == 'piecewise_polynomial':
@@ -114,6 +135,8 @@ def run_r609(model, case, mutation=None):
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=False,
                         conditional_verdict=None, total_mass=str(total), segments=rows)
         if model['kind'] == 'rectangle_product':
+            if model['category'].get('kind') != 'rectangles':
+                raise _Unsupported('NON_POLYHEDRAL_CATEGORY')
             cells = []
             total = F(0)
             for rectangle in model['category']['rectangles']:
@@ -130,6 +153,12 @@ def run_r609(model, case, mutation=None):
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=False,
                         conditional_verdict=None, total_mass=str(total), cells=cells)
         raise _EvidenceError('UNSUPPORTED_MODEL_KIND')
+    except _Unsupported as exc:
+        if mutation == 'UNSUPPORTED_AS_ZERO':
+            return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=True,
+                        conditional_verdict=None, total_mass='0', segments=[])
+        return dict(status='UNSUPPORTED', certified=False,
+                    conditional_verdict=None, reason=str(exc))
     except _EvidenceError as exc:
         return dict(status='INVALID_EVIDENCE', certified=False,
                     conditional_verdict=None, reason=str(exc))

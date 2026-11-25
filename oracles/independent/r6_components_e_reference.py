@@ -6,6 +6,10 @@ class _Invalid(ValueError):
     pass
 
 
+class _Unsupported(ValueError):
+    pass
+
+
 def _rational(value):
     if type(value) not in (int, str, Q):
         raise _Invalid('NON_RATIONAL_COEFFICIENT')
@@ -38,6 +42,13 @@ def _simpson(segments, drop_boundary=False):
     rows = []
     total = Q(0)
     for index, segment in enumerate(segments):
+        if any(segment.get(key) is None or
+               (isinstance(segment.get(key), str) and segment[key].lower() in
+                ('inf', '+inf', '-inf', 'infinity', '+infinity', '-infinity'))
+               for key in ('low', 'high')):
+            raise _Unsupported('NON_FINITE_DOMAIN')
+        if not isinstance(segment.get('coefficients'), list):
+            raise _Unsupported('NON_RATIONAL_POLYNOMIAL')
         low, high = _rational(segment['low']), _rational(segment['high'])
         coefficients = [_rational(value) for value in segment['coefficients']]
         include_low, include_high = segment['include_low'], segment['include_high']
@@ -71,6 +82,13 @@ def reference_r609(model, case, mutation=None):
     """Simpson reference; mutation is accepted only to compare identical invalid calls."""
     if mutation not in (None, 'DROP_SEGMENT_BOUNDARY', 'CLIP_UPPER'):
         raise ValueError('unknown reference mutation')
+    if 'depth' in case and case['depth'] > model['max_depth']:
+        return dict(status='UNRESOLVED', certified=False, conditional_verdict=None,
+                    reason='DEPTH_LIMIT_EXCEEDED')
+    if 'time' in case and (Q(case['time']) > Q(model['max_time']) or
+                           Q(case['time']) > Q(model['H_A'])):
+        return dict(status='UNRESOLVED', certified=False, conditional_verdict=None,
+                    reason='HORIZON_LIMIT_EXCEEDED')
     try:
         if case.get('drop_boundary'):
             model = dict(model)
@@ -85,6 +103,8 @@ def reference_r609(model, case, mutation=None):
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=False,
                         conditional_verdict=None, total_mass=str(total), segments=rows)
         if model['kind'] == 'rectangle_product':
+            if model['category'].get('kind') != 'rectangles':
+                raise _Unsupported('NON_POLYHEDRAL_CATEGORY')
             cells = []
             total = Q(0)
             for rectangle in model['category']['rectangles']:
@@ -101,6 +121,9 @@ def reference_r609(model, case, mutation=None):
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=False,
                         conditional_verdict=None, total_mass=str(total), cells=cells)
         raise _Invalid('UNSUPPORTED_MODEL_KIND')
+    except _Unsupported as exc:
+        return dict(status='UNSUPPORTED', certified=False,
+                    conditional_verdict=None, reason=str(exc))
     except _Invalid as exc:
         return dict(status='INVALID_EVIDENCE', certified=False,
                     conditional_verdict=None, reason=str(exc))

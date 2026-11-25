@@ -78,5 +78,56 @@ class R609ExactIntegrationTests(unittest.TestCase):
         self.assertEqual(len((case, negative_case, boundary_case, clip_case)), 4)
 
 
+class R609UnsupportedTests(unittest.TestCase):
+    def test_limits_reasons_and_unsupported_as_zero_mutation(self):
+        linear = load('r609_linear.json')
+        cases = []
+        for name, patch, expected, reason in [
+            ('depth_limit', {'depth': 5}, 'UNRESOLVED', 'DEPTH_LIMIT_EXCEEDED'),
+            ('time_limit', {'time': '3'}, 'UNRESOLVED', 'HORIZON_LIMIT_EXCEEDED'),
+            ('finite_time_boundary', {'time': '2'}, 'EXACT_PIECEWISE_RATIONAL_INTEGRAL', None),
+        ]:
+            case = dict(case_id=f'r609_{name}', kind='integrate', role='BOUNDARY', **patch)
+            subject = run_r609(linear, case)
+            self.assertEqual(subject, reference_r609(linear, case))
+            self.assertEqual(subject['status'], expected)
+            if reason is not None:
+                self.assertEqual(subject['reason'], reason)
+                self.assertIsNone(subject['conditional_verdict'])
+                self.assertFalse(subject['certified'])
+            cases.append(case)
+
+        unsupported_cases = []
+        nonrational = copy.deepcopy(linear)
+        nonrational['segments'][0]['coefficients'] = {'kind': 'sqrt'}
+        unsupported_cases.append(('nonrational', nonrational, 'NON_RATIONAL_POLYNOMIAL'))
+        nonfinite = copy.deepcopy(linear)
+        nonfinite['segments'][0]['high'] = None
+        unsupported_cases.append(('nonfinite', nonfinite, 'NON_FINITE_DOMAIN'))
+        ellipse = load('r609_rectangle.json')
+        ellipse['category'] = {'kind': 'ellipse'}
+        unsupported_cases.append(('non_polyhedral', ellipse, 'NON_POLYHEDRAL_CATEGORY'))
+        mutation_record = None
+        for name, model, reason in unsupported_cases:
+            with self.subTest(case=name):
+                case = dict(case_id=f'r609_{name}', kind='integrate', role='NEGATIVE')
+                subject = run_r609(model, case)
+                reference = reference_r609(model, case)
+                self.assertEqual(subject, reference)
+                self.assertEqual((subject['status'], subject['reason']), ('UNSUPPORTED', reason))
+                self.assertFalse(subject['certified'])
+                self.assertIsNone(subject['conditional_verdict'])
+                if name == 'nonrational':
+                    mutated = run_r609(model, case, mutation='UNSUPPORTED_AS_ZERO')
+                    self.assertEqual(mutated['status'], 'EXACT_PIECEWISE_RATIONAL_INTEGRAL')
+                    self.assertEqual(mutated['total_mass'], '0')
+                    self.assertTrue(mutated['certified'])
+                    mutation_record = make_acceptance_record('R6-09', case, subject, reference,
+                                                             'UNSUPPORTED_AS_ZERO', mutated)
+        self.assertEqual(mutation_record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
+        self.assertTrue(mutation_record['mutation_detected'])
+        self.assertEqual(len(cases) + len(unsupported_cases), 6)
+
+
 if __name__ == '__main__':
     unittest.main()

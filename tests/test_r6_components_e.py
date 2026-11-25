@@ -35,6 +35,16 @@ class R609ExactIntegrationTests(unittest.TestCase):
                 self.assertEqual(subject['total_mass'], total)
                 outputs.append((model, case, subject, reference))
         self.assertEqual([row['mass'] for row in outputs[1][2]['segments']], ['1/8', '7/8'])
+        # Quadratic positive case: f(x)=3x^2 on [0,1] integrates to exactly 1
+        # and exercises the vertex nonnegativity path with a nonzero interior
+        # minimum vertex outside the interval.
+        quadratic = copy.deepcopy(load('r609_linear.json'))
+        quadratic['segments'][0]['coefficients'] = ['0', '0', '3']
+        quadratic_case = dict(case_id='r609_quadratic_positive', kind='integrate', role='POSITIVE')
+        q_subject = run_r609(quadratic, quadratic_case)
+        self.assertEqual(q_subject, reference_r609(quadratic, quadratic_case))
+        self.assertEqual((q_subject['status'], q_subject['total_mass']),
+                         ('EXACT_PIECEWISE_RATIONAL_INTEGRAL', '1'))
         cells = {row['id']: row['mass'] for row in outputs[2][2]['cells']}
         self.assertEqual(cells, {'left': '1/4', 'right': '3/4'})
 
@@ -112,7 +122,7 @@ class R609UnsupportedTests(unittest.TestCase):
         unsupported_cases.append(('textual_density', textual, 'NON_RATIONAL_POLYNOMIAL'))
         high_degree = copy.deepcopy(linear)
         high_degree['segments'][0]['coefficients'] = ['0', '0', '0', '1']
-        unsupported_cases.append(('high_degree', high_degree, 'POLYNOMIAL_DEGREE_UNSUPPORTED'))
+        unsupported_cases.append(('high_degree', high_degree, 'IMPLEMENTATION_DEGREE_LIMIT'))
         unknown = copy.deepcopy(linear)
         unknown['kind'] = 'unknown_continuous_density'
         unsupported_cases.append(('unknown_kind', unknown, 'UNSUPPORTED_MODEL_KIND'))

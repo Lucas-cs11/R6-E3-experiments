@@ -25,7 +25,7 @@ def _value(coefficients, x):
 
 def _nonnegative(coefficients, low, high):
     if len(coefficients) > 3:
-        raise _Unsupported('POLYNOMIAL_DEGREE_UNSUPPORTED')
+        raise _Unsupported('IMPLEMENTATION_DEGREE_LIMIT')
     candidates = [low, high]
     if len(coefficients) == 3 and coefficients[2]:
         vertex = -coefficients[1] / (2 * coefficients[2])

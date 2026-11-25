@@ -47,7 +47,7 @@ def _polynomial_value(coefficients, point):
 def _check_nonnegative(coefficients, low, high):
     degree = len(coefficients) - 1
     if degree > 2:
-        raise _Unsupported('POLYNOMIAL_DEGREE_UNSUPPORTED')
+        raise _Unsupported('IMPLEMENTATION_DEGREE_LIMIT')
     points = [low, high]
     if degree == 2 and coefficients[2] != 0:
         vertex = -coefficients[1] / (2 * coefficients[2])

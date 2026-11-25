@@ -3,13 +3,14 @@ import copy
 import json
 import sys
 import unittest
+from fractions import Fraction as F
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / p) for p in ('implementations/subject',
                                        'implementations/probability', 'oracles/independent')]
-from r6_components_d import make_acceptance_record, run_r610
-from r6_components_d_reference import reference_r610
+from r6_components_d import make_acceptance_record, run_r610, run_r611
+from r6_components_d_reference import reference_r610, reference_r611
 
 
 def load(name):
@@ -68,6 +69,42 @@ class R610IndependentCrossLayerTests(unittest.TestCase):
                                         'COLLISION_AS_APPLICABLE', mutated)
         self.assertTrue(record['mutation_detected'])
         self.assertEqual(len(cases), 7)
+
+
+class R611BayesPairTests(unittest.TestCase):
+    def test_zero_measure_coarsening_pair_and_specific_mutation(self):
+        model = load('r611_bayes_pairs.json')
+        zero_case = dict(case_id='r611_zero_measure_shared_point', kind='zero_measure', role='POSITIVE')
+        zero = run_r611(model, zero_case)
+        zero_reference = reference_r611(model, zero_case)
+        self.assertEqual(zero, zero_reference)
+        self.assertEqual(zero['mass_added'], '0')
+        self.assertEqual((zero['Pe_before'], zero['Pe_after'], zero['delta_Pe']),
+                         ('3/8', '3/8', '0'))
+
+        coarse_case = dict(case_id='r611_atomic_coarsening', kind='coarsening', role='POSITIVE')
+        subject = run_r611(model, coarse_case)
+        reference = reference_r611(model, coarse_case)
+        self.assertEqual(subject, reference)
+        self.assertEqual((subject['Pe_before'], subject['Pe_after']), ('1/4', '1/2'))
+        self.assertEqual((subject['Gamma_before'], subject['Gamma_after']), ('1', '0'))
+        self.assertTrue(subject['monotonic_Pe'])
+        self.assertEqual((len(subject['atoms_before']), len(subject['atoms_after'])), (2, 1))
+
+        invalid_case = dict(case_id='r611_non_unit_hypothesis_mass', kind='coarsening',
+                            role='NEGATIVE', drop_atom=True)
+        invalid = run_r611(model, invalid_case)
+        self.assertEqual(invalid, reference_r611(model, invalid_case))
+        self.assertEqual(invalid['status'], 'INVALID_EVIDENCE')
+
+        mutated = run_r611(model, coarse_case, mutation='R611_IGNORE_COARSENING')
+        self.assertEqual((mutated['Pe_after'], mutated['Gamma_after']), ('1/4', '1'))
+        self.assertNotEqual(mutated, subject)
+        record = make_acceptance_record('R6-11', coarse_case, subject, reference,
+                                        'R611_IGNORE_COARSENING', mutated)
+        self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
+        self.assertTrue(record['actual_network_trace'])
+        self.assertEqual(len((zero_case, coarse_case, invalid_case)), 3)
 
 
 if __name__ == '__main__':

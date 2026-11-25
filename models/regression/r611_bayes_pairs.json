@@ -1,0 +1,17 @@
+{
+  "zero_measure": {
+    "interval": ["0", "1"],
+    "prior0": "1/2",
+    "prior1": "1/2",
+    "density0": {"kind": "constant", "value": "1"},
+    "density1": {"kind": "linear", "coefficient": "2"},
+    "shared_point": "0"
+  },
+  "atomic": {
+    "prior0": "1/2", "prior1": "1/2", "delta": "1/4",
+    "atoms": [
+      {"id": "A", "h0": "3/4", "h1": "1/4"},
+      {"id": "B", "h0": "1/4", "h1": "3/4"}
+    ]
+  }
+}

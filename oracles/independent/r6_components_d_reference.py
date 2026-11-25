@@ -3,6 +3,7 @@ from collections import deque
 from fractions import Fraction as Q
 import json
 import math
+from itertools import product
 
 from absolute_schedule import assess
 
@@ -124,3 +125,63 @@ def reference_r610(model_pair, case):
                     proof_trace=left['terminals'])
     return dict(status='THEOREM_APPLICABLE', checks=checks,
                 counterexample_claimed=False, proof_trace=left['terminals'])
+
+
+def _integrate(intercept, slope, low, high):
+    return intercept * (high - low) + slope * (high * high - low * low) / 2
+
+
+def _decision_error(joint):
+    errors = []
+    for decisions in product((0, 1), repeat=len(joint)):
+        errors.append(sum((mass[1 - decision] for mass, decision in zip(joint, decisions)), Q(0)))
+    return min(errors)
+
+
+def _coverage_rows(joint, delta):
+    rows = []
+    for left, right in joint:
+        mixture = left + right
+        posterior = min(left, right) / mixture
+        rows.append(dict(joint=[str(left), str(right)], posterior_error=str(posterior),
+                         reliable=posterior <= delta))
+    return rows
+
+
+def reference_r611(model, case):
+    """Independent antiderivative and exhaustive deterministic decision rules."""
+    if case['kind'] == 'zero_measure':
+        spec = model['zero_measure']
+        low, high = map(Q, spec['interval'])
+        constant = Q(spec['density0']['value'])
+        slope = Q(spec['density1']['coefficient'])
+        if (_integrate(constant, Q(0), low, high) != 1 or
+                _integrate(Q(0), slope, low, high) != 1):
+            return dict(status='INVALID_EVIDENCE', reason='DENSITY_NOT_NORMALIZED')
+        crossing = constant / slope
+        # Independent region decision: H1 on [0,crossing], H0 afterward.
+        error = (Q(spec['prior1']) * _integrate(Q(0), slope, low, crossing) +
+                 Q(spec['prior0']) * _integrate(constant, Q(0), crossing, high))
+        return dict(status='ZERO_MEASURE_SHARED_POINT', mass_added='0',
+                    Pe_before=str(error), Pe_after=str(error), delta_Pe='0')
+
+    spec = model['atomic']
+    atoms = list(spec['atoms'])
+    if case.get('drop_atom'):
+        atoms = atoms[:-1]
+    if any(sum(Q(atom[f'h{i}']) for atom in atoms) != 1 for i in range(2)):
+        return dict(status='INVALID_EVIDENCE', reason='HYPOTHESIS_MASS_NOT_ONE')
+    pi0, pi1, delta = Q(spec['prior0']), Q(spec['prior1']), Q(spec['delta'])
+    fine = [(pi0 * Q(atom['h0']), pi1 * Q(atom['h1'])) for atom in atoms]
+    coarse = [(sum((row[0] for row in fine), Q(0)), sum((row[1] for row in fine), Q(0)))]
+    before = _coverage_rows(fine, delta)
+    after = _coverage_rows(coarse, delta)
+    gamma_before = sum((Q(row['joint'][0]) + Q(row['joint'][1])
+                        for row in before if row['reliable']), Q(0))
+    gamma_after = sum((Q(row['joint'][0]) + Q(row['joint'][1])
+                       for row in after if row['reliable']), Q(0))
+    pe_before, pe_after = _decision_error(fine), _decision_error(coarse)
+    return dict(status='EXACT_COARSENING_PAIR', Pe_before=str(pe_before),
+                Pe_after=str(pe_after), Gamma_before=str(gamma_before),
+                Gamma_after=str(gamma_after), monotonic_Pe=pe_after >= pe_before,
+                atoms_before=before, atoms_after=after, proof_trace=[*before, *after])

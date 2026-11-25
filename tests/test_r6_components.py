@@ -60,8 +60,7 @@ class R6ComponentBatch1Tests(unittest.TestCase):
         self.assertEqual(mutated['completion_time'], '2')
         record = make_acceptance_record('R6-01', cases[0], positive,
                                         reference_case('R6-01', model, cases[0]),
-                                        'R601_PERSIST_MIDDLE_CLOCK',
-                                        subject_matches_oracle=True, mutation_detected=True)
+                                        'R601_PERSIST_MIDDLE_CLOCK', mutated)
         self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
         self.assertTrue(record['actual_network_trace'])
         self.assertIn('old', record['mutation_patch'])
@@ -111,8 +110,7 @@ class R6ComponentBatch1Tests(unittest.TestCase):
         self.assertNotEqual(mutated['outcome'], baseline['outcome'])
         record = make_acceptance_record('R6-02', cases[0], outputs[0][1],
                                         reference_case('R6-02', current, cases[0]),
-                                        'R602_IGNORE_COMPLETION_WINDOW',
-                                        subject_matches_oracle=True, mutation_detected=True)
+                                        'R602_IGNORE_COMPLETION_WINDOW', mutated)
         self.assertTrue(record['actual_network_trace'])
         self.assertTrue(record['mutation_detected'])
         self.assertEqual(len(cases), 6)
@@ -154,7 +152,7 @@ class R6ComponentBatch2Tests(unittest.TestCase):
         self.assertEqual(bounded['status'], 'UNRESOLVED')
         self.assertEqual((bounded['resolved'], bounded['unresolved']), ('1/3', '2/3'))
         self.assertEqual(len(bounded['frontier']), 2)
-        with self.assertRaisesRegex(ArithmeticError, 'path mass not conserved'):
+        with self.assertRaisesRegex(ArithmeticError, 'path mass not conserved') as raised:
             run_case('R6-03', model, budget_case, mutation='R603_DROP_FRONTIER_MASS')
 
         horizon_model = load('r603_horizon.json')
@@ -168,8 +166,7 @@ class R6ComponentBatch2Tests(unittest.TestCase):
         self.assertEqual(invalid['status'], 'INVALID_INPUT_OR_HISTORY')
         record = make_acceptance_record('R6-03', full_case, full,
                                         reference_case('R6-03', model, full_case),
-                                        'R603_DROP_FRONTIER_MASS',
-                                        subject_matches_oracle=True, mutation_detected=True)
+                                        'R603_DROP_FRONTIER_MASS', raised.exception)
         self.assertTrue(record['actual_network_trace'])
         self.assertEqual(len((full_case, budget_case, horizon_case, invalid_case)), 4)
 
@@ -209,8 +206,7 @@ class R6ComponentBatch2Tests(unittest.TestCase):
         self.assertEqual(invalid['status'], 'INVALID_INPUT_OR_HISTORY')
         record = make_acceptance_record('R6-04', endpoint_case, endpoint,
                                         reference_case('R6-04', model, endpoint_case),
-                                        'R604_HORIZON_CUT_LOSES_COMPLETION',
-                                        subject_matches_oracle=True, mutation_detected=True)
+                                        'R604_HORIZON_CUT_LOSES_COMPLETION', misclassified)
         self.assertTrue(record['actual_network_trace'])
         self.assertEqual(len((endpoint_case, late_case, invalid_case)), 3)
 

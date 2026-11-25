@@ -115,15 +115,48 @@ def run_case(component_id, model, case, mutation=None):
     raise ValueError(f'unsupported component case kind: {kind}')
 
 
+_TIMED_KEYS = ('terminal', 'outcome', 'first_fault_time', 'completion_time',
+               'endpoint_enabled_to_fire')
+_MASS_KEYS = ('resolved', 'unresolved', 'categories', 'frontier')
+
+
+def outputs_match(kind, subject_output, oracle_output):
+    """Field-level agreement check used by the acceptance record itself."""
+    if subject_output['status'] != oracle_output['status']:
+        return False
+    if kind == 'timed' and subject_output['status'] == 'REPLAYED_HISTORY':
+        return all(subject_output[k] == oracle_output[k] for k in _TIMED_KEYS)
+    if kind == 'mass':
+        return all(subject_output[k] == oracle_output[k] for k in _MASS_KEYS)
+    if kind == 'endpoint':
+        simplify = lambda rows: [(tuple(r['suffix']), r['result']['terminal'],
+                                  r['result']['outcome']) for r in rows]
+        return (subject_output['visited'] == oracle_output['visited']
+                and simplify(subject_output['terminals']) == simplify(oracle_output['terminals'])
+                and subject_output['pending'] == oracle_output['pending'])
+    return True
+
+
+def outputs_diverged(kind, baseline_output, mutated_output):
+    """True when the mutated run observably departs from the baseline."""
+    if isinstance(mutated_output, Exception):
+        return True
+    return not outputs_match(kind, baseline_output, mutated_output)
+
+
 def make_acceptance_record(component_id, case, subject_output, oracle_output,
-                           mutation_id, subject_matches_oracle, mutation_detected):
+                           mutation_id, mutated_output):
     """Package the contract-required, inspectable component acceptance fields.
 
-    ``invariant_verdict`` is derived from the caller-supplied comparison
-    outcomes, never asserted unconditionally; ``mutation_detected`` records
-    whether the mutated run observably diverged, not a fabricated process
-    exit code.
+    The record computes ``subject_matches_oracle`` and ``mutation_detected``
+    itself from the supplied outputs; ``mutated_output`` may be the exception
+    raised by a mutated run.  It is a recorder with built-in comparison for
+    the fields listed in ``outputs_match`` — not a substitute for the wider
+    gate suite.
     """
+    kind = case['kind']
+    subject_matches_oracle = outputs_match(kind, subject_output, oracle_output)
+    mutation_detected = outputs_diverged(kind, subject_output, mutated_output)
     trace = (subject_output.get('trace') or subject_output.get('events') or
              subject_output.get('terminals') or [])
     verdict = ('COMPONENT_REGRESSION_PASS' if subject_matches_oracle and mutation_detected
@@ -136,6 +169,7 @@ def make_acceptance_record(component_id, case, subject_output, oracle_output,
         oracle_output=oracle_output,
         invariant_verdict=verdict,
         mutation_patch=mutation_patch(mutation_id),
-        mutation_detected=bool(mutation_detected),
+        mutation_detected=mutation_detected,
+        mutation_raised=isinstance(mutated_output, Exception),
         coverage_limitations=_LIMITATIONS[component_id],
     )

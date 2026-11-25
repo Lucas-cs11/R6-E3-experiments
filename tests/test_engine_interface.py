@@ -66,6 +66,15 @@ class EngineInterfaceTests(unittest.TestCase):
         self.assertFalse(got['supported'])
         self.assertTrue(any('immediate' in r['field'] for r in got['reasons']))
 
+    def test_initial_completion_rejected(self):
+        model = self.real_model()
+        broken = json.loads(json.dumps(model))
+        broken['completion_markings'] = [dict(broken['initial_marking'])]
+        got = check_applicability(broken)
+        self.assertFalse(got['supported'])
+        reason = next(r for r in got['reasons'] if r['field'] == 'completion_markings')
+        self.assertIn('initial marking already satisfies', reason['detail'])
+
     def test_no_fault_transition_rejected(self):
         model = self.real_model()
         for t in model['transitions'].values():

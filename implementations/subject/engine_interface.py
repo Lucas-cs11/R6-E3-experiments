@@ -133,5 +133,12 @@ def check_applicability(model):
         reasons.append(_reason('distribution_version', f'must be one of {DISTRIBUTION_VERSIONS}', version))
     if not any(t.get('is_fault') for t in transitions.values() if isinstance(t, dict)):
         reasons.append(_reason('transitions', 'no fault transition declared; H1 would be empty'))
+    if isinstance(initial, dict) and isinstance(completions, list):
+        for index, goal in enumerate(completions):
+            if isinstance(goal, dict) and goal and all(initial.get(p, 0) >= w for p, w in goal.items()):
+                reasons.append(_reason('completion_markings',
+                                       'initial marking already satisfies a completion predicate',
+                                       {'index': index, 'predicate': goal}))
+                break
     return {'supported': not reasons, 'reasons': reasons, 'checked_fields': checked,
             'fault_transitions': sorted(n for n, t in transitions.items() if isinstance(t, dict) and t.get('is_fault'))}

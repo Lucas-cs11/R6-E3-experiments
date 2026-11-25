@@ -1,0 +1,17 @@
+{
+  "places": ["s", "a", "b", "f", "done"],
+  "initial_marking": {"s": 1, "a": 0, "b": 0, "f": 0, "done": 0},
+  "completion_markings": [{"done": 1}],
+  "L": "1", "H": "2", "diagnosis_window": "3/2", "distribution_version": "deterministic",
+  "arcs": [["s", "sel_a"], ["sel_a", "a"], ["a", "ca"], ["ca", "done"],
+           ["s", "sel_b"], ["sel_b", "b"], ["b", "cb"], ["cb", "done"],
+           ["s", "sel_fault"], ["sel_fault", "f"], ["f", "late"], ["late", "done"]],
+  "transitions": {
+    "sel_a": {"pre": {"s": 1}, "post": {"a": 1}, "interval": [0, 0], "is_fault": false, "is_adjustable": false, "immediate": true, "label": null},
+    "sel_b": {"pre": {"s": 1}, "post": {"b": 1}, "interval": [0, 0], "is_fault": false, "is_adjustable": false, "immediate": true, "label": null},
+    "sel_fault": {"pre": {"s": 1}, "post": {"f": 1}, "interval": [0, 0], "is_fault": true, "is_adjustable": false, "immediate": true, "label": null},
+    "ca": {"pre": {"a": 1}, "post": {"done": 1}, "interval": [1, 1], "is_fault": false, "is_adjustable": false, "immediate": false, "label": "done"},
+    "cb": {"pre": {"b": 1}, "post": {"done": 1}, "interval": [1, 1], "is_fault": false, "is_adjustable": false, "immediate": false, "label": "done"},
+    "late": {"pre": {"f": 1}, "post": {"done": 1}, "interval": [2, 2], "is_fault": false, "is_adjustable": false, "immediate": false, "label": "done"}
+  }
+}

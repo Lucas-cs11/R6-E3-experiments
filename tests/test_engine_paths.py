@@ -83,6 +83,22 @@ class EnginePathTests(unittest.TestCase):
             self.assertEqual(result['status'], 'UNSUPPORTED')
             self.assertEqual(result['verdict'], 'PERP')
             self.assertTrue(result['reasons'])
+    def test_sync_and_envelope_have_distinct_numeric_effects(self):
+        model = load('engine_split.json')
+        reference = reference_engine(model, 100)
+        outputs = {method: run_path(model, method, 100) for method in METHODS}
+        self.assertEqual({row['verdict'] for row in outputs.values()}, {reference['verdict']})
+        self.assertEqual(reference['verdict'], '0')
+        self.assertEqual(outputs['MAIN']['path_stats']['sync_pairs'], 1)
+        self.assertEqual(outputs['NO_ENVELOPE']['path_stats']['sync_pairs'], 1)
+        self.assertEqual(outputs['NO_SYNC']['path_stats']['sync_pairs'], 0)
+        self.assertEqual(outputs['FULL_HISTORY']['path_stats']['sync_pairs'], 0)
+        self.assertEqual(outputs['MAIN']['path_stats']['envelope_splits'], 1)
+        self.assertEqual(outputs['NO_ENVELOPE']['path_stats']['envelope_splits'], 0)
+        self.assertGreater(outputs['FULL_HISTORY']['path_stats']['expansions'],
+                           outputs['MAIN']['path_stats']['expansions'])
+        self.assertEqual(len({tuple(row['call_sequence']) for row in outputs.values()}), 4)
+        print(json.dumps({method: row['path_stats'] for method, row in outputs.items()}, sort_keys=True))
 
 
 if __name__ == '__main__':

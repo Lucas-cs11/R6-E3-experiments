@@ -1,0 +1,8 @@
+{
+  "kind": "piecewise_polynomial",
+  "H_A": "2", "max_depth": 4, "max_time": "2",
+  "segments": [
+    {"low": "0", "high": "1", "include_low": true, "include_high": true,
+     "coefficients": ["0", "2"]}
+  ]
+}

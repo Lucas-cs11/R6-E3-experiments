@@ -1,0 +1,17 @@
+{
+  "kind": "rectangle_product",
+  "H_A": "2", "max_depth": 4, "max_time": "2",
+  "category": {
+    "kind": "rectangles",
+    "rectangles": [
+      {"id": "left", "axes": [
+        {"segments": [{"low": "0", "high": "1/2", "include_low": true, "include_high": true, "coefficients": ["0", "2"]}]},
+        {"segments": [{"low": "0", "high": "1", "include_low": true, "include_high": true, "coefficients": ["0", "2"]}]}
+      ]},
+      {"id": "right", "axes": [
+        {"segments": [{"low": "1/2", "high": "1", "include_low": true, "include_high": true, "coefficients": ["0", "2"]}]},
+        {"segments": [{"low": "0", "high": "1", "include_low": true, "include_high": true, "coefficients": ["0", "2"]}]}
+      ]}
+    ]
+  }
+}

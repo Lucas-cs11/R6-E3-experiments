@@ -1,0 +1,8 @@
+{
+  "H_psi": 1, "B_c": 1, "B_d": 2, "H_A": 4,
+  "initial": {"s": 1, "d": 0},
+  "completion_marking": {"d": 1},
+  "transitions": {
+    "ca": {"pre": {"s": 1}, "post": {"d": 1}, "interval": [1, 1], "fault": false, "completion": true, "immediate": false, "label": "done"}
+  }
+}

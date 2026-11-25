@@ -1,0 +1,15 @@
+{
+  "cases": 52,
+  "micro": 16,
+  "generated": "RECONSTRUCTED_VIA_GENERATOR (36 ADAPTER_VALIDATED)",
+  "rows": 208,
+  "methods": [
+    "main",
+    "reference",
+    "no_sync",
+    "no_envelope"
+  ],
+  "micro_originals": "UNAVAILABLE_ORIGINAL_BYTES (freeze paths+expected SHA only)",
+  "e3_04_engine": "NOT_EXECUTED for all 208 rows",
+  "scope": "TRACEABILITY_ONLY_NO_PERFORMANCE_CLAIM"
+}

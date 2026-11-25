@@ -1,0 +1,11 @@
+{
+  "H_psi": 1, "B_c": 1, "B_d": 2, "H_A": 4,
+  "initial": {"s": 1, "a": 0, "b": 0, "d": 0, "z": 0},
+  "completion_marking": {"d": 1},
+  "transitions": {
+    "sel_a": {"pre": {"s": 1}, "post": {"a": 1}, "interval": [0, 0], "fault": false, "completion": false, "immediate": true, "label": null},
+    "sel_b": {"pre": {"s": 1}, "post": {"b": 1}, "interval": [0, 0], "fault": false, "completion": false, "immediate": true, "label": null},
+    "ca": {"pre": {"a": 1}, "post": {"d": 1}, "interval": [1, 1], "fault": false, "completion": true, "immediate": false, "label": "done"},
+    "noise": {"pre": {"b": 1}, "post": {"z": 1}, "interval": [1, 1], "fault": false, "completion": false, "immediate": false, "label": "done"}
+  }
+}

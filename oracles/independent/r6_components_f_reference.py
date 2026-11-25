@@ -90,8 +90,9 @@ def reference_r613(manifest_path, predictions_path, history_path, raw_json_root=
     rows = _read_csv(manifest_path)
     pairs = {}
     for row in rows:
-        pairs.setdefault(row['workpiece_id'], set()).add(row['location'])
-    pair_failures = sum(locations != {'left', 'right'} for locations in pairs.values())
+        pairs.setdefault(row['workpiece_id'], []).append(row['location'])
+    pair_failures = sum(len(locations) != 2 or set(locations) != {'left', 'right'}
+                        for locations in pairs.values())
     class_counts = Counter(row['physical_class'] for row in rows)
     manifest = dict(
         rows=len(rows), workpieces=len(pairs), paired_workpieces=len(pairs)-pair_failures,

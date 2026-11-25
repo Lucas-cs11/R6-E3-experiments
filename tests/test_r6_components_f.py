@@ -2,6 +2,8 @@
 import json
 import os
 import sys
+import csv
+import tempfile
 import unittest
 from unittest import mock
 from pathlib import Path
@@ -89,6 +91,27 @@ class R613SourceReconciliationTests(unittest.TestCase):
                                         'MISSING_SHA_IGNORED', ignored)
         self.assertTrue(record['mutation_detected'])
         self.assertEqual(len((case,)), 1)
+
+    def test_duplicate_left_row_is_a_pair_failure_in_both_implementations(self):
+        with tempfile.TemporaryDirectory(prefix='r613-pair-') as tmp:
+            manifest = Path(tmp) / 'manifest.csv'
+            fields = ['workpiece_id', 'location', 'physical_class', 'source_group',
+                      'workpiece_result', 'file_sha256', 'file_name']
+            with manifest.open('w', newline='') as handle:
+                writer = csv.DictWriter(handle, fieldnames=fields)
+                writer.writeheader()
+                for location, filename in (('left', 'a.json'), ('left', 'b.json'), ('right', 'c.json')):
+                    writer.writerow(dict(workpiece_id='W', location=location, physical_class='C',
+                                         source_group=f'C|{location}', workpiece_result='OK',
+                                         file_sha256='0' * 64, file_name=filename))
+            predictions = ROOT / 'baseline_readonly/e2/chapter6/outer_predictions.csv'
+            history = ROOT / 'runs/domain_audit/historical_1413_1421_summary.json'
+            subject = run_r613(manifest, predictions, history, raw_json_root='')
+            reference = reference_r613(manifest, predictions, history, raw_json_root='')
+            self.assertEqual(subject, reference)
+            self.assertEqual(subject['manifest']['pair_failures'], 1)
+            self.assertEqual(subject['manifest']['paired_workpieces'], 0)
+            self.assertEqual(subject['raw_sha_audit']['status'], 'SKIPPED_NO_RAW_DATA')
 
 
 if __name__ == '__main__':

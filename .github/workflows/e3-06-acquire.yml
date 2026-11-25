@@ -47,8 +47,8 @@ jobs:
           if tool == 'prism_gh':
               pass  # handled below, skips candidate-URL loop
           if tool == 'prism_gh':
-              r = subprocess.run(['gh', 'release', 'download', '--repo', 'prismmodelchecker/prism',
-                                  '--pattern', '*linux*', '-d', str(out), '--clobber'],
+              r = subprocess.run(['gh', 'release', 'download', 'v4.11', '-R', 'prismmodelchecker/prism',
+                                  '--pattern', 'prism-4.11-linux64-x86.tar.gz', '-D', str(out), '--clobber'],
                                  capture_output=True, text=True, timeout=600)
               result['attempts'].append({'method': 'gh release download prismmodelchecker/prism',
                                          'returncode': r.returncode, 'stderr_tail': r.stderr[-500:]})

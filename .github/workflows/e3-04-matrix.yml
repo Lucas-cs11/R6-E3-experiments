@@ -1,0 +1,34 @@
+name: E3-04 52x4 run matrix
+on:
+  workflow_dispatch:
+    inputs:
+      node_budget:
+        description: Exploration node budget per method call
+        default: '200000'
+permissions:
+  contents: read
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Unpack frozen E2 workspace
+        run: |
+          unzip -q baseline_readonly/inputs/R6_E2_complete_workspace.zip -d baseline_readonly
+          mv baseline_readonly/R6_E2 baseline_readonly/e2
+          chmod -R u+w baseline_readonly/e2
+          printf '%s  %s\n' 'bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715' baseline_readonly/inputs/R6_E2_complete_workspace.zip | sha256sum -c -
+      - name: Run 52x4 matrix
+        run: |
+          python3 -B tests/run_e3_04_matrix.py '${{ inputs.node_budget }}' 2>&1 | tee matrix_run.log
+      - name: Upload matrix evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-04-matrix
+          path: |
+            runs/e3_04/
+            matrix_run.log
+          if-no-files-found: error

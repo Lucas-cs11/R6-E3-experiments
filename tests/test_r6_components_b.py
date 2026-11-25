@@ -6,8 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'implementations/subject'), str(ROOT / 'oracles/independent')]
-from r6_components_b import make_acceptance_record, run_r605, run_r606
-from r6_components_b_reference import reference_r605, reference_r606
+from r6_components_b import make_acceptance_record, run_r605, run_r606, run_r607
+from r6_components_b_reference import reference_r605, reference_r606, reference_r607
 
 
 def load(name):
@@ -88,6 +88,51 @@ class R606HistoryLPTests(unittest.TestCase):
                                         'R606_DROP_FAULT_HISTORY', mutated)
         self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
         self.assertTrue(record['mutation_detected'])
+        self.assertEqual(len((positive, negative)), 2)
+
+
+class R607JointTreeTests(unittest.TestCase):
+    def test_history_density_clock_lifecycle_and_complete_mass_tree(self):
+        model = load('r607_joint_tree.json')
+        positive = dict(case_id='r607_full_joint_tree', kind='joint_tree', role='POSITIVE', budget=100)
+        subject = run_r607(model, positive)
+        reference = reference_r607(model, positive)
+        self.assertEqual(subject['status'], 'EXACT_JOINT_DENSITY_TREE')
+        self.assertEqual(subject['categories'], reference['categories'])
+        self.assertEqual((subject['resolved'], subject['unresolved']), ('1', '0'))
+        root_children = {row['transition']: row['mass'] for row in subject['nodes'][0]['children']}
+        self.assertEqual(root_children,
+                         {'extra_root': '1/4', 'fault_root': '1/2', 'normal_root': '1/4'})
+        completed = {(row['hypothesis'], row['completion_time']): row['mass']
+                     for row in subject['categories'] if row['terminal'] == 'FIRST_COMPLETION'}
+        self.assertEqual(completed, {('FAULT', '1'): '3/8', ('FAULT', '2'): '1/8',
+                                     ('NORMAL', '1'): '1/8', ('NORMAL', '2'): '1/8'})
+        parent = next(row for row in subject['nodes'] if row['path'] == ['normal_root'])
+        selector = next(row for row in subject['nodes']
+                        if row['path'] == ['normal_root', 'select_early'])
+        self.assertEqual(parent['clock_activations']['probe'], '0')
+        self.assertEqual(selector['clock_activations']['probe'], '0')
+        self.assertEqual(selector['children'][0]['fired_clock_ages']['probe'], '1')
+
+        negative = dict(case_id='r607_budget_cannot_certify_tree', kind='joint_tree',
+                        role='NEGATIVE', budget=2)
+        bounded = run_r607(model, negative)
+        bounded_reference = reference_r607(model, negative)
+        self.assertEqual(bounded['status'], bounded_reference['status'])
+        self.assertEqual(bounded['status'], 'UNRESOLVED')
+        self.assertEqual((bounded['resolved'], bounded['unresolved']), ('1/4', '3/4'))
+        self.assertEqual(bounded['frontier'], bounded_reference['frontier'])
+
+        mutated = run_r607(model, positive, mutation='R607_IGNORE_HISTORY_DENSITY')
+        mutated_completed = {(row['hypothesis'], row['completion_time']): row['mass']
+                             for row in mutated['categories'] if row['terminal'] == 'FIRST_COMPLETION'}
+        self.assertEqual(mutated_completed[('FAULT', '1')], '1/4')
+        self.assertNotEqual(mutated['categories'], subject['categories'])
+        record = make_acceptance_record('R6-07', positive, subject, reference,
+                                        'R607_IGNORE_HISTORY_DENSITY', mutated)
+        self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
+        self.assertTrue(record['mutation_detected'])
+        self.assertTrue(record['actual_network_trace'])
         self.assertEqual(len((positive, negative)), 2)
 
 

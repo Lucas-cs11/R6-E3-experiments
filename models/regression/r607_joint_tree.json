@@ -1,0 +1,15 @@
+{
+  "H_psi": 0, "B_c": 1, "B_d": 2, "H_A": 3,
+  "initial": {"root": 1, "work": 0, "alive": 0, "early_gate": 0, "late_gate": 0, "done": 0, "stuck": 0},
+  "completion_marking": {"done": 1},
+  "transitions": {
+    "normal_root": {"pre": {"root": 1}, "post": {"work": 1, "alive": 1}, "interval": [0, 0], "weight": 1, "fault": false, "completion": false, "immediate": true, "label": null},
+    "fault_root": {"pre": {"root": 1}, "post": {"work": 1, "alive": 1}, "interval": [0, 0], "weight": 2, "fault": true, "completion": false, "immediate": true, "label": null},
+    "extra_root": {"pre": {"root": 1}, "post": {"stuck": 1}, "interval": [0, 0], "weight": 1, "fault": false, "completion": false, "immediate": true, "label": null},
+    "select_early": {"pre": {"work": 1}, "post": {"early_gate": 1}, "interval": [0, 0], "weight": 1, "weight_by_fault": {"NORMAL": 1, "FAULT": 3}, "fault": false, "completion": false, "immediate": true, "label": null},
+    "select_late": {"pre": {"work": 1}, "post": {"late_gate": 1}, "interval": [0, 0], "weight": 1, "weight_by_fault": {"NORMAL": 1, "FAULT": 1}, "fault": false, "completion": false, "immediate": true, "label": null},
+    "complete_early": {"pre": {"early_gate": 1, "alive": 1}, "post": {"done": 1}, "interval": [1, 1], "weight": 1, "fault": false, "completion": true, "immediate": false, "label": "done"},
+    "complete_late": {"pre": {"late_gate": 1, "alive": 1}, "post": {"done": 1}, "interval": [2, 2], "weight": 1, "fault": false, "completion": true, "immediate": false, "label": "done"},
+    "probe": {"pre": {"alive": 1}, "post": {"alive": 1}, "interval": [3, 3], "weight": 1, "fault": false, "completion": false, "immediate": false, "label": null}
+  }
+}

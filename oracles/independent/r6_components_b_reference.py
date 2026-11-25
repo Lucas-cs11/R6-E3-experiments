@@ -1,6 +1,8 @@
 """Independent rational references for R6-05..07; no subject-module imports."""
 from fractions import Fraction as Q
 from itertools import combinations
+from collections import defaultdict, deque
+import math
 
 from absolute_schedule import assess
 
@@ -61,6 +63,88 @@ def _vertices(rows, variables):
         if _accept(rows, point, variables):
             vertices.add(point)
     return sorted(vertices)
+
+
+def reference_r607(model, case):
+    """Independent BFS over finite integer-time markings and activation dates."""
+    transitions = model['transitions']
+
+    def enabled(marking):
+        return {name for name, edge in transitions.items()
+                if all(marking.get(place, 0) >= weight
+                       for place, weight in edge['pre'].items())}
+
+    def choices(marking, clocks, now):
+        active = enabled(marking)
+        urgent = sorted(name for name in active if transitions[name]['immediate'])
+        if urgent:
+            return active, [(name, now) for name in urgent]
+        if not active:
+            return active, []
+        last = min([Q(model['H_A']),
+                    *[clocks[name] + Q(transitions[name]['interval'][1]) for name in active]])
+        result = []
+        for name in sorted(active):
+            low, high = map(Q, transitions[name]['interval'])
+            first = max(now, clocks[name] + low)
+            final = min(last, clocks[name] + high)
+            result.extend((name, Q(tick)) for tick in range(math.ceil(first), math.floor(final) + 1))
+        return active, result
+
+    initial = dict(model['initial'])
+    clocks = {name: Q(0) for name in enabled(initial)}
+    queue = deque([((), initial, Q(0), None, (), Q(1), clocks)])
+    terminal_masses = defaultdict(Q)
+    visits = 0
+    while queue and visits < case['budget']:
+        path, marking, now, hypothesis, word, mass, clocks = queue.popleft()
+        visits += 1
+        completed = all(marking.get(place, 0) >= weight
+                        for place, weight in model['completion_marking'].items())
+        active, options = choices(marking, clocks, now)
+        terminal = 'FIRST_COMPLETION' if completed else 'DEADLOCK' if not active else None
+        if terminal:
+            terminal_masses[(hypothesis, terminal, word,
+                             str(now) if completed else None)] += mass
+            continue
+        option_counts = defaultdict(int)
+        weights = {}
+        for name, at in options:
+            option_counts[name] += 1
+            edge = transitions[name]
+            weights[name] = Q(edge.get('weight', 1))
+            if hypothesis is not None and 'weight_by_fault' in edge:
+                weights[name] = Q(edge['weight_by_fault'][hypothesis])
+        total_weight = sum(weights.values(), Q(0))
+        for name, at in options:
+            edge = transitions[name]
+            middle = {place: marking.get(place, 0) - edge['pre'].get(place, 0)
+                      for place in marking}
+            after = {place: middle.get(place, 0) + edge['post'].get(place, 0)
+                     for place in set(middle) | set(edge['post'])}
+            persistent = active & enabled(middle) & enabled(after) - {name}
+            next_clocks = {other: clocks[other] if other in persistent else at
+                           for other in enabled(after)}
+            next_hypothesis = 'FAULT' if hypothesis == 'FAULT' or edge['fault'] else 'NORMAL'
+            label = edge['label']
+            next_word = word if label is None else (*word, label)
+            next_mass = mass * weights[name] / total_weight / option_counts[name]
+            queue.append(((*path, name), after, at, next_hypothesis,
+                          next_word, next_mass, next_clocks))
+    resolved = sum(terminal_masses.values(), Q(0))
+    unresolved = sum((state[5] for state in queue), Q(0))
+    if resolved + unresolved != 1:
+        raise ArithmeticError('independent joint tree mass not conserved')
+    categories = [dict(hypothesis=h, terminal=t, word=list(w), completion_time=time,
+                       mass=str(mass))
+                  for (h, t, w, time), mass in sorted(
+                      terminal_masses.items(), key=lambda item: (item[0][0], item[0][1],
+                                                                item[0][2], str(item[0][3])))]
+    frontier = [dict(path=list(path), time=str(now), hypothesis=hypothesis, mass=str(mass))
+                for path, marking, now, hypothesis, word, mass, clocks in queue]
+    return dict(status='UNRESOLVED' if queue else 'EXACT_JOINT_DENSITY_TREE',
+                resolved=str(resolved), unresolved=str(unresolved),
+                categories=categories, frontier=frontier)
 
 
 def reference_r606(model, case):

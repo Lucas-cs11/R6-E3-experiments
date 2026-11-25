@@ -1,6 +1,8 @@
 """R6-05..07 model-driven component implementations, committed incrementally."""
 from fractions import Fraction as F
 from itertools import combinations
+from collections import defaultdict, deque
+import math
 
 from ap41_polytope import solve_square
 from timed_trace import replay
@@ -13,11 +15,15 @@ _PATCHES = {
     'R606_DROP_FAULT_HISTORY': dict(
         component_id='R6-06', old='retain every validated normal/fault history',
         new='drop FAULT history after identical observation grouping'),
+    'R607_IGNORE_HISTORY_DENSITY': dict(
+        component_id='R6-07', old='apply weight_by_fault to shared history-dependent selectors',
+        new='use base selector weight for both NORMAL and FAULT histories'),
 }
 
 _LIMITATIONS = {
     'R6-05': 'Two-variable bounded DBM difference cells with rational open/closed boundaries.',
     'R6-06': 'Explicit finite histories and a two-coordinate coupled rational LP on shared root weights.',
+    'R6-07': 'Finite integer-time discrete density tree; no continuous-time or general LSTPN density claim.',
 }
 
 
@@ -146,7 +152,109 @@ def run_r606(model, case, mutation=None):
                 lp_solution=dict(normal=str(solution[0]), fault=str(solution[1])))
 
 
+def _tree_candidates(model, marking, activation, now):
+    enabled = {name for name, transition in model['transitions'].items()
+               if all(marking.get(p, 0) >= w for p, w in transition['pre'].items())}
+    immediate = sorted(name for name in enabled if model['transitions'][name]['immediate'])
+    if immediate:
+        return enabled, [(name, now) for name in immediate]
+    deadline = min([F(model['H_A']),
+                    *[activation[name] + F(model['transitions'][name]['interval'][1])
+                      for name in enabled]])
+    candidates = []
+    for name in sorted(enabled):
+        lower, upper = map(F, model['transitions'][name]['interval'])
+        start = max(now, activation[name] + lower)
+        stop = min(deadline, activation[name] + upper)
+        for tick in range(math.ceil(start), math.floor(stop) + 1):
+            candidates.append((name, F(tick)))
+    return enabled, candidates
+
+
+def _tree_weight(model, name, hypothesis, mutation):
+    transition = model['transitions'][name]
+    if mutation is None and hypothesis is not None and 'weight_by_fault' in transition:
+        return F(transition['weight_by_fault'][hypothesis])
+    return F(transition.get('weight', 1))
+
+
+def run_r607(model, case, mutation=None):
+    """Propagate exact rational joint mass over a finite integer-time PN tree."""
+    if mutation not in (None, 'R607_IGNORE_HISTORY_DENSITY'):
+        raise ValueError('unknown R6-07 mutation')
+    budget = case['budget']
+    if type(budget) is not int or budget < 1:
+        raise ValueError('positive integer node budget required')
+    root_marking = dict(model['initial'])
+    initial_activation = {name: F(0) for name, transition in model['transitions'].items()
+                          if all(root_marking.get(p, 0) >= w for p, w in transition['pre'].items())}
+    queue = deque([((), root_marking, F(0), None, (), F(1), initial_activation)])
+    nodes = []
+    categories = defaultdict(F)
+    while queue and len(nodes) < budget:
+        path, marking, now, hypothesis, word, probability, activation = queue.popleft()
+        complete = all(marking.get(p, 0) >= w for p, w in model['completion_marking'].items())
+        enabled, candidates = _tree_candidates(model, marking, activation, now)
+        terminal = 'FIRST_COMPLETION' if complete else 'DEADLOCK' if not enabled else None
+        node = dict(path=list(path), marking=marking, hypothesis=hypothesis,
+                    time=str(now), mass=str(probability),
+                    clock_activations={name: str(activation[name]) for name in sorted(activation)},
+                    clock_ages={name: str(now - activation[name]) for name in sorted(activation)},
+                    terminal=terminal, children=[])
+        nodes.append(node)
+        if terminal:
+            categories[(hypothesis, terminal, word,
+                        str(now) if complete else None)] += probability
+            continue
+        weights = {name: _tree_weight(model, name, hypothesis, mutation)
+                   for name, _time in candidates}
+        normalizer = sum(weights.values(), F(0))
+        option_counts = defaultdict(int)
+        for name, _time in candidates:
+            option_counts[name] += 1
+        for name, at in candidates:
+            transition = model['transitions'][name]
+            middle = {p: marking.get(p, 0) - transition['pre'].get(p, 0) for p in marking}
+            after = {p: middle.get(p, 0) + transition['post'].get(p, 0)
+                     for p in set(middle) | set(transition['post'])}
+            post_enabled = {other for other, t in model['transitions'].items()
+                            if all(after.get(p, 0) >= w for p, w in t['pre'].items())}
+            mid_enabled = {other for other, t in model['transitions'].items()
+                           if all(middle.get(p, 0) >= w for p, w in t['pre'].items())}
+            keep = (enabled & mid_enabled & post_enabled) - {name}
+            new_activation = {other: activation[other] if other in keep else at
+                              for other in post_enabled}
+            child_hypothesis = 'FAULT' if hypothesis == 'FAULT' or transition['fault'] else 'NORMAL'
+            child_probability = probability * weights[name] / normalizer / option_counts[name]
+            label = transition['label']
+            child_word = word if label is None else (*word, label)
+            node['children'].append(dict(
+                transition=name, at=str(at), mass=str(child_probability),
+                persistent_clocks=sorted(keep),
+                fired_clock_ages={other: str(at - activation[other]) for other in sorted(activation)}))
+            queue.append(((*path, name), after, at, child_hypothesis, child_word,
+                          child_probability, new_activation))
+    frontier = [dict(path=list(path), time=str(now), hypothesis=hypothesis,
+                     mass=str(probability)) for path, marking, now, hypothesis,
+                word, probability, activation in queue]
+    resolved = sum(categories.values(), F(0))
+    unresolved = sum((item[5] for item in queue), F(0))
+    if resolved + unresolved != 1:
+        raise ArithmeticError('joint tree mass not conserved')
+    return dict(status='UNRESOLVED' if queue else 'EXACT_JOINT_DENSITY_TREE',
+                resolved=str(resolved), unresolved=str(unresolved),
+                categories=[dict(hypothesis=h, terminal=t, word=list(w), completion_time=time,
+                                 mass=str(mass))
+                            for (h, t, w, time), mass in sorted(
+                                categories.items(), key=lambda item: (item[0][0], item[0][1],
+                                                                      item[0][2], str(item[0][3])))],
+                frontier=frontier, nodes=nodes)
+
+
 def _comparison_output(component_id, output):
+    if component_id == 'R6-07':
+        return {key: output[key] for key in
+                ('status', 'resolved', 'unresolved', 'categories', 'frontier')}
     if component_id != 'R6-06':
         return output
     # The subject stores full replay traces for audit; the independent absolute

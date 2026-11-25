@@ -43,3 +43,13 @@
 - 任务完成并归档后即从头板删除；头板只留在途与待办。
 - 子 Agent 长期不活跃（上一阶段遗留）不复用，按需新派。
 - 每周清理（schedule-15f8b045）同步检查任务板与 Agent 名册。
+
+## 2026-11-25 归档（E3 阶段第二批，全部 completed）
+
+| 任务 | 主题 | 证据 |
+|---|---|---|
+| task-18 | 共享前缀约束存储（-92.5% 内存） | commit 40344b2、tests/test_constraint_sharing.py |
+| task-19 | 外部下载探针（TINA/sklearn ACQUIRED） | runs/actions/acquire_45420369642/ |
+| task-20 | 共享前缀后 20M 深探（边界 669→1694 扩展） | runs/actions/merged_probe_45421108182/ |
+| task-21 | PRISM GitHub 渠道下载（v4.11 ACQUIRED） | runs/actions/acquire_45527161369/ |
+| task-22 | R6-01..R6-04 真实 PN 集成（65 测试全绿） | commits f75cf08+batch2、tests/test_r6_components.py |

@@ -1,6 +1,7 @@
 """Independent full-source ledger reconstruction and split-leak cross-check."""
 import csv
 from collections import Counter
+import hashlib
 import os
 from pathlib import Path
 
@@ -10,10 +11,41 @@ def _read(path):
         return list(csv.DictReader(handle))
 
 
-def _verification(root):
+def _verification(root, rows):
     if not root:
         return dict(status='RAW_NOT_VERIFIED_ON_AUDITOR_MACHINE', verified=0, mismatches=None)
-    return dict(status='RAW_NOT_VERIFIED_ON_AUDITOR_MACHINE', verified=0, mismatches=None)
+    root = Path(root)
+    if not root.is_dir():
+        return dict(status='RAW_REPLAY_MISMATCH', verified=0, mismatches=len(rows),
+                    examples=['RAW_JSON_ROOT_NOT_FOUND'])
+    files = list(root.rglob('*.json'))
+    by_name = {}
+    for path in files:
+        if path.name in by_name:
+            return dict(status='RAW_REPLAY_MISMATCH', verified=0, mismatches=len(rows),
+                        examples=[f'DUPLICATE_BASENAME:{path.name}'])
+        by_name[path.name] = path
+    verified = 0
+    mismatches = 0
+    examples = []
+    for row in reversed(rows):
+        path = by_name.get(row['file_name'])
+        if path is None:
+            mismatches += 1
+            if len(examples) < 3:
+                examples.append(f"MISSING:{row['file_name']}")
+            continue
+        verified += 1
+        digest = hashlib.sha256()
+        with path.open('rb') as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b''):
+                digest.update(chunk)
+        if digest.hexdigest() != row['file_sha256']:
+            mismatches += 1
+            if len(examples) < 3:
+                examples.append(f"SHA_MISMATCH:{row['file_name']}")
+    return dict(status='RAW_REPLAY_MISMATCH' if mismatches else 'AGENT_LOCAL_REPLAYED',
+                verified=verified, mismatches=mismatches, examples=examples)
 
 
 def reference_ledger(manifest_path, split_plan_path, labels_path, raw_json_root=None):
@@ -64,7 +96,7 @@ def reference_ledger(manifest_path, split_plan_path, labels_path, raw_json_root=
         source_groups=len({row['source_group'] for row in manifest}),
         result_counts=dict(counts), excluded_nok=counts['NOK'],
         split_counts=dict(Counter(row['split'] for row in records)))
-    verification = _verification(raw_json_root)
+    verification = _verification(raw_json_root, manifest)
     status = 'LEAKAGE_DETECTED' if leaks else 'LEDGER_COMPLETE'
     if verification['status'] == 'RAW_REPLAY_MISMATCH':
         status = verification['status']

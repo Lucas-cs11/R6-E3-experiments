@@ -61,6 +61,18 @@ class PyScrewLedgerTests(unittest.TestCase):
             self.assertEqual(subject['leaks'][0]['workpiece_id'], '40000000017401')
             self.assertIn('40000000017401', subject['reason'])
             self.assertEqual(len(subject['records']), 5000)
+    def test_actual_raw_json_sha_replay_when_injected(self):
+        raw_root = Path('/Users/lucas/Downloads/results1005/pyscrew/raw_json')
+        self.assertTrue(raw_root.is_dir())
+        subject = build_ledger(self.manifest, self.split, self.labels, raw_json_root=str(raw_root))
+        reference = reference_ledger(self.manifest, self.split, self.labels, raw_json_root=str(raw_root))
+        self.assertEqual(subject, reference)
+        self.assertEqual(subject['raw_verification']['status'], 'AGENT_LOCAL_REPLAYED')
+        self.assertEqual(subject['raw_verification']['verified'], 5000)
+        self.assertEqual(subject['raw_verification']['mismatches'], 0)
+        self.assertEqual(subject['status'], 'LEDGER_COMPLETE')
+        self.assertEqual(len(subject['records']), 5000)
+        print(json.dumps({'raw_verification': subject['raw_verification'], 'summary': subject['summary']}))
 
 
 if __name__ == '__main__':

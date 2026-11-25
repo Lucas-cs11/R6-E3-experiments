@@ -25,8 +25,33 @@ def _by_id(rows):
 def _raw_verification(root, rows):
     if not root:
         return dict(status='RAW_NOT_VERIFIED_ON_AUDITOR_MACHINE', verified=0, mismatches=None)
-    # Implemented in the second logical block; current fixtures must not claim replay.
-    return dict(status='RAW_NOT_VERIFIED_ON_AUDITOR_MACHINE', verified=0, mismatches=None)
+    root = Path(root)
+    if not root.is_dir():
+        return dict(status='RAW_REPLAY_MISMATCH', verified=0, mismatches=len(rows),
+                    examples=['RAW_JSON_ROOT_NOT_FOUND'])
+    files = {}
+    for path in root.rglob('*.json'):
+        if path.name in files:
+            return dict(status='RAW_REPLAY_MISMATCH', verified=0, mismatches=len(rows),
+                        examples=[f'DUPLICATE_BASENAME:{path.name}'])
+        files[path.name] = path
+    verified = 0
+    mismatches = 0
+    examples = []
+    for row in rows:
+        path = files.get(row['file_name'])
+        if path is None:
+            mismatches += 1
+            if len(examples) < 3:
+                examples.append(f"MISSING:{row['file_name']}")
+            continue
+        verified += 1
+        if hashlib.sha256(path.read_bytes()).hexdigest() != row['file_sha256']:
+            mismatches += 1
+            if len(examples) < 3:
+                examples.append(f"SHA_MISMATCH:{row['file_name']}")
+    return dict(status='RAW_REPLAY_MISMATCH' if mismatches else 'AGENT_LOCAL_REPLAYED',
+                verified=verified, mismatches=mismatches, examples=examples)
 
 
 def build_ledger(manifest_path, split_plan_path, labels_path, raw_json_root=None):

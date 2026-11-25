@@ -1,0 +1,20 @@
+{
+  "cases": 36,
+  "verdict_all_4_agree": 36,
+  "verdict_value": "1 (diagnosable) for all 36 generated points",
+  "median_wall": {
+    "MAIN": 0.0056925,
+    "FULL_HISTORY": 0.0057035,
+    "NO_SYNC": 0.0056405,
+    "NO_ENVELOPE": 0.0056725000000000005
+  },
+  "median_expansions": {
+    "MAIN": 10.0,
+    "FULL_HISTORY": 14.0,
+    "NO_SYNC": 10.0,
+    "NO_ENVELOPE": 10.0
+  },
+  "main_faster_than_full_history": "27/36",
+  "scope": "SAME_TASK_B1_ON_INHERITED_36_GENERATED_POINTS_ONLY; micro absent; no performance ranking claim beyond this set",
+  "note": "uniform verdict=1 is a property of this small fault-1 point set, not evidence of general diagnosability"
+}

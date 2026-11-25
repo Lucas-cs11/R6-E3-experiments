@@ -1,0 +1,41 @@
+name: E3-06 Sirio source build
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout pinned Sirio
+        uses: actions/checkout@v4
+        with:
+          repository: oris-tool/sirio
+          ref: 5bb689933b3db47b96d33d34e10230cca608003d
+          persist-credentials: false
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon build -x test 2>&1 | tee build.log
+          echo "BUILD_EXIT=${PIPESTATUS[0]}" | tee build.exit
+      - name: Collect evidence
+        if: always()
+        run: |
+          mkdir -p evidence
+          cp build.log build.exit evidence/ 2>/dev/null || true
+          git rev-parse HEAD > evidence/pinned_commit.txt
+          find . -name "*.jar" -path "*/build/*" -exec sha256sum {} \; > evidence/artifact_hashes.txt 2>/dev/null || true
+          ls -la evidence/
+      - name: Upload build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-06-sirio-build
+          path: evidence/
+          if-no-files-found: error

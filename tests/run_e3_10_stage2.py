@@ -79,9 +79,11 @@ def _feature_data(raw_root, manifest):
     return records, errors
 
 
-def _join_records(feature_records, split_plan, labels):
+def _join_records(feature_records, split_plan, labels, outer_rows):
     splits = {row['run_id']: row for row in split_plan}
     label_map = {row['run_id']: row for row in labels}
+    target_map = {row['run_id']: int(row['y']) for row in outer_rows
+                  if row['variant'] == 'main' and row['NI'] == 'False'}
     joined = []
     for record in feature_records:
         run_id = record['raw_record_id']
@@ -91,7 +93,7 @@ def _join_records(feature_records, split_plan, labels):
             continue
         joined.append(dict(record, split=split['split'],
                            completion_status='COMPLETED' if split['completed'] == 'True' else 'NOT_COMPLETED',
-                           y_true=int(label['workpiece_result'] == 'NOK')))
+                           y_true=target_map.get(run_id)))
     by_workpiece = {}
     for record in joined:
         by_workpiece.setdefault(record['physical_workpiece_id'], set()).add(record['split'])
@@ -101,33 +103,58 @@ def _join_records(feature_records, split_plan, labels):
     return joined
 
 
-def _train(records):
+def _train(records, outer_rows):
     import numpy as np
     from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
     from sklearn.linear_model import LogisticRegression
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
 
-    names = sorted(records[0]['features'])
-    train = [row for row in records if row['split'] == 'calibration']
-    test = [row for row in records if row['split'] == 'held_out']
-    if not train or not test:
-        raise ValueError('calibration and held_out must both be nonempty')
-    x_train = np.array([[row['features'][name] for name in names] for row in train], dtype=float)
-    y_train = np.array([row['y_true'] for row in train])
-    x_test = np.array([[row['features'][name] for name in names] for row in test], dtype=float)
-    models = {
-        'LogisticRegression': LogisticRegression(random_state=RANDOM_STATES['LogisticRegression'],
-                                                 max_iter=2000, solver='lbfgs'),
-        'RandomForest': RandomForestClassifier(random_state=RANDOM_STATES['RandomForest'],
-                                               n_estimators=100, n_jobs=1),
-        'HistGradientBoosting': HistGradientBoostingClassifier(
-            random_state=RANDOM_STATES['HistGradientBoosting'], max_iter=100, max_depth=3,
-            learning_rate=0.1),
-    }
-    predictions = {}
-    for name, model in models.items():
-        model.fit(x_train, y_train)
-        predictions[name] = model.predict_proba(x_test)[:, 1].tolist()
-    return test, predictions, len(train)
+    fold_map = {row['run_id']: int(row['fold']) for row in outer_rows
+                if row['variant'] == 'main' and row['NI'] == 'False'}
+    candidates = [row for row in records if row['split'] == 'calibration' and
+                  row['raw_record_id'] in fold_map]
+    names = sorted(candidates[0]['features'])
+    test = []
+    predictions = {name: {} for name in METHOD_NAMES}
+    fold_train_counts = {}
+    degenerate_folds = []
+    for fold in sorted(set(fold_map.values())):
+        train = [row for row in candidates if fold_map[row['raw_record_id']] != fold]
+        current = [row for row in candidates if fold_map[row['raw_record_id']] == fold]
+        if not train or not current:
+            raise ValueError(f'invalid calibration outer fold {fold}')
+        if {row['physical_workpiece_id'] for row in train} & {row['physical_workpiece_id'] for row in current}:
+            raise ValueError(f'workpiece leakage in calibration outer fold {fold}')
+        x_train = np.array([[row['features'][name] for name in names] for row in train], dtype=float)
+        y_train = np.array([row['y_true'] for row in train])
+        x_test = np.array([[row['features'][name] for name in names] for row in current], dtype=float)
+        models = {
+            'LogisticRegression': make_pipeline(
+                StandardScaler(),
+                LogisticRegression(random_state=RANDOM_STATES['LogisticRegression'],
+                                   max_iter=2000, solver='lbfgs')),
+            'RandomForest': RandomForestClassifier(random_state=RANDOM_STATES['RandomForest'],
+                                                   n_estimators=100, n_jobs=1),
+            'HistGradientBoosting': HistGradientBoostingClassifier(
+                random_state=RANDOM_STATES['HistGradientBoosting'], max_iter=100, max_depth=3,
+                learning_rate=0.1),
+        }
+        fold_train_counts[fold] = len(train)
+        for name, model in models.items():
+            if len(set(y_train)) < 2:
+                constant = int(y_train[0])
+                probabilities = np.full(len(current), float(constant))
+                degenerate = dict(fold=fold, model=name, fallback='CONSTANT_CLASS_PRIOR',
+                                  constant_class=constant)
+                degenerate_folds.append(degenerate)
+            else:
+                model.fit(x_train, y_train)
+                probabilities = model.predict_proba(x_test)[:, 1]
+            for row, probability in zip(current, probabilities):
+                predictions[name][row['raw_record_id']] = float(probability)
+        test.extend(current)
+    return test, predictions, fold_train_counts, degenerate_folds
 
 
 def _evaluate(test, predictions, outer_rows):
@@ -137,10 +164,9 @@ def _evaluate(test, predictions, outer_rows):
     if not common_ids:
         raise ValueError('no common valid evaluation IDs')
     by_id = {row['raw_record_id']: row for row in test}
-    positions = {row['raw_record_id']: index for index, row in enumerate(test)}
     common = [by_id[run_id] for run_id in common_ids]
     y_true = [row['y_true'] for row in common]
-    probability_map = {name: [predictions[name][positions[run_id]] for run_id in common_ids]
+    probability_map = {name: [predictions[name][run_id] for run_id in common_ids]
                        for name in METHOD_NAMES}
     probability_map['frozen_main'] = [frozen[run_id] for run_id in common_ids]
     model_metrics = {}
@@ -185,8 +211,8 @@ def run_pipeline(raw_root, output_dir):
     labels = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/labels.csv')
     outer = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/outer_predictions.csv')
     feature_records, feature_errors = _feature_data(raw_root, manifest)
-    records = _join_records(feature_records, split_plan, labels)
-    test, predictions, train_count = _train(records)
+    records = _join_records(feature_records, split_plan, labels, outer)
+    test, predictions, fold_train_counts, degenerate_folds = _train(records, outer)
     common, probability_map, model_metrics = _evaluate(test, predictions, outer)
     common_ids = {row['raw_record_id'] for row in common}
     excluded = []
@@ -216,8 +242,10 @@ def run_pipeline(raw_root, output_dir):
                             {name: probability_map[name][index] for name in fields[7:]})
     ids_sha = hashlib.sha256('\n'.join(row['raw_record_id'] for row in common).encode()).hexdigest()
     result = dict(status='STAGE2_METRICS_COMPUTED', release=RELEASE,
-                  split=dict(train='calibration', evaluate='held_out', train_count=train_count,
-                             held_out_count=len(test), leak_count=0),
+                  split=dict(train='calibration_workpiece_outer5', evaluate='calibration_out_of_fold',
+                             fold_train_counts=fold_train_counts, held_out_reserved=2500,
+                             prediction_count=len(test), leak_count=0),
+                  degenerate_folds=degenerate_folds,
                   common_evaluation=dict(count=len(common), ids_sha256=ids_sha,
                                          rule='all_three_models_and_frozen_main_NI_false'),
                   random_states=RANDOM_STATES, models=model_metrics,
@@ -232,10 +260,37 @@ def run_pipeline(raw_root, output_dir):
     return result
 
 
+def verify_saved_outputs(output_dir):
+    """Independently recompute saved metrics from per-record predictions."""
+    output_dir = Path(output_dir)
+    saved = json.loads((output_dir / 'stage2_metrics.json').read_text())
+    rows = _read_csv(output_dir / 'per_record_predictions.csv')
+    if len(rows) != saved['common_evaluation']['count']:
+        raise AssertionError('saved common count differs from prediction CSV')
+    for name in (*METHOD_NAMES, 'frozen_main'):
+        y_true = [int(row['y_true']) for row in rows]
+        probabilities = [float(row[name]) for row in rows]
+        expected = classification_metrics(y_true, probabilities)
+        for key, value in expected.items():
+            if key == 'risk_coverage':
+                assert value == saved['models'][name][key]
+            elif value is None:
+                assert saved['models'][name][key] is None
+            else:
+                assert abs(value - saved['models'][name][key]) < 1e-12, (name, key)
+        expected_strata = stratified_metrics(
+            [dict(row, y_true=int(row['y_true']), probability=probability, **{'class': row['class']})
+             for row, probability in zip(rows, probabilities)])
+        assert expected_strata == saved['models'][name]['stratified'], name
+    print(json.dumps({'status': 'INDEPENDENT_METRICS_VERIFIED', 'records': len(rows),
+                      'ids_sha256': saved['common_evaluation']['ids_sha256']}, sort_keys=True))
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--self-test', action='store_true')
     parser.add_argument('--run', action='store_true')
+    parser.add_argument('--verify', action='store_true')
     parser.add_argument('--download', action='store_true')
     parser.add_argument('--raw-root')
     parser.add_argument('--workdir', default='/tmp/e3-10-stage2-release')
@@ -250,7 +305,9 @@ def main(argv=None):
                                                    '/Users/lucas/Downloads/results1005/pyscrew/raw_json')
     if args.run:
         run_pipeline(raw_root, args.output_dir)
-    if not args.self_test and not args.run and not args.download:
+    if args.verify:
+        verify_saved_outputs(args.output_dir)
+    if not args.self_test and not args.run and not args.verify and not args.download:
         parser.error('use --self-test, --run, or --download')
 
 

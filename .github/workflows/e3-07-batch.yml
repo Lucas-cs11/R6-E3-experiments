@@ -1,0 +1,37 @@
+name: E3-07 pre-register + smoke shard
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: preregister | execute
+        default: 'preregister'
+permissions:
+  contents: read
+jobs:
+  batch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Unpack frozen E2 workspace
+        run: |
+          unzip -q baseline_readonly/inputs/R6_E2_complete_workspace.zip -d baseline_readonly
+          mv baseline_readonly/R6_E2 baseline_readonly/e2
+          chmod -R u+w baseline_readonly/e2
+          printf '%s  %s\n' 'bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715' baseline_readonly/inputs/R6_E2_complete_workspace.zip | sha256sum -c -
+      - name: Pre-register all expected tasks as NOT_EXECUTED
+        if: inputs.mode == 'preregister'
+        run: python3 -B tests/run_e3_07_matrix.py preregister --out runs/e3_07
+      - name: Smoke execute shard 0 (bounded)
+        if: inputs.mode == 'execute'
+        run: |
+          python3 -B tests/run_e3_07_matrix.py preregister --out runs/e3_07
+          python3 -B tests/run_e3_07_matrix.py execute --out runs/e3_07 --shard-index 0 --shard-count 16 --limit 64
+      - name: Upload batch evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-07-batch
+          path: runs/e3_07/
+          if-no-files-found: error

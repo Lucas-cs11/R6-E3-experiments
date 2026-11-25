@@ -12,11 +12,11 @@ class _Unsupported(ValueError):
 
 def _rational(value):
     if type(value) not in (int, str, Q):
-        raise _Invalid('NON_RATIONAL_COEFFICIENT')
+        raise _Unsupported('NON_RATIONAL_POLYNOMIAL')
     try:
         return Q(value)
     except (ValueError, ZeroDivisionError) as exc:
-        raise _Invalid('NON_RATIONAL_COEFFICIENT') from exc
+        raise _Unsupported('NON_RATIONAL_POLYNOMIAL') from exc
 
 
 def _value(coefficients, x):
@@ -25,7 +25,7 @@ def _value(coefficients, x):
 
 def _nonnegative(coefficients, low, high):
     if len(coefficients) > 3:
-        raise _Invalid('POLYNOMIAL_DEGREE_UNSUPPORTED')
+        raise _Unsupported('POLYNOMIAL_DEGREE_UNSUPPORTED')
     candidates = [low, high]
     if len(coefficients) == 3 and coefficients[2]:
         vertex = -coefficients[1] / (2 * coefficients[2])
@@ -120,7 +120,7 @@ def reference_r609(model, case, mutation=None):
                 raise _Invalid('TOTAL_MASS_NOT_ONE')
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=False,
                         conditional_verdict=None, total_mass=str(total), cells=cells)
-        raise _Invalid('UNSUPPORTED_MODEL_KIND')
+        raise _Unsupported('UNSUPPORTED_MODEL_KIND')
     except _Unsupported as exc:
         return dict(status='UNSUPPORTED', certified=False,
                     conditional_verdict=None, reason=str(exc))

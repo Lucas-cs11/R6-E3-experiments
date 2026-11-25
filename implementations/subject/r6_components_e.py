@@ -33,11 +33,11 @@ def mutation_patch(mutation_id):
 
 def _number(value):
     if type(value) not in (int, str, F):
-        raise _EvidenceError('NON_RATIONAL_COEFFICIENT')
+        raise _Unsupported('NON_RATIONAL_POLYNOMIAL')
     try:
         return F(value)
     except (ValueError, ZeroDivisionError) as exc:
-        raise _EvidenceError('NON_RATIONAL_COEFFICIENT') from exc
+        raise _Unsupported('NON_RATIONAL_POLYNOMIAL') from exc
 
 
 def _polynomial_value(coefficients, point):
@@ -47,7 +47,7 @@ def _polynomial_value(coefficients, point):
 def _check_nonnegative(coefficients, low, high):
     degree = len(coefficients) - 1
     if degree > 2:
-        raise _EvidenceError('POLYNOMIAL_DEGREE_UNSUPPORTED')
+        raise _Unsupported('POLYNOMIAL_DEGREE_UNSUPPORTED')
     points = [low, high]
     if degree == 2 and coefficients[2] != 0:
         vertex = -coefficients[1] / (2 * coefficients[2])
@@ -152,7 +152,7 @@ def run_r609(model, case, mutation=None):
                 raise _EvidenceError('TOTAL_MASS_NOT_ONE')
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=False,
                         conditional_verdict=None, total_mass=str(total), cells=cells)
-        raise _EvidenceError('UNSUPPORTED_MODEL_KIND')
+        raise _Unsupported('UNSUPPORTED_MODEL_KIND')
     except _Unsupported as exc:
         if mutation == 'UNSUPPORTED_AS_ZERO':
             return dict(status='EXACT_PIECEWISE_RATIONAL_INTEGRAL', certified=True,

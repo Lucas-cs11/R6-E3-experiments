@@ -107,6 +107,15 @@ class R609UnsupportedTests(unittest.TestCase):
         ellipse = load('r609_rectangle.json')
         ellipse['category'] = {'kind': 'ellipse'}
         unsupported_cases.append(('non_polyhedral', ellipse, 'NON_POLYHEDRAL_CATEGORY'))
+        textual = copy.deepcopy(linear)
+        textual['segments'][0]['coefficients'] = ['sqrt(x)']
+        unsupported_cases.append(('textual_density', textual, 'NON_RATIONAL_POLYNOMIAL'))
+        high_degree = copy.deepcopy(linear)
+        high_degree['segments'][0]['coefficients'] = ['0', '0', '0', '1']
+        unsupported_cases.append(('high_degree', high_degree, 'POLYNOMIAL_DEGREE_UNSUPPORTED'))
+        unknown = copy.deepcopy(linear)
+        unknown['kind'] = 'unknown_continuous_density'
+        unsupported_cases.append(('unknown_kind', unknown, 'UNSUPPORTED_MODEL_KIND'))
         mutation_record = None
         for name, model, reason in unsupported_cases:
             with self.subTest(case=name):
@@ -126,7 +135,7 @@ class R609UnsupportedTests(unittest.TestCase):
                                                              'UNSUPPORTED_AS_ZERO', mutated)
         self.assertEqual(mutation_record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
         self.assertTrue(mutation_record['mutation_detected'])
-        self.assertEqual(len(cases) + len(unsupported_cases), 6)
+        self.assertEqual(len(cases) + len(unsupported_cases), 9)
 
 
 if __name__ == '__main__':

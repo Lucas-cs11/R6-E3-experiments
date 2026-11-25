@@ -60,7 +60,8 @@ class R6ComponentBatch1Tests(unittest.TestCase):
         self.assertEqual(mutated['completion_time'], '2')
         record = make_acceptance_record('R6-01', cases[0], positive,
                                         reference_case('R6-01', model, cases[0]),
-                                        'R601_PERSIST_MIDDLE_CLOCK', 1)
+                                        'R601_PERSIST_MIDDLE_CLOCK',
+                                        subject_matches_oracle=True, mutation_detected=True)
         self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
         self.assertTrue(record['actual_network_trace'])
         self.assertIn('old', record['mutation_patch'])
@@ -110,9 +111,10 @@ class R6ComponentBatch1Tests(unittest.TestCase):
         self.assertNotEqual(mutated['outcome'], baseline['outcome'])
         record = make_acceptance_record('R6-02', cases[0], outputs[0][1],
                                         reference_case('R6-02', current, cases[0]),
-                                        'R602_IGNORE_COMPLETION_WINDOW', 1)
+                                        'R602_IGNORE_COMPLETION_WINDOW',
+                                        subject_matches_oracle=True, mutation_detected=True)
         self.assertTrue(record['actual_network_trace'])
-        self.assertEqual(record['mutation_exit_code'], 1)
+        self.assertTrue(record['mutation_detected'])
         self.assertEqual(len(cases), 6)
 
 
@@ -166,7 +168,8 @@ class R6ComponentBatch2Tests(unittest.TestCase):
         self.assertEqual(invalid['status'], 'INVALID_INPUT_OR_HISTORY')
         record = make_acceptance_record('R6-03', full_case, full,
                                         reference_case('R6-03', model, full_case),
-                                        'R603_DROP_FRONTIER_MASS', 1)
+                                        'R603_DROP_FRONTIER_MASS',
+                                        subject_matches_oracle=True, mutation_detected=True)
         self.assertTrue(record['actual_network_trace'])
         self.assertEqual(len((full_case, budget_case, horizon_case, invalid_case)), 4)
 
@@ -181,7 +184,16 @@ class R6ComponentBatch2Tests(unittest.TestCase):
         self.assertEqual(branches[('advance', 'abort')]['terminal'], 'DEADLOCK')
         self.assertEqual(endpoint['status'], 'EXHAUSTED_AT_ENDPOINT_FOR_PREFIX')
         with self.assertRaises(RuntimeError):
-            run_case('R6-04', model, endpoint_case, mutation='R604_TRUNCATE_BEFORE_IMMEDIATE')
+            run_case('R6-04', model, endpoint_case, mutation='R604_ALL_SUCCESSORS_CLEARED')
+        # Specific misclassification: the horizon cut silently loses the
+        # immediate completion branch instead of failing loudly.
+        misclassified = run_case('R6-04', model, endpoint_case,
+                                 mutation='R604_HORIZON_CUT_LOSES_COMPLETION')
+        self.assertEqual(misclassified['status'], 'EXHAUSTED_AT_ENDPOINT_FOR_PREFIX')
+        lost = [(tuple(row['suffix']), row['result']['terminal']) for row in misclassified['terminals']]
+        self.assertEqual(lost, [((), 'HORIZON_TRUNCATION')])
+        self.assertFalse(any(row['result']['terminal'] == 'FIRST_COMPLETION'
+                             for row in misclassified['terminals']))
 
         late_case = dict(case_id='r604_fault_after_completion', kind='timed', role='NEGATIVE',
                          history=history(('fault', 1), ('advance', 2), ('finish', 2),
@@ -197,7 +209,8 @@ class R6ComponentBatch2Tests(unittest.TestCase):
         self.assertEqual(invalid['status'], 'INVALID_INPUT_OR_HISTORY')
         record = make_acceptance_record('R6-04', endpoint_case, endpoint,
                                         reference_case('R6-04', model, endpoint_case),
-                                        'R604_TRUNCATE_BEFORE_IMMEDIATE', 1)
+                                        'R604_HORIZON_CUT_LOSES_COMPLETION',
+                                        subject_matches_oracle=True, mutation_detected=True)
         self.assertTrue(record['actual_network_trace'])
         self.assertEqual(len((endpoint_case, late_case, invalid_case)), 3)
 

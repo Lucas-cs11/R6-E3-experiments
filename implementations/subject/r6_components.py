@@ -26,10 +26,18 @@ _MUTATIONS = {
         component_id='R6-03', function=propagate, kind='mass',
         old="unresolved = sum((p for *_, p in queue), F(0))",
         new="unresolved = F(0)"),
-    'R604_TRUNCATE_BEFORE_IMMEDIATE': dict(
+    # Coarse fail-stop evidence: clearing every endpoint successor is caught.
+    'R604_ALL_SUCCESSORS_CLEARED': dict(
         component_id='R6-04', function=close_endpoint, kind='endpoint',
         old="choices = immediate or ready",
         new="choices = []"),
+    # Specific misclassification: cutting the horizon while successors are
+    # still fireable makes the endpoint look truncated, so the immediate
+    # completion branches are silently lost instead of explored.
+    'R604_HORIZON_CUT_LOSES_COMPLETION': dict(
+        component_id='R6-04', function=replay, kind='endpoint_via_replay',
+        old="elif end == ha and not ready:",
+        new="elif end == ha:"),
 }
 
 _LIMITATIONS = {
@@ -56,6 +64,15 @@ def _run_source_mutation(mutation_id, *args):
         raise RuntimeError(f'mutation anchor is not unique: {mutation_id}')
     namespace = dict(function.__globals__)
     exec(compile(source.replace(spec['old'], spec['new']), f'<{mutation_id}>', 'exec'), namespace)
+    if spec.get('kind') == 'endpoint_via_replay':
+        # Run close_endpoint with the mutated replay bound into its namespace,
+        # so the wrong horizon classification propagates into endpoint closure.
+        mutated_replay = namespace[function.__name__]
+        ce_namespace = dict(close_endpoint.__globals__)
+        ce_namespace['replay'] = mutated_replay
+        ce_source = inspect.getsource(close_endpoint)
+        exec(compile(ce_source, '<close_endpoint_via_mutated_replay>', 'exec'), ce_namespace)
+        return ce_namespace['close_endpoint'](*args)
     return namespace[function.__name__](*args)
 
 
@@ -81,7 +98,9 @@ def run_case(component_id, model, case, mutation=None):
     kind = case['kind']
     if mutation is not None:
         spec = _MUTATIONS[mutation]
-        if spec['component_id'] != component_id or spec.get('kind', 'timed') != kind:
+        spec_kind = {'endpoint_via_replay': 'endpoint'}.get(spec.get('kind', 'timed'),
+                                                            spec.get('kind', 'timed'))
+        if spec['component_id'] != component_id or spec_kind != kind:
             raise ValueError('component/case-kind/mutation mismatch')
         args = ((model, case['history']) if kind == 'timed' else
                 (model, case['budget']) if kind == 'mass' else
@@ -97,18 +116,26 @@ def run_case(component_id, model, case, mutation=None):
 
 
 def make_acceptance_record(component_id, case, subject_output, oracle_output,
-                           mutation_id, mutation_exit_code):
-    """Package the contract-required, inspectable component acceptance fields."""
+                           mutation_id, subject_matches_oracle, mutation_detected):
+    """Package the contract-required, inspectable component acceptance fields.
+
+    ``invariant_verdict`` is derived from the caller-supplied comparison
+    outcomes, never asserted unconditionally; ``mutation_detected`` records
+    whether the mutated run observably diverged, not a fabricated process
+    exit code.
+    """
     trace = (subject_output.get('trace') or subject_output.get('events') or
              subject_output.get('terminals') or [])
+    verdict = ('COMPONENT_REGRESSION_PASS' if subject_matches_oracle and mutation_detected
+               else 'COMPONENT_REGRESSION_FAIL')
     return dict(
         original_case=case,
         new_counterexample=mutation_patch(mutation_id),
         actual_network_trace=trace,
         subject_output=subject_output,
         oracle_output=oracle_output,
-        invariant_verdict='COMPONENT_REGRESSION_PASS',
+        invariant_verdict=verdict,
         mutation_patch=mutation_patch(mutation_id),
-        mutation_exit_code=mutation_exit_code,
+        mutation_detected=bool(mutation_detected),
         coverage_limitations=_LIMITATIONS[component_id],
     )

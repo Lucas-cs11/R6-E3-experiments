@@ -1,0 +1,11 @@
+{
+  "H_psi": 1, "B_c": 2, "B_d": 1, "H_A": 4,
+  "initial": {"root": 1, "n_stage": 0, "f_stage": 0, "done": 0},
+  "completion_marking": {"done": 1},
+  "transitions": {
+    "normal_root": {"pre": {"root": 1}, "post": {"n_stage": 1}, "interval": [0, 0], "weight": 2, "fault": false, "completion": false, "immediate": true, "label": null},
+    "fault_root": {"pre": {"root": 1}, "post": {"f_stage": 1}, "interval": [0, 0], "weight": 1, "fault": true, "completion": false, "immediate": true, "label": null},
+    "normal_complete": {"pre": {"n_stage": 1}, "post": {"done": 1}, "interval": [2, 2], "fault": false, "completion": true, "immediate": false, "label": "done"},
+    "fault_complete": {"pre": {"f_stage": 1}, "post": {"done": 1}, "interval": [2, 2], "fault": false, "completion": true, "immediate": false, "label": "done"}
+  }
+}

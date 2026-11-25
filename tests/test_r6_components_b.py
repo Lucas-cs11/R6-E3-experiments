@@ -6,8 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'implementations/subject'), str(ROOT / 'oracles/independent')]
-from r6_components_b import make_acceptance_record, run_r605
-from r6_components_b_reference import reference_r605
+from r6_components_b import make_acceptance_record, run_r605, run_r606
+from r6_components_b_reference import reference_r605, reference_r606
 
 
 def load(name):
@@ -42,6 +42,50 @@ class R605DBMTests(unittest.TestCase):
         self.assertEqual([row['classification'] for row in mutated['cells']], ['NON_VIOLATION'])
         record = make_acceptance_record('R6-05', positive, subject, reference,
                                         'R605_COLLAPSE_MIXED_CLASS', mutated)
+        self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
+        self.assertTrue(record['mutation_detected'])
+        self.assertEqual(len((positive, negative)), 2)
+
+
+class R606HistoryLPTests(unittest.TestCase):
+    def test_lossless_normal_fault_histories_and_coupled_lp(self):
+        model = load('r606_history_lp.json')
+        positive = dict(
+            case_id='r606_same_omega_normal_fault', kind='history_lp', role='POSITIVE',
+            witnesses=[
+                dict(history_id='normal', history={'fires': [
+                    {'transition': 'normal_root', 'at': 0},
+                    {'transition': 'normal_complete', 'at': 2}], 'end': 2}),
+                dict(history_id='fault', history={'fires': [
+                    {'transition': 'fault_root', 'at': 0},
+                    {'transition': 'fault_complete', 'at': 2}], 'end': 2}),
+            ])
+        subject = run_r606(model, positive)
+        reference = reference_r606(model, positive)
+        self.assertEqual(subject['status'], reference['status'])
+        self.assertEqual(len(subject['histories']), 2)
+        self.assertEqual({row['hypothesis'] for row in subject['histories']}, {'NORMAL', 'FAULT'})
+        self.assertEqual(len(subject['observation_groups']), 1)
+        self.assertEqual(subject['observation_groups'][0]['members'], ['fault', 'normal'])
+        self.assertEqual(subject['lp_solution'], {'normal': '2/3', 'fault': '1/3'})
+        self.assertTrue(all(row['trace'] for row in subject['histories']))
+
+        negative = dict(
+            case_id='r606_tampered_completion_claim', kind='history_lp', role='NEGATIVE',
+            witnesses=[dict(history_id='normal_bad_claim', history={
+                'fires': [{'transition': 'normal_root', 'at': 0},
+                          {'transition': 'normal_complete', 'at': 2}],
+                'end': 2, 'completion_time': 1})])
+        invalid_subject = run_r606(model, negative)
+        invalid_reference = reference_r606(model, negative)
+        self.assertEqual(invalid_subject, invalid_reference)
+        self.assertEqual(invalid_subject['status'], 'INVALID_INPUT_OR_HISTORY')
+
+        mutated = run_r606(model, positive, mutation='R606_DROP_FAULT_HISTORY')
+        self.assertEqual([row['history_id'] for row in mutated['histories']], ['normal'])
+        self.assertEqual(mutated['observation_groups'][0]['members'], ['normal'])
+        record = make_acceptance_record('R6-06', positive, subject, reference,
+                                        'R606_DROP_FAULT_HISTORY', mutated)
         self.assertEqual(record['invariant_verdict'], 'COMPONENT_REGRESSION_PASS')
         self.assertTrue(record['mutation_detected'])
         self.assertEqual(len((positive, negative)), 2)

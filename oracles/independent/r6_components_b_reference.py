@@ -2,6 +2,8 @@
 from fractions import Fraction as Q
 from itertools import combinations
 
+from absolute_schedule import assess
+
 
 def _coefficients(expression, variables):
     if '-' in expression:
@@ -59,6 +61,40 @@ def _vertices(rows, variables):
         if _accept(rows, point, variables):
             vertices.add(point)
     return sorted(vertices)
+
+
+def reference_r606(model, case):
+    """Absolute-time witness check with independent two-mass rational coupling."""
+    histories = []
+    for witness in case['witnesses']:
+        history = witness['history']
+        result = assess(model, history)
+        if result['status'] != 'REPLAYED_HISTORY':
+            return dict(status='INVALID_INPUT_OR_HISTORY',
+                        invalid_history=witness['history_id'])
+        events = history['fires']
+        hypothesis = ('FAULT' if any(model['transitions'][event['transition']]['fault']
+                                    for event in events) else 'NORMAL')
+        histories.append(dict(
+            history_id=witness['history_id'], hypothesis=hypothesis,
+            word=result['omega_c'][0], completion_time=result['completion_time'],
+            events=[dict(transition=event['transition'], at=str(Q(event['at'])))
+                    for event in events]))
+    grouped = {}
+    for row in histories:
+        key = (tuple(row['word']), row['completion_time'])
+        grouped.setdefault(key, []).append(row['history_id'])
+    groups = [dict(word=list(word), completion_time=time, members=sorted(members))
+              for (word, time), members in sorted(grouped.items())]
+    roots = [witness['history']['fires'][0]['transition'] for witness in case['witnesses']]
+    normal = sum((Q(model['transitions'][name]['weight']) for name in roots
+                  if not model['transitions'][name]['fault']), Q(0))
+    fault = sum((Q(model['transitions'][name]['weight']) for name in roots
+                 if model['transitions'][name]['fault']), Q(0))
+    total = normal + fault
+    return dict(status='LOSSLESS_HISTORY_LP', histories=histories,
+                observation_groups=groups,
+                lp_solution=dict(normal=str(normal / total), fault=str(fault / total)))
 
 
 def reference_r605(model, case):

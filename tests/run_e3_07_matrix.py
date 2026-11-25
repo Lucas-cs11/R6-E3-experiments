@@ -88,9 +88,11 @@ def execute_shard(out_dir, shard_index, shard_count, node_budget, limit=None):
             else:
                 result = run_path(model, row['method_id'], node_budget)
                 stats, resources = result['path_stats'], result['resources']
+                certificate = result.get('certificate') or {}
                 row.update(result_status=result['status'], v_L=result.get('verdict'),
+                           model_sha256=certificate.get('model_sha256', ''),
                            witness_path=json.dumps(result.get('trace'))[:2000],
-                           completeness_certificate=json.dumps(result.get('certificate'), sort_keys=True),
+                           completeness_certificate=json.dumps(certificate, sort_keys=True),
                            symbolic_state_count=stats.get('state_classes'),
                            synchronized_pair_count=stats.get('sync_pairs'),
                            LP_count=stats.get('lp_calls'),

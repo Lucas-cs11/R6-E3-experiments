@@ -19,10 +19,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Build
+      - name: Build (Maven project rooted at sirio/)
         run: |
-          chmod +x gradlew
-          ./gradlew --no-daemon build -x test 2>&1 | tee build.log
+          mvn -B -f sirio/pom.xml -DskipTests package 2>&1 | tee build.log
           echo "BUILD_EXIT=${PIPESTATUS[0]}" | tee build.exit
       - name: Collect evidence
         if: always()
@@ -30,7 +29,7 @@ jobs:
           mkdir -p evidence
           cp build.log build.exit evidence/ 2>/dev/null || true
           git rev-parse HEAD > evidence/pinned_commit.txt
-          find . -name "*.jar" -path "*/build/*" -exec sha256sum {} \; > evidence/artifact_hashes.txt 2>/dev/null || true
+          find . -name "*.jar" -path "*/target/*" -exec sha256sum {} \; > evidence/artifact_hashes.txt 2>/dev/null || true
           ls -la evidence/
       - name: Upload build evidence
         if: always()

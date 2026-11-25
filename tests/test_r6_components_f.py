@@ -54,7 +54,7 @@ class R613SourceReconciliationTests(unittest.TestCase):
     def test_manifest_1421_skip_without_raw_and_two_mutations(self):
         manifest = ROOT / 'baseline_readonly/e2/scope/pyscrew_raw_manifest.csv'
         predictions = ROOT / 'baseline_readonly/e2/chapter6/outer_predictions.csv'
-        history = ROOT / 'runs/domain_audit/historical_1413_1421_summary.json'
+        history = ROOT / 'reports/domain_audit/historical_1413_1421_summary.json'
         case = dict(case_id='r613_manifest_without_raw', kind='source_reconciliation', role='POSITIVE')
         with mock.patch.dict(os.environ, {'PYSCREW_RAW_JSON_ROOT': ''}):
             subject = run_r613(manifest, predictions, history, raw_json_root=None)
@@ -105,7 +105,7 @@ class R613SourceReconciliationTests(unittest.TestCase):
                                          source_group=f'C|{location}', workpiece_result='OK',
                                          file_sha256='0' * 64, file_name=filename))
             predictions = ROOT / 'baseline_readonly/e2/chapter6/outer_predictions.csv'
-            history = ROOT / 'runs/domain_audit/historical_1413_1421_summary.json'
+            history = ROOT / 'reports/domain_audit/historical_1413_1421_summary.json'
             subject = run_r613(manifest, predictions, history, raw_json_root='')
             reference = reference_r613(manifest, predictions, history, raw_json_root='')
             self.assertEqual(subject, reference)

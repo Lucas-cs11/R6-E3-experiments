@@ -2,6 +2,7 @@
 import csv
 import json
 import sys
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -62,8 +63,10 @@ class PyScrewLedgerTests(unittest.TestCase):
             self.assertIn('40000000017401', subject['reason'])
             self.assertEqual(len(subject['records']), 5000)
     def test_actual_raw_json_sha_replay_when_injected(self):
-        raw_root = Path('/Users/lucas/Downloads/results1005/pyscrew/raw_json')
-        self.assertTrue(raw_root.is_dir())
+        raw_root = Path(os.environ.get('PYSCREW_RAW_JSON_ROOT',
+                                       '/Users/lucas/Downloads/results1005/pyscrew/raw_json'))
+        if not raw_root.is_dir():
+            self.skipTest('RAW_JSON_NOT_AVAILABLE_ON_THIS_RUNNER')
         subject = build_ledger(self.manifest, self.split, self.labels, raw_json_root=str(raw_root))
         reference = reference_ledger(self.manifest, self.split, self.labels, raw_json_root=str(raw_root))
         self.assertEqual(subject, reference)

@@ -1,0 +1,8 @@
+{
+  "status": "PROVENANCE_UNRESOLVED_PARTIAL",
+  "reproduced_main_non_NI": 1421,
+  "historical_intersection_1413_source": "NOT_IN_E2_MATERIALS",
+  "difference_ids_unresolvable": 8,
+  "verdict": "E2 outer_predictions.csv \u4ec5\u542b main/fixed_allocation/in_sample_allocation \u4e09\u4e2a\u53d8\u4f53\uff0c\u65e0\u4ea7\u751f\u5386\u53f2 1413 \u7684\u56db\u65b9\u6cd5\u8f93\u51fa\uff1b8 \u6761\u5dee\u5f02 ID \u65e0\u6cd5\u4ece\u73b0\u6709\u6750\u6599\u89e3\u6790\uff0c\u6309\u5408\u540c\u4e0d\u5220\u4efb\u4f55\u8bb0\u5f55",
+  "source_sha256": "37717dab272234992aa1edbeab0048e2520964e693d0e3749f7e9705e87a53a2"
+}

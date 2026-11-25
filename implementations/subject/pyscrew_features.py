@@ -5,6 +5,8 @@ duration, angle_start/end/mean/peak, torque_mean/peak/min/end, gradient_mean,
 gradient_abs_peak, and trapezoid torque_area over time.  Global features are
 step_count, total_duration, angle_total_mean, torque_total_mean, torque_peak,
 and final_torque.  ``time values`` supplies duration and trapezoid integration.
+Missing steps use step{i}_missing=1 with zero-filled step metrics; actual
+step_count is retained, so early termination is explicit rather than an error.
 Only ``angle/torque/gradient/time values`` are read; result labels and metadata
 never enter the feature vector.  Repeated input produces identical floats.
 """

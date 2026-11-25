@@ -1,0 +1,56 @@
+name: E3-10 stage-2 features and shared-ID metrics
+
+on:
+  workflow_dispatch:
+    inputs:
+      use_existing_raw_root:
+        description: Use an existing raw_json checkout instead of downloading the release
+        type: boolean
+        default: false
+      raw_root:
+        description: Optional existing raw_json directory when use_existing_raw_root is true
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  stage2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install pinned scientific dependencies
+        run: python3 -m pip install scikit-learn==1.9.1
+      - name: Download and verify pyscrew-raw-v1
+        if: ${{ !inputs.use_existing_raw_root }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/release"
+          gh release download pyscrew-raw-v1 --repo Lucas-cs11/R6-E3-experiments \
+            --pattern pyscrew_raw_5000.tar.gz --dir "$RUNNER_TEMP/release"
+          printf '%s  %s\n' 'de161758a6918bc70e3b24a0327b5d719b882395df81b5d481071b5abf22d545' \
+            "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz" | sha256sum -c -
+          test "$(stat -c%s "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz")" = '61846400'
+          mkdir -p "$RUNNER_TEMP/raw_json"
+          tar -xzf "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz" -C "$RUNNER_TEMP/raw_json"
+      - name: Run deterministic feature and metric self-test
+        run: python3 -B tests/run_e3_10_stage2.py --self-test
+      - name: Train three models and compute common-ID metrics
+        env:
+          PYSCREW_RAW_JSON_ROOT: ${{ inputs.use_existing_raw_root && inputs.raw_root || format('{0}/raw_json', runner.temp) }}
+        run: python3 -B tests/run_e3_10_stage2.py --run --raw-root "$PYSCREW_RAW_JSON_ROOT" --output-dir runs/e3_10
+      - name: Verify output identities and independent metrics
+        run: python3 -B tests/run_e3_10_stage2.py --self-test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e3-10-stage2-${{ github.run_id }}
+          path: runs/e3_10/
+          if-no-files-found: error

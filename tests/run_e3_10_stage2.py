@@ -1,13 +1,21 @@
 """E3-10 stage-2 deterministic features, models and shared-ID metric entry."""
 import argparse
+import csv
+import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
+import tarfile
+import tempfile
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / 'implementations/subject'), str(ROOT / 'oracles/independent')]
 from pyscrew_features import extract_features, feature_vector
-from pyscrew_metrics_reference import auroc, balanced_accuracy, brier, nll, risk_coverage
+from pyscrew_metrics_reference import (auroc, balanced_accuracy, brier, nll, risk_coverage,
+                                       classification_metrics, stratified_metrics)
 
 
 def self_test(raw_root=None):
@@ -37,15 +45,213 @@ def self_test(raw_root=None):
                       'coverage_at_0_15': coverage[0]}, sort_keys=True))
 
 
+RELEASE = dict(tag='pyscrew-raw-v1', asset='pyscrew_raw_5000.tar.gz',
+               sha256='de161758a6918bc70e3b24a0327b5d719b882395df81b5d481071b5abf22d545',
+               bytes=61846400)
+RANDOM_STATES = {'LogisticRegression': 4101, 'RandomForest': 4102,
+                 'HistGradientBoosting': 4103}
+METHOD_NAMES = tuple(RANDOM_STATES)
+
+
+def _read_csv(path):
+    with Path(path).open(newline='', encoding='utf-8') as handle:
+        return list(csv.DictReader(handle))
+
+
+def _feature_data(raw_root, manifest):
+    files = {}
+    for path in Path(raw_root).rglob('*.json'):
+        if path.name in files:
+            raise ValueError(f'duplicate raw basename {path.name}')
+        files[path.name] = path
+    records = []
+    errors = []
+    for raw in manifest:
+        try:
+            raw_path = files[raw['file_name']]
+            features = extract_features(raw_path.read_text())
+            records.append(dict(raw_record_id=raw['run_id'],
+                                physical_workpiece_id=raw['workpiece_id'],
+                                side=raw['location'], **{'class': raw['physical_class']},
+                                split=raw['split'], features=features))
+        except (KeyError, ValueError, TypeError, json.JSONDecodeError) as exc:
+            errors.append(dict(raw_record_id=raw['run_id'], reason=f'FEATURE_ERROR:{exc}'))
+    return records, errors
+
+
+def _join_records(feature_records, split_plan, labels):
+    splits = {row['run_id']: row for row in split_plan}
+    label_map = {row['run_id']: row for row in labels}
+    joined = []
+    for record in feature_records:
+        run_id = record['raw_record_id']
+        split = splits[run_id]
+        label = label_map[run_id]
+        if label['workpiece_result'] not in ('OK', 'NOK'):
+            continue
+        joined.append(dict(record, split=split['split'],
+                           completion_status='COMPLETED' if split['completed'] == 'True' else 'NOT_COMPLETED',
+                           y_true=int(label['workpiece_result'] == 'NOK')))
+    by_workpiece = {}
+    for record in joined:
+        by_workpiece.setdefault(record['physical_workpiece_id'], set()).add(record['split'])
+    leaks = sorted(workpiece for workpiece, values in by_workpiece.items() if len(values) > 1)
+    if leaks:
+        raise ValueError(f'workpiece split leakage: {leaks[:3]}')
+    return joined
+
+
+def _train(records):
+    import numpy as np
+    from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
+    from sklearn.linear_model import LogisticRegression
+
+    names = sorted(records[0]['features'])
+    train = [row for row in records if row['split'] == 'calibration']
+    test = [row for row in records if row['split'] == 'held_out']
+    if not train or not test:
+        raise ValueError('calibration and held_out must both be nonempty')
+    x_train = np.array([[row['features'][name] for name in names] for row in train], dtype=float)
+    y_train = np.array([row['y_true'] for row in train])
+    x_test = np.array([[row['features'][name] for name in names] for row in test], dtype=float)
+    models = {
+        'LogisticRegression': LogisticRegression(random_state=RANDOM_STATES['LogisticRegression'],
+                                                 max_iter=2000, solver='lbfgs'),
+        'RandomForest': RandomForestClassifier(random_state=RANDOM_STATES['RandomForest'],
+                                               n_estimators=100, n_jobs=1),
+        'HistGradientBoosting': HistGradientBoostingClassifier(
+            random_state=RANDOM_STATES['HistGradientBoosting'], max_iter=100, max_depth=3,
+            learning_rate=0.1),
+    }
+    predictions = {}
+    for name, model in models.items():
+        model.fit(x_train, y_train)
+        predictions[name] = model.predict_proba(x_test)[:, 1].tolist()
+    return test, predictions, len(train)
+
+
+def _evaluate(test, predictions, outer_rows):
+    frozen = {row['run_id']: float(row['p']) for row in outer_rows
+              if row['variant'] == 'main' and row['NI'] == 'False'}
+    common_ids = sorted({row['raw_record_id'] for row in test} & set(frozen))
+    if not common_ids:
+        raise ValueError('no common valid evaluation IDs')
+    by_id = {row['raw_record_id']: row for row in test}
+    positions = {row['raw_record_id']: index for index, row in enumerate(test)}
+    common = [by_id[run_id] for run_id in common_ids]
+    y_true = [row['y_true'] for row in common]
+    probability_map = {name: [predictions[name][positions[run_id]] for run_id in common_ids]
+                       for name in METHOD_NAMES}
+    probability_map['frozen_main'] = [frozen[run_id] for run_id in common_ids]
+    model_metrics = {}
+    for name, probabilities in probability_map.items():
+        model_metrics[name] = dict(classification_metrics(y_true, probabilities))
+        model_metrics[name]['stratified'] = stratified_metrics(
+            [dict(row, probability=probability) for row, probability in zip(common, probabilities)])
+    return common, probability_map, model_metrics
+
+
+def _safe_extract(asset, destination):
+    with tarfile.open(asset, 'r:gz') as archive:
+        for member in archive.getmembers():
+            target = Path(destination, member.name)
+            if not member.isfile() or Path(member.name).is_absolute() or '..' in Path(member.name).parts:
+                raise ValueError(f'unsafe archive member {member.name}')
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with archive.extractfile(member) as source, target.open('wb') as output:
+                output.write(source.read())
+
+
+def _download_release(workdir):
+    workdir = Path(workdir)
+    workdir.mkdir(parents=True, exist_ok=True)
+    subprocess.run(['gh', 'release', 'download', RELEASE['tag'], '--repo', 'Lucas-cs11/R6-E3-experiments',
+                    '--pattern', RELEASE['asset'], '--dir', str(workdir)], check=True)
+    asset = workdir / RELEASE['asset']
+    if asset.stat().st_size != RELEASE['bytes']:
+        raise ValueError('release asset byte count mismatch')
+    if hashlib.sha256(asset.read_bytes()).hexdigest() != RELEASE['sha256']:
+        raise ValueError('release asset SHA-256 mismatch')
+    raw_root = workdir / 'raw_json'
+    raw_root.mkdir(exist_ok=True)
+    _safe_extract(asset, raw_root)
+    return raw_root
+
+
+def run_pipeline(raw_root, output_dir):
+    started, cpu_started = time.perf_counter(), time.process_time()
+    manifest = _read_csv(ROOT / 'baseline_readonly/e2/scope/pyscrew_raw_manifest.csv')
+    split_plan = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/split_plan.csv')
+    labels = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/labels.csv')
+    outer = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/outer_predictions.csv')
+    feature_records, feature_errors = _feature_data(raw_root, manifest)
+    records = _join_records(feature_records, split_plan, labels)
+    test, predictions, train_count = _train(records)
+    common, probability_map, model_metrics = _evaluate(test, predictions, outer)
+    common_ids = {row['raw_record_id'] for row in common}
+    excluded = []
+    for raw in manifest:
+        run_id = raw['run_id']
+        if run_id in common_ids:
+            continue
+        split = next(row for row in split_plan if row['run_id'] == run_id)
+        if split['split'] != 'held_out':
+            reason = 'NOT_HELD_OUT'
+        elif run_id not in {row['run_id'] for row in outer if row['variant'] == 'main' and row['NI'] == 'False'}:
+            reason = 'FROZEN_MAIN_NOT_VALID'
+        else:
+            reason = 'NOT_EVALUABLE_LABEL_OR_FEATURE'
+        excluded.append(dict(raw_record_id=run_id, reason=reason))
+    excluded.extend(feature_errors)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = output_dir / 'per_record_predictions.csv'
+    fields = ['raw_record_id', 'physical_workpiece_id', 'side', 'class', 'split',
+              'completion_status', 'y_true', *METHOD_NAMES, 'frozen_main']
+    with csv_path.open('w', newline='') as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        for index, row in enumerate(common):
+            writer.writerow({key: row[key] for key in fields[:7]} |
+                            {name: probability_map[name][index] for name in fields[7:]})
+    ids_sha = hashlib.sha256('\n'.join(row['raw_record_id'] for row in common).encode()).hexdigest()
+    result = dict(status='STAGE2_METRICS_COMPUTED', release=RELEASE,
+                  split=dict(train='calibration', evaluate='held_out', train_count=train_count,
+                             held_out_count=len(test), leak_count=0),
+                  common_evaluation=dict(count=len(common), ids_sha256=ids_sha,
+                                         rule='all_three_models_and_frozen_main_NI_false'),
+                  random_states=RANDOM_STATES, models=model_metrics,
+                  excluded=excluded,
+                  resources=dict(wall_seconds=time.perf_counter() - started,
+                                 cpu_seconds=time.process_time() - cpu_started),
+                  per_record_csv=str(csv_path))
+    (output_dir / 'stage2_metrics.json').write_text(json.dumps(result, indent=2, sort_keys=True) + '\n')
+    print(json.dumps({'status': result['status'], 'common_count': len(common),
+                      'ids_sha256': ids_sha, 'metrics': str(output_dir / 'stage2_metrics.json')},
+                     sort_keys=True))
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--self-test', action='store_true')
+    parser.add_argument('--run', action='store_true')
+    parser.add_argument('--download', action='store_true')
     parser.add_argument('--raw-root')
+    parser.add_argument('--workdir', default='/tmp/e3-10-stage2-release')
+    parser.add_argument('--output-dir', default=str(ROOT / 'runs/e3_10'))
     args = parser.parse_args(argv)
     if args.self_test:
         self_test(args.raw_root)
-        return 0
-    parser.error('use --self-test or the full-pipeline implementation in the next logical block')
+    if args.download:
+        raw_root = _download_release(args.workdir)
+    else:
+        raw_root = args.raw_root or os.environ.get('PYSCREW_RAW_JSON_ROOT',
+                                                   '/Users/lucas/Downloads/results1005/pyscrew/raw_json')
+    if args.run:
+        run_pipeline(raw_root, args.output_dir)
+    if not args.self_test and not args.run and not args.download:
+        parser.error('use --self-test, --run, or --download')
 
 
 if __name__ == '__main__':

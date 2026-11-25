@@ -1,0 +1,14 @@
+{
+  "H_psi": 0, "B_c": 1, "B_d": 3, "H_A": 4,
+  "initial": {"start": 1, "faulty": 0, "done": 0},
+  "completion_marking": {"done": 1},
+  "transitions": {
+    "fault": {"pre": {"start": 1}, "post": {"faulty": 1}, "interval": [0, 2], "fault": true, "completion": false, "immediate": false, "label": null},
+    "complete": {"pre": {"faulty": 1}, "post": {"done": 1}, "interval": [1, 4], "fault": false, "completion": true, "immediate": false, "label": "done"}
+  },
+  "state_class": {
+    "variables": ["fault", "complete"],
+    "variable_bounds": {"fault": ["0", "2"], "complete": ["1", "4"]},
+    "difference": {"expression": "complete-fault", "low": "0", "high": "4"}
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "candidates": 143360,
+  "decision_trace": "reports/decision_trace.csv",
+  "decision_trace_sha256": "668bedee62d5dbdbae458bd4be83e06f716648dab0b53767740a0260b3df2309",
+  "declared_ledger": {
+    "BOUNDED": 104052,
+    "TIMEOUT": 3468
+  },
+  "distinct_semantic_net_contents": 85024,
+  "domain_index_sha256": "b39aad320ab11a78b92da19c1049e370133c22d7550104fc453df9a4bce29332",
+  "fault_locations_semantics": "requested upper bound saturated at used_machine_count",
+  "invalid_configs": 35840,
+  "method_count": 4,
+  "minimum_task_records": 430080,
+  "provenance_unresolved": [
+    "15 seeds",
+    "param_slice:3",
+    "historical 36,450 instances"
+  ],
+  "query_reconciled": {
+    "boundedness_proved": 104212,
+    "boundedness_undetermined": 3308
+  },
+  "ruling": "APPROVED_A_WITH_LIMITATIONS",
+  "ruling_reference": "reports/01_\u7814\u7a76\u57df_E3-05_\u4e3b\u7406\u8bba\u88c1\u5b9a\u9644\u5f55.md",
+  "ruling_reference_sha256": "753e56a11a7f54e4fffb4fb1e0f1628f7b43932d7f3d0b7097c0f47d0d4b9a46",
+  "saturated_configurations": 3840,
+  "saturation_audit_sha256": "beae3a2c0a99946a4793d315c122b3443cfad34a3bfc5338a21e828ab5428b12",
+  "seed": 0,
+  "sensitivity_B": {
+    "declared_ledger": {
+      "BOUNDED": 100212,
+      "TIMEOUT": 3468
+    },
+    "query_reconciled": {
+      "boundedness_proved": 100372,
+      "boundedness_undetermined": 3308
+    },
+    "valid_configs": 103680
+  },
+  "source_universe_sha256": "3954c1ed8c1b801b19454fb2a4b3e183c3eca6f4c3311be8bd5a05ae45aa88c6",
+  "status": "MATH_SIGNED_SCOPE",
+  "valid_configs": 107520
+}

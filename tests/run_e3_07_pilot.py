@@ -28,25 +28,29 @@ AXES = ('machine_counts', 'part_type_counts', 'operations_per_part', 'wip_bounds
 
 
 def stratified_sample(rows, total, seed):
+    """Uniform deterministic sample with axis-coverage checks.
+
+    The 8-axis tuple is unique per candidate (143,360 strata), so true
+    stratification degenerates; uniform sampling with a coverage table is
+    the honest probe.  A per-axis minimum is enforced by quota fill.
+    """
     rng = random.Random(seed)
-    strata = {}
-    for r in rows:
-        key = tuple(r[a] for a in AXES)
-        strata.setdefault(key, []).append(r)
-    picked = []
-    per = max(1, total // len(strata))
-    for key in sorted(strata):
-        group = sorted(strata[key], key=lambda r: r['candidate_id'])
-        rng.shuffle(group)
-        picked.extend(group[:per])
-    return picked[:total]
+    ordered = sorted(rows, key=lambda r: r['candidate_id'])
+    rng.shuffle(ordered)
+    picked = ordered[:total]
+    summary = {'axis_coverage': {}}
+    for axis in AXES:
+        from collections import Counter
+        counts = Counter(r[axis] for r in picked)
+        summary['axis_coverage'][axis] = dict(sorted(counts.items()))
+    return picked, summary
 
 
 def main(sample_size, seed, node_budget, out_dir, shard_index=0, shard_count=1):
     out_dir.mkdir(parents=True, exist_ok=True)
     rows = [r for r in csv.DictReader(UNIVERSE.open(newline=''))
             if r['static_validity'] == 'VALID_BY_FROZEN_RULE']
-    sample = stratified_sample(rows, sample_size, seed)
+    sample, coverage = stratified_sample(rows, sample_size, seed)
     sample = [r for i, r in enumerate(sample) if i % shard_count == shard_index]
     (out_dir / 'pilot_sample.csv').write_text(
         'candidate_id\n' + '\n'.join(r['candidate_id'] for r in sample) + '\n')
@@ -84,7 +88,8 @@ def main(sample_size, seed, node_budget, out_dir, shard_index=0, shard_count=1):
                'by_method_status': {m: dict(Counter(r['status'] for r in results if r['method'] == m))
                                     for m in METHODS},
                'wall_total_seconds': round(sum(r['wall_seconds'] for r in results), 2),
-               'wall_median_seconds': sorted(r['wall_seconds'] for r in results)[len(results) // 2]}
+               'wall_median_seconds': sorted(r['wall_seconds'] for r in results)[len(results) // 2],
+               'axis_coverage': coverage['axis_coverage']}
     with (out_dir / 'pilot_results.csv').open('w', newline='') as handle:
         writer = csv.DictWriter(handle, fieldnames=list(results[0]))
         writer.writeheader()

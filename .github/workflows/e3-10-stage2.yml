@@ -58,6 +58,8 @@ jobs:
       - name: Verify output identities and independent metrics
         run: python3 -B tests/run_e3_10_stage2.py --verify --output-dir runs/e3_10
       - name: Run stage-4 sensitivity report
+        env:
+          PYSCREW_RAW_JSON_ROOT: ${{ inputs.use_existing_raw_root && inputs.raw_root || format('{0}/raw_json', runner.temp) }}
         run: python3 -B tests/run_e3_10_stage4.py
       - name: Archive sensitivity report into tracked reports
         run: cp runs/e3_10/stage4_sensitivity.json runs/e3_10/stage4_sensitivity.md reports/e3_10/

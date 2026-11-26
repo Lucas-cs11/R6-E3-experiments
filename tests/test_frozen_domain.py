@@ -4,8 +4,10 @@ import hashlib
 import json
 import unittest
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'oracles/independent'))
 
 
 class FrozenDomainTests(unittest.TestCase):
@@ -56,6 +58,30 @@ class FrozenDomainTests(unittest.TestCase):
         self.assertIn(hashlib.sha256(trace.read_bytes()).hexdigest(), decision)
         self.assertIn('MATH_SIGNED_SCOPE', decision)
         self.assertIn('100,372', decision)
+    def test_160_query_rows_bind_raw_bounded_evidence(self):
+        path = ROOT / 'runs/domain_audit/tina_160_query_level_reconciliation.csv'
+        with path.open(newline='') as handle:
+            rows = list(csv.DictReader(handle))
+        self.assertEqual(len(rows), 160)
+        self.assertEqual(len({row['candidate_id'] for row in rows}), 160)
+        for row in rows:
+            self.assertEqual(row['declared_status'], 'TIMEOUT')
+            self.assertEqual(row['raw_verdict'], 'BOUNDED')
+            self.assertEqual(row['strict_ledger_status'], 'TIMEOUT')
+            self.assertEqual(row['reconciled_status'], 'BOUNDEDNESS_PROVED')
+            self.assertEqual(row['query_scope'], 'UNTIMED_P_T_REACHABILITY_ONLY')
+            self.assertIn('REACHABILITY ANALYSIS', row['stdout_excerpt'])
+            self.assertIn('bounded', row['stdout_excerpt'])
+            self.assertNotIn('unbounded', row['stdout_excerpt'])
+            self.assertIn('DECLARED_TIMEOUT_AFTER_REACHABILITY_VERDICT', row['parse_basis'])
+            self.assertEqual(len(row['pnml_sha256']), 64)
+            self.assertEqual(len(row['stdout_sha256']), 64)
+            self.assertTrue(row['retry_batch'].isdigit())
+            self.assertTrue(row['source_batch'].isdigit())
+            self.assertTrue(row['source_shard'].endswith('.jsonl.gz'))
+        replay = __import__('tina_raw_replay').replay(ROOT / 'baseline_readonly/e2')
+        self.assertEqual(replay['final']['recoverable_timeout_with_verdict'], 160)
+        self.assertEqual(replay['final']['raw_verdict_status_counts'], {'BOUNDED': 104212, 'TIMEOUT': 3308})
 
 
 if __name__ == '__main__':

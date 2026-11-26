@@ -1,0 +1,13 @@
+decision_id,topic,ruling,evidence_basis,teX_or_evidence_ref,level
+D1,domain_choice,A_scheme_seed0_full_domain_107520x4=430080,143360 candidates R1-R8 static rules,universus CSV + R1-R8 rules, MATH_SIGNED_SCOPE
+D2,fault_locations_semantics,upper_bound_saturating_not_exact,3840/3840 saturation audit PASS,runs/domain_audit/fault_saturation_3840.csv,MATH_SIGNED_SCOPE
+D3,B_row_arithmetic_fix,103680=100212+3468 not 101372+3308;160 recoverable->100372/3308,merged ledger + raw replay,runs/math_p0/tina_raw_replay,MATH_SIGNED_SCOPE
+D4,network_content_identity,85024 distinct canonical contents (hash not behavioral),full identity audit,runs/domain_audit/semantic_identities_summary.json,SOURCE_REPORTED
+D5,G2_status,G2_LIMITED_not_integrated_pass,144 calls 36 models depth<=9 only,g2 request + auditor verdicts,SOURCE_REPORTED
+D6,same_task_definition,seven core + support/initial/marking/measurability/subclass additions,teX cross-layer assumptions,B1B2 request,SOURCE_REPORTED
+D7,a4_base_model_correction,X3~U[2,4] X5~U[1,3] X4~U[a4,5] Y0=max Y1=X4 not two direct densities,TeX section 2/4 formulas a4196145...,MATH_SIGNED_SCOPE
+D8,prob_math_class,piecewise rational densities finite depth polyhedral observations;F1/F2/F3 on real parallel topology,TeX section 4 + R6-09 supported domain,MATH_SIGNED_SCOPE
+D9,135_specs_cartesian,pi0 3 x epsilon 3 x delta 5 x gamma 3 = 135;76545 units,TeX parameter domain pi_i>0 0<delta<1/2,MATH_SIGNED_SCOPE
+D10,q_vs_pi_independence,root weights induce q;decision prior pi separate per TeX,TeX probability hypotheses, MATH_SIGNED_SCOPE
+D11,Q2_Q3_no_cross_layer_theorem,quantized observations usually non-injective,TeX chapter 5 injectivity condition,MATH_SIGNED_SCOPE
+D12,multiseed_provenance,15 seeds/param_slice 3/36450 PROVENANCE_UNRESOLVED;new seeds only via extension_multiseed_domain.json,protocol lineage,PROVENANCE_UNRESOLVED

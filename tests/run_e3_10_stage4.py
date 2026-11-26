@@ -129,7 +129,7 @@ def run_stage4():
                 if row['variant'] == 'main' and row['NI'] == 'False'}
     for row in rows:
         row['fold'] = fold_map[row['raw_record_id']]
-        raw = json.loads(next(Path('/Users/lucas/Downloads/results1005/pyscrew/raw_json').rglob(
+        raw = json.loads(next(Path(_raw_root()).rglob(
             f"Ch_{int(row['raw_record_id']):012d}.json")).read_text())
         features = extract_features(raw)
         row['input_type'] = ('MISSING' if any(features[f'step{i}_missing'] for i in range(4)) else
@@ -138,7 +138,7 @@ def run_stage4():
     manifest = _read_csv(ROOT / 'baseline_readonly/e2/scope/pyscrew_raw_manifest.csv')
     labels = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/labels.csv')
     split = _read_csv(ROOT / 'baseline_readonly/e2/chapter6/split_plan.csv')
-    feature_records, feature_errors = _feature_data('/Users/lucas/Downloads/results1005/pyscrew/raw_json', manifest)
+    feature_records, feature_errors = _feature_data(_raw_root(), manifest)
     records = _join_records(feature_records, split, labels, outer)
     original = _train_hgb(records, outer, 4103)
     coarse = _train_hgb(records, outer, 4103, binarize=True)
@@ -209,6 +209,13 @@ Input types (COMPLETE/MISSING/EMPTY): {strata_counts}.  Other strata cover 16 ob
 
 All choices are fixed in source.  No time-dependent value or random seed is hidden.
 """
+
+
+def _raw_root():
+    import os
+    root = os.environ.get('PYSCREW_RAW_JSON_ROOT',
+                          '/Users/lucas/Downloads/results1005/pyscrew/raw_json')
+    return root
 
 
 def self_test():

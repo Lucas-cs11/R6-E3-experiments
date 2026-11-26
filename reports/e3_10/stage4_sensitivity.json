@@ -1,0 +1,1200 @@
+{
+  "bootstrap": {
+    "confidence_interval_95": {
+      "auroc": [
+        0.8401162518037604,
+        0.8785655391914915
+      ],
+      "balanced_accuracy": [
+        0.7501502830387798,
+        0.7945432115222956
+      ],
+      "brier": [
+        0.13914369868178378,
+        0.16039010015653482
+      ],
+      "nll": [
+        0.43169254541213453,
+        0.4834586062814131
+      ]
+    },
+    "repetitions": 200,
+    "seed": 4105,
+    "unit": "physical_workpiece"
+  },
+  "common_evaluation": {
+    "count": 1421,
+    "ids_sha256": "bac92f1af0557331ca6f772817d67bfb6e421c74bda590ad37974e1d929ee3dd",
+    "rule": "all_three_models_and_frozen_main_NI_false"
+  },
+  "guardrail": "\u4e0d\u5f97\u752832\u5de5\u51b5\u5b50\u96c6\u652f\u6491\u5168\u91cf\u4e25\u683c\u98ce\u9669\u7ed3\u8bba",
+  "median_binarization": {
+    "binarized_auroc": 0.7935004366118917,
+    "continuous_rule": "fold-training median, value > median",
+    "delta_auroc": -0.06529530840676345,
+    "model": "HistGradientBoosting",
+    "original_auroc": 0.8587957450186552,
+    "random_state": 4103
+  },
+  "seed_sensitivity": {
+    "max": 0.8587957450186552,
+    "min": 0.8587957450186552,
+    "range": 0.0,
+    "values": {
+      "4103": 0.8587957450186552,
+      "4201": 0.8587957450186552,
+      "4301": 0.8587957450186552
+    }
+  },
+  "status": "STAGE4_SENSITIVITY_COMPUTED",
+  "stratified": {
+    "class": {
+      "101_deformed-thread": {
+        "auroc": 0.6290760869565217,
+        "balanced_accuracy": 0.6123188405797101,
+        "brier": 0.2668711440364145,
+        "count": 94,
+        "nll": 0.7558732623777581,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.031914893617021274,
+            "covered": 3,
+            "delta": 0.1,
+            "error_count": 1,
+            "risk": 0.3333333333333333
+          },
+          {
+            "coverage": 0.1595744680851064,
+            "covered": 15,
+            "delta": 0.15,
+            "error_count": 5,
+            "risk": 0.3333333333333333
+          },
+          {
+            "coverage": 0.5638297872340425,
+            "covered": 53,
+            "delta": 0.25,
+            "error_count": 22,
+            "risk": 0.41509433962264153
+          },
+          {
+            "coverage": 1.0,
+            "covered": 94,
+            "delta": 0.5,
+            "error_count": 37,
+            "risk": 0.39361702127659576
+          }
+        ]
+      },
+      "102_filed-screw-tip": {
+        "auroc": 0.8086167800453514,
+        "balanced_accuracy": 0.754421768707483,
+        "brier": 0.17732354791105934,
+        "count": 94,
+        "nll": 0.5225596652426281,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.18085106382978725,
+            "covered": 17,
+            "delta": 0.1,
+            "error_count": 1,
+            "risk": 0.058823529411764705
+          },
+          {
+            "coverage": 0.2872340425531915,
+            "covered": 27,
+            "delta": 0.15,
+            "error_count": 2,
+            "risk": 0.07407407407407407
+          },
+          {
+            "coverage": 0.574468085106383,
+            "covered": 54,
+            "delta": 0.25,
+            "error_count": 7,
+            "risk": 0.12962962962962962
+          },
+          {
+            "coverage": 1.0,
+            "covered": 94,
+            "delta": 0.5,
+            "error_count": 23,
+            "risk": 0.24468085106382978
+          }
+        ]
+      },
+      "103_glued-screw-tip": {
+        "auroc": 0.7615499254843517,
+        "balanced_accuracy": 0.6984600099354198,
+        "brier": 0.20253414364197211,
+        "count": 94,
+        "nll": 0.5880970816904447,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.0851063829787234,
+            "covered": 8,
+            "delta": 0.1,
+            "error_count": 1,
+            "risk": 0.125
+          },
+          {
+            "coverage": 0.1702127659574468,
+            "covered": 16,
+            "delta": 0.15,
+            "error_count": 3,
+            "risk": 0.1875
+          },
+          {
+            "coverage": 0.3723404255319149,
+            "covered": 35,
+            "delta": 0.25,
+            "error_count": 5,
+            "risk": 0.14285714285714285
+          },
+          {
+            "coverage": 1.0,
+            "covered": 94,
+            "delta": 0.5,
+            "error_count": 30,
+            "risk": 0.3191489361702128
+          }
+        ]
+      },
+      "104_coated-screw": {
+        "auroc": 0.6723684210526316,
+        "balanced_accuracy": 0.5947368421052632,
+        "brier": 0.2397932932389722,
+        "count": 78,
+        "nll": 0.6707358212215743,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.01282051282051282,
+            "covered": 1,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.05128205128205128,
+            "covered": 4,
+            "delta": 0.15,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.24358974358974358,
+            "covered": 19,
+            "delta": 0.25,
+            "error_count": 4,
+            "risk": 0.21052631578947367
+          },
+          {
+            "coverage": 1.0,
+            "covered": 78,
+            "delta": 0.5,
+            "error_count": 32,
+            "risk": 0.41025641025641024
+          }
+        ]
+      },
+      "105_worn-out-screw": {
+        "auroc": 0.9011627906976745,
+        "balanced_accuracy": 0.8055959302325582,
+        "brier": 0.13645316980749464,
+        "count": 75,
+        "nll": 0.4324944756174998,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.09333333333333334,
+            "covered": 7,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.22666666666666666,
+            "covered": 17,
+            "delta": 0.15,
+            "error_count": 1,
+            "risk": 0.058823529411764705
+          },
+          {
+            "coverage": 0.52,
+            "covered": 39,
+            "delta": 0.25,
+            "error_count": 2,
+            "risk": 0.05128205128205128
+          },
+          {
+            "coverage": 1.0,
+            "covered": 75,
+            "delta": 0.5,
+            "error_count": 15,
+            "risk": 0.2
+          }
+        ]
+      },
+      "201_damaged-contact-surface": {
+        "auroc": 0.9076858813700919,
+        "balanced_accuracy": 0.7894736842105263,
+        "brier": 0.12770848232774604,
+        "count": 99,
+        "nll": 0.41132628711311114,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.1414141414141414,
+            "covered": 14,
+            "delta": 0.1,
+            "error_count": 1,
+            "risk": 0.07142857142857142
+          },
+          {
+            "coverage": 0.23232323232323232,
+            "covered": 23,
+            "delta": 0.15,
+            "error_count": 1,
+            "risk": 0.043478260869565216
+          },
+          {
+            "coverage": 0.5353535353535354,
+            "covered": 53,
+            "delta": 0.25,
+            "error_count": 4,
+            "risk": 0.07547169811320754
+          },
+          {
+            "coverage": 1.0,
+            "covered": 99,
+            "delta": 0.5,
+            "error_count": 19,
+            "risk": 0.1919191919191919
+          }
+        ]
+      },
+      "202_broken-contact-surface": {
+        "auroc": 0.9963525835866262,
+        "balanced_accuracy": 0.9537993920972645,
+        "brier": 0.054766155154997005,
+        "count": 82,
+        "nll": 0.21431794659694087,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.3902439024390244,
+            "covered": 32,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.5609756097560976,
+            "covered": 46,
+            "delta": 0.15,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.7804878048780488,
+            "covered": 64,
+            "delta": 0.25,
+            "error_count": 1,
+            "risk": 0.015625
+          },
+          {
+            "coverage": 1.0,
+            "covered": 82,
+            "delta": 0.5,
+            "error_count": 4,
+            "risk": 0.04878048780487805
+          }
+        ]
+      },
+      "205_different-material": {
+        "auroc": 1.0,
+        "balanced_accuracy": 0.9545454545454546,
+        "brier": 0.040795277790802664,
+        "count": 98,
+        "nll": 0.15142318149563316,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.5816326530612245,
+            "covered": 57,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.6938775510204082,
+            "covered": 68,
+            "delta": 0.15,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.7755102040816326,
+            "covered": 76,
+            "delta": 0.25,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 1.0,
+            "covered": 98,
+            "delta": 0.5,
+            "error_count": 4,
+            "risk": 0.04081632653061224
+          }
+        ]
+      },
+      "301_plastic-pin-screw-hole": {
+        "auroc": 0.8755555555555555,
+        "balanced_accuracy": 0.7844444444444445,
+        "brier": 0.12406052990927155,
+        "count": 88,
+        "nll": 0.40357580088658673,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.20454545454545456,
+            "covered": 18,
+            "delta": 0.1,
+            "error_count": 1,
+            "risk": 0.05555555555555555
+          },
+          {
+            "coverage": 0.38636363636363635,
+            "covered": 34,
+            "delta": 0.15,
+            "error_count": 1,
+            "risk": 0.029411764705882353
+          },
+          {
+            "coverage": 0.6136363636363636,
+            "covered": 54,
+            "delta": 0.25,
+            "error_count": 4,
+            "risk": 0.07407407407407407
+          },
+          {
+            "coverage": 1.0,
+            "covered": 88,
+            "delta": 0.5,
+            "error_count": 15,
+            "risk": 0.17045454545454544
+          }
+        ]
+      },
+      "303_less-glass-fiber": {
+        "auroc": 0.9930434782608696,
+        "balanced_accuracy": 0.9565217391304348,
+        "brier": 0.0478195489272942,
+        "count": 48,
+        "nll": 0.1942664919554508,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.3958333333333333,
+            "covered": 19,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.5625,
+            "covered": 27,
+            "delta": 0.15,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.8541666666666666,
+            "covered": 41,
+            "delta": 0.25,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 1.0,
+            "covered": 48,
+            "delta": 0.5,
+            "error_count": 2,
+            "risk": 0.041666666666666664
+          }
+        ]
+      },
+      "304_glued-screw-hole": {
+        "auroc": 0.8285714285714286,
+        "balanced_accuracy": 0.6959183673469388,
+        "brier": 0.17634663963091962,
+        "count": 99,
+        "nll": 0.5192034688026341,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.12121212121212122,
+            "covered": 12,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.2727272727272727,
+            "covered": 27,
+            "delta": 0.15,
+            "error_count": 1,
+            "risk": 0.037037037037037035
+          },
+          {
+            "coverage": 0.5555555555555556,
+            "covered": 55,
+            "delta": 0.25,
+            "error_count": 8,
+            "risk": 0.14545454545454545
+          },
+          {
+            "coverage": 1.0,
+            "covered": 99,
+            "delta": 0.5,
+            "error_count": 30,
+            "risk": 0.30303030303030304
+          }
+        ]
+      },
+      "305_gap-between-parts": {
+        "auroc": 0.9244,
+        "balanced_accuracy": 0.8,
+        "brier": 0.120853214896706,
+        "count": 100,
+        "nll": 0.38618357871543785,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.14,
+            "covered": 14,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.3,
+            "covered": 30,
+            "delta": 0.15,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.63,
+            "covered": 63,
+            "delta": 0.25,
+            "error_count": 4,
+            "risk": 0.06349206349206349
+          },
+          {
+            "coverage": 1.0,
+            "covered": 100,
+            "delta": 0.5,
+            "error_count": 20,
+            "risk": 0.2
+          }
+        ]
+      },
+      "402_surface-moisture": {
+        "auroc": 0.3690215006581834,
+        "balanced_accuracy": 0.41377797279508555,
+        "brier": 0.3421701980299043,
+        "count": 96,
+        "nll": 0.9333601782954931,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.020833333333333332,
+            "covered": 2,
+            "delta": 0.1,
+            "error_count": 2,
+            "risk": 1.0
+          },
+          {
+            "coverage": 0.09375,
+            "covered": 9,
+            "delta": 0.15,
+            "error_count": 5,
+            "risk": 0.5555555555555556
+          },
+          {
+            "coverage": 0.3125,
+            "covered": 30,
+            "delta": 0.25,
+            "error_count": 19,
+            "risk": 0.6333333333333333
+          },
+          {
+            "coverage": 1.0,
+            "covered": 96,
+            "delta": 0.5,
+            "error_count": 54,
+            "risk": 0.5625
+          }
+        ]
+      },
+      "403_plastic-chip": {
+        "auroc": 0.9493506493506494,
+        "balanced_accuracy": 0.8768398268398268,
+        "brier": 0.10119946952252877,
+        "count": 97,
+        "nll": 0.339284689284579,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.23711340206185566,
+            "covered": 23,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.3917525773195876,
+            "covered": 38,
+            "delta": 0.15,
+            "error_count": 1,
+            "risk": 0.02631578947368421
+          },
+          {
+            "coverage": 0.6391752577319587,
+            "covered": 62,
+            "delta": 0.25,
+            "error_count": 3,
+            "risk": 0.04838709677419355
+          },
+          {
+            "coverage": 1.0,
+            "covered": 97,
+            "delta": 0.5,
+            "error_count": 12,
+            "risk": 0.12371134020618557
+          }
+        ]
+      },
+      "404_increased-temperature": {
+        "auroc": 0.8242264647794602,
+        "balanced_accuracy": 0.7774851876234364,
+        "brier": 0.14714389263354827,
+        "count": 80,
+        "nll": 0.47048996891711925,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.1875,
+            "covered": 15,
+            "delta": 0.1,
+            "error_count": 3,
+            "risk": 0.2
+          },
+          {
+            "coverage": 0.3125,
+            "covered": 25,
+            "delta": 0.15,
+            "error_count": 4,
+            "risk": 0.16
+          },
+          {
+            "coverage": 0.6375,
+            "covered": 51,
+            "delta": 0.25,
+            "error_count": 7,
+            "risk": 0.13725490196078433
+          },
+          {
+            "coverage": 1.0,
+            "covered": 80,
+            "delta": 0.5,
+            "error_count": 16,
+            "risk": 0.2
+          }
+        ]
+      },
+      "405_decreased-temperature": {
+        "auroc": 0.9904485049833887,
+        "balanced_accuracy": 0.9588870431893688,
+        "brier": 0.05061532757240424,
+        "count": 99,
+        "nll": 0.20114242624307846,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.42424242424242425,
+            "covered": 42,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.5858585858585859,
+            "covered": 58,
+            "delta": 0.15,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.8080808080808081,
+            "covered": 80,
+            "delta": 0.25,
+            "error_count": 1,
+            "risk": 0.0125
+          },
+          {
+            "coverage": 1.0,
+            "covered": 99,
+            "delta": 0.5,
+            "error_count": 4,
+            "risk": 0.04040404040404041
+          }
+        ]
+      }
+    },
+    "completion_status": {
+      "COMPLETED": {
+        "auroc": 0.8587957450186552,
+        "balanced_accuracy": 0.7737516869095816,
+        "brier": 0.1499406734967141,
+        "count": 1421,
+        "nll": 0.45620520724618174,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.19985925404644617,
+            "covered": 284,
+            "delta": 0.1,
+            "error_count": 10,
+            "risk": 0.035211267605633804
+          },
+          {
+            "coverage": 0.32653061224489793,
+            "covered": 464,
+            "delta": 0.15,
+            "error_count": 24,
+            "risk": 0.05172413793103448
+          },
+          {
+            "coverage": 0.5833919774806474,
+            "covered": 829,
+            "delta": 0.25,
+            "error_count": 91,
+            "risk": 0.1097708082026538
+          },
+          {
+            "coverage": 1.0,
+            "covered": 1421,
+            "delta": 0.5,
+            "error_count": 317,
+            "risk": 0.22308233638282898
+          }
+        ]
+      }
+    },
+    "fold": {
+      "0": {
+        "auroc": 0.85185,
+        "balanced_accuracy": 0.772125,
+        "brier": 0.14795349909542654,
+        "count": 285,
+        "nll": 0.4493707394855575,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.21754385964912282,
+            "covered": 62,
+            "delta": 0.1,
+            "error_count": 2,
+            "risk": 0.03225806451612903
+          },
+          {
+            "coverage": 0.3508771929824561,
+            "covered": 100,
+            "delta": 0.15,
+            "error_count": 5,
+            "risk": 0.05
+          },
+          {
+            "coverage": 0.5614035087719298,
+            "covered": 160,
+            "delta": 0.25,
+            "error_count": 18,
+            "risk": 0.1125
+          },
+          {
+            "coverage": 1.0,
+            "covered": 285,
+            "delta": 0.5,
+            "error_count": 62,
+            "risk": 0.21754385964912282
+          }
+        ]
+      },
+      "1": {
+        "auroc": 0.8637469586374696,
+        "balanced_accuracy": 0.7770621630647392,
+        "brier": 0.14897324759630506,
+        "count": 290,
+        "nll": 0.4515449068509627,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.2,
+            "covered": 58,
+            "delta": 0.1,
+            "error_count": 0,
+            "risk": 0.0
+          },
+          {
+            "coverage": 0.3137931034482759,
+            "covered": 91,
+            "delta": 0.15,
+            "error_count": 4,
+            "risk": 0.04395604395604396
+          },
+          {
+            "coverage": 0.596551724137931,
+            "covered": 173,
+            "delta": 0.25,
+            "error_count": 19,
+            "risk": 0.10982658959537572
+          },
+          {
+            "coverage": 1.0,
+            "covered": 290,
+            "delta": 0.5,
+            "error_count": 66,
+            "risk": 0.22758620689655173
+          }
+        ]
+      },
+      "2": {
+        "auroc": 0.8634599673202614,
+        "balanced_accuracy": 0.7845179738562091,
+        "brier": 0.14836904543080742,
+        "count": 280,
+        "nll": 0.4508995803534903,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.19285714285714287,
+            "covered": 54,
+            "delta": 0.1,
+            "error_count": 2,
+            "risk": 0.037037037037037035
+          },
+          {
+            "coverage": 0.35,
+            "covered": 98,
+            "delta": 0.15,
+            "error_count": 4,
+            "risk": 0.04081632653061224
+          },
+          {
+            "coverage": 0.6071428571428571,
+            "covered": 170,
+            "delta": 0.25,
+            "error_count": 20,
+            "risk": 0.11764705882352941
+          },
+          {
+            "coverage": 1.0,
+            "covered": 280,
+            "delta": 0.5,
+            "error_count": 60,
+            "risk": 0.21428571428571427
+          }
+        ]
+      },
+      "3": {
+        "auroc": 0.8527120459635797,
+        "balanced_accuracy": 0.7557454474632388,
+        "brier": 0.15384502458689273,
+        "count": 289,
+        "nll": 0.47044987572418157,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.17647058823529413,
+            "covered": 51,
+            "delta": 0.1,
+            "error_count": 2,
+            "risk": 0.0392156862745098
+          },
+          {
+            "coverage": 0.29411764705882354,
+            "covered": 85,
+            "delta": 0.15,
+            "error_count": 6,
+            "risk": 0.07058823529411765
+          },
+          {
+            "coverage": 0.5397923875432526,
+            "covered": 156,
+            "delta": 0.25,
+            "error_count": 16,
+            "risk": 0.10256410256410256
+          },
+          {
+            "coverage": 1.0,
+            "covered": 289,
+            "delta": 0.5,
+            "error_count": 67,
+            "risk": 0.23183391003460208
+          }
+        ]
+      },
+      "4": {
+        "auroc": 0.8608967674661105,
+        "balanced_accuracy": 0.7768508863399375,
+        "brier": 0.15051322443129114,
+        "count": 277,
+        "nll": 0.45861739773788956,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.21299638989169675,
+            "covered": 59,
+            "delta": 0.1,
+            "error_count": 4,
+            "risk": 0.06779661016949153
+          },
+          {
+            "coverage": 0.3249097472924188,
+            "covered": 90,
+            "delta": 0.15,
+            "error_count": 5,
+            "risk": 0.05555555555555555
+          },
+          {
+            "coverage": 0.6137184115523465,
+            "covered": 170,
+            "delta": 0.25,
+            "error_count": 18,
+            "risk": 0.10588235294117647
+          },
+          {
+            "coverage": 1.0,
+            "covered": 277,
+            "delta": 0.5,
+            "error_count": 62,
+            "risk": 0.22382671480144403
+          }
+        ]
+      }
+    },
+    "input_type": {
+      "COMPLETE": {
+        "auroc": 0.8587957450186552,
+        "balanced_accuracy": 0.7737516869095816,
+        "brier": 0.1499406734967141,
+        "count": 1421,
+        "nll": 0.45620520724618174,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.19985925404644617,
+            "covered": 284,
+            "delta": 0.1,
+            "error_count": 10,
+            "risk": 0.035211267605633804
+          },
+          {
+            "coverage": 0.32653061224489793,
+            "covered": 464,
+            "delta": 0.15,
+            "error_count": 24,
+            "risk": 0.05172413793103448
+          },
+          {
+            "coverage": 0.5833919774806474,
+            "covered": 829,
+            "delta": 0.25,
+            "error_count": 91,
+            "risk": 0.1097708082026538
+          },
+          {
+            "coverage": 1.0,
+            "covered": 1421,
+            "delta": 0.5,
+            "error_count": 317,
+            "risk": 0.22308233638282898
+          }
+        ]
+      },
+      "EMPTY": {
+        "auroc": null,
+        "balanced_accuracy": null,
+        "brier": null,
+        "count": 0,
+        "nll": null,
+        "risk_coverage": []
+      },
+      "MISSING": {
+        "auroc": null,
+        "balanced_accuracy": null,
+        "brier": null,
+        "count": 0,
+        "nll": null,
+        "risk_coverage": []
+      }
+    },
+    "side": {
+      "left": {
+        "auroc": 0.8753697056712132,
+        "balanced_accuracy": 0.7739339554917444,
+        "brier": 0.142770326680789,
+        "count": 748,
+        "nll": 0.4357461529629217,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.21524064171122995,
+            "covered": 161,
+            "delta": 0.1,
+            "error_count": 4,
+            "risk": 0.024844720496894408
+          },
+          {
+            "coverage": 0.3609625668449198,
+            "covered": 270,
+            "delta": 0.15,
+            "error_count": 9,
+            "risk": 0.03333333333333333
+          },
+          {
+            "coverage": 0.6283422459893048,
+            "covered": 470,
+            "delta": 0.25,
+            "error_count": 48,
+            "risk": 0.10212765957446808
+          },
+          {
+            "coverage": 1.0,
+            "covered": 748,
+            "delta": 0.5,
+            "error_count": 165,
+            "risk": 0.22058823529411764
+          }
+        ]
+      },
+      "right": {
+        "auroc": 0.8405866242600937,
+        "balanced_accuracy": 0.7729702270518597,
+        "brier": 0.15791009313759372,
+        "count": 673,
+        "nll": 0.4789442452905778,
+        "risk_coverage": [
+          {
+            "coverage": 0.0,
+            "covered": 0,
+            "delta": 0,
+            "error_count": 0,
+            "risk": null
+          },
+          {
+            "coverage": 0.1827637444279346,
+            "covered": 123,
+            "delta": 0.1,
+            "error_count": 6,
+            "risk": 0.04878048780487805
+          },
+          {
+            "coverage": 0.28826151560178304,
+            "covered": 194,
+            "delta": 0.15,
+            "error_count": 15,
+            "risk": 0.07731958762886598
+          },
+          {
+            "coverage": 0.5334323922734027,
+            "covered": 359,
+            "delta": 0.25,
+            "error_count": 43,
+            "risk": 0.11977715877437325
+          },
+          {
+            "coverage": 1.0,
+            "covered": 673,
+            "delta": 0.5,
+            "error_count": 152,
+            "risk": 0.22585438335809807
+          }
+        ]
+      }
+    }
+  },
+  "threshold_sensitivity": {
+    "HistGradientBoosting": {
+      "0.3": 0.7434279987298563,
+      "0.5": 0.7737516869095816,
+      "0.7": 0.7468504405810907
+    },
+    "LogisticRegression": {
+      "0.3": 0.6528191236008574,
+      "0.5": 0.6970032547431928,
+      "0.7": 0.6720925617210447
+    },
+    "RandomForest": {
+      "0.3": 0.6949392712550607,
+      "0.5": 0.7742359291894896,
+      "0.7": 0.7289007303326189
+    },
+    "frozen_main": {
+      "0.3": 0.7055271096292768,
+      "0.5": 0.7525740255616417,
+      "0.7": 0.7097830832737954
+    }
+  }
+}

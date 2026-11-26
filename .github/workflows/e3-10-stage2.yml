@@ -39,10 +39,12 @@ jobs:
           printf '%s  %s\n' 'de161758a6918bc70e3b24a0327b5d719b882395df81b5d481071b5abf22d545' \
             "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz" | sha256sum -c -
           test "$(stat -c%s "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz")" = '61846400'
-          mkdir -p "$RUNNER_TEMP/raw_json"
-          tar -xzf "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz" -C "$RUNNER_TEMP/raw_json"
+          tar -xzf "$RUNNER_TEMP/release/pyscrew_raw_5000.tar.gz" -C "$RUNNER_TEMP"
+          test -d "$RUNNER_TEMP/raw_json/001_control-group"
       - name: Run deterministic feature and metric self-test
-        run: python3 -B tests/run_e3_10_stage2.py --self-test
+        env:
+          PYSCREW_RAW_JSON_ROOT: ${{ runner.temp }}/raw_json
+        run: python3 -B tests/run_e3_10_stage2.py --self-test --raw-root ${{ runner.temp }}/raw_json
       - name: Train three models and compute common-ID metrics
         env:
           PYSCREW_RAW_JSON_ROOT: ${{ inputs.use_existing_raw_root && inputs.raw_root || format('{0}/raw_json', runner.temp) }}

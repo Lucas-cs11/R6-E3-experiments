@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import os
 import sys
 import tarfile
 import tempfile
@@ -19,7 +20,10 @@ from pyscrew_metrics_reference import (auroc, balanced_accuracy, brier, nll, ris
 
 
 def self_test(raw_root=None):
-    raw_path = Path(raw_root or '/Users/lucas/Downloads/results1005/pyscrew/raw_json/001_control-group/Ch_000001624346.json')
+    raw_root = raw_root or os.environ.get('PYSCREW_RAW_JSON_ROOT', '')
+    if not raw_root:
+        raise ValueError('self-test requires --raw-root or PYSCREW_RAW_JSON_ROOT')
+    raw_path = Path(raw_root) / '001_control-group' / 'Ch_000001624346.json'
     raw = json.loads(raw_path.read_text())
     first = extract_features(raw)
     second = extract_features(raw)

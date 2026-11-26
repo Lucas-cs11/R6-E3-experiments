@@ -57,6 +57,10 @@ jobs:
         run: python3 -B tests/run_e3_10_stage2.py --run --raw-root "$PYSCREW_RAW_JSON_ROOT" --output-dir runs/e3_10
       - name: Verify output identities and independent metrics
         run: python3 -B tests/run_e3_10_stage2.py --verify --output-dir runs/e3_10
+      - name: Run stage-4 sensitivity report
+        run: python3 -B tests/run_e3_10_stage4.py
+      - name: Archive sensitivity report into tracked reports
+        run: cp runs/e3_10/stage4_sensitivity.json runs/e3_10/stage4_sensitivity.md reports/e3_10/
       - uses: actions/upload-artifact@v4
         with:
           name: e3-10-stage2-${{ github.run_id }}

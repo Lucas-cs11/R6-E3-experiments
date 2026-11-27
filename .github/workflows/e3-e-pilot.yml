@@ -7,7 +7,7 @@ on:
         default: '2000'
       shard_count:
         description: Parallel shards
-        default: '2'
+        default: '8'
 permissions:
   contents: read
 concurrency:
@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - uses: actions/checkout@v4
         with:

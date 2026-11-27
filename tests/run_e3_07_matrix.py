@@ -10,6 +10,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -56,7 +57,7 @@ def _sha(text):
     return hashlib.sha256(text.encode()).hexdigest()
 
 
-def execute_shard(out_dir, shard_index, shard_count, node_budget, limit=None):
+def execute_shard(out_dir, shard_index, shard_count, node_budget, limit=None, wall_budget=None, constraint_budget=None):
     """Resumable: only NOT_EXECUTED rows in this shard are attempted."""
     path = out_dir / 'preregistered_tasks.csv'
     rows = list(csv.DictReader(path.open()))
@@ -67,7 +68,10 @@ def execute_shard(out_dir, shard_index, shard_count, node_budget, limit=None):
     log_dir = out_dir / 'logs'
     log_dir.mkdir(exist_ok=True)
     done = 0
+    wall_start = time.perf_counter()
     for row in pending:
+        if wall_budget is not None and time.perf_counter() - wall_start > wall_budget:
+            break
         candidate = next(r for r in csv.DictReader(UNIVERSE.open(newline=''))
                          if r['candidate_id'] == row['candidate_id'])
         params = {'n_machines': int(candidate['machine_counts']), 'n_parts': int(candidate['part_type_counts']),
@@ -86,7 +90,7 @@ def execute_shard(out_dir, shard_index, shard_count, node_budget, limit=None):
                 row.update(result_status='UNSUPPORTED', failure_reason=json.dumps(applicability['reasons']),
                            exit_code=0, updated_at=str(time.time()))
             else:
-                result = run_path(model, row['method_id'], node_budget)
+                result = run_path(model, row['method_id'], node_budget, constraint_budget=constraint_budget)
                 stats, resources = result['path_stats'], result['resources']
                 certificate = result.get('certificate') or {}
                 row.update(result_status=result['status'], v_L=result.get('verdict'),
@@ -126,16 +130,81 @@ def _write_back(path, rows):
     tmp.replace(path)
 
 
+def execute_shard_file(shard_path, node_budget, wall_budget, constraint_budget):
+    rows = list(csv.DictReader(Path(shard_path).open()))
+    pending = [r for r in rows if r['result_status'] == 'NOT_EXECUTED']
+    wall_start = time.perf_counter()
+    done = 0
+    log_dir = Path(shard_path).parent / 'logs'
+    log_dir.mkdir(exist_ok=True)
+    for row in pending:
+        if time.perf_counter() - wall_start > wall_budget:
+            break
+        candidate = next(r for r in csv.DictReader(UNIVERSE.open(newline=''))
+                         if r['candidate_id'] == row['candidate_id'])
+        params = {'n_machines': int(candidate['machine_counts']), 'n_parts': int(candidate['part_type_counts']),
+                  'ops_per_part': int(candidate['operations_per_part']), 'wip_bound': int(candidate['wip_bounds']),
+                  'unobservable_ratio': float(candidate['unobservable_ratios']),
+                  'fault_locations': int(candidate['fault_locations']),
+                  'interval_width_factor': float(candidate['interval_width_factors']),
+                  'adjustable_ratio': float(candidate['adjustable_ratios']), 'seed': int(candidate['seed']),
+                  'machine_capacity': 1, 'n_configs': 2, 'repair_domain': 'standard'}
+        try:
+            net, L, H = generate_rmt_fms(**params)
+            model = from_generator_net(net, L, H)
+            applicability = check_applicability(model)
+            if not applicability['supported']:
+                row.update(result_status='UNSUPPORTED', failure_reason=json.dumps(applicability['reasons']),
+                           exit_code=0, updated_at=str(time.time()))
+            else:
+                result = run_path(model, row['method_id'], node_budget, constraint_budget=constraint_budget)
+                stats, resources = result['path_stats'], result['resources']
+                certificate = result.get('certificate') or {}
+                row.update(result_status=result['status'], v_L=result.get('verdict'),
+                           model_sha256=certificate.get('model_sha256', ''),
+                           witness_path=json.dumps(result.get('trace'))[:2000],
+                           completeness_certificate=json.dumps(certificate, sort_keys=True),
+                           symbolic_state_count=stats.get('state_classes'),
+                           synchronized_pair_count=stats.get('sync_pairs'),
+                           LP_count=stats.get('lp_calls'),
+                           elapsed_wall=resources.get('wall_seconds'),
+                           cpu_seconds=resources.get('cpu_seconds'),
+                           peak_python_alloc_bytes=resources.get('peak_memory_bytes'),
+                           exit_code=0, updated_at=str(time.time()))
+        except Exception as exc:
+            row.update(result_status='FAILED', failure_reason=f'{type(exc).__name__}: {exc}',
+                       exit_code=1, updated_at=str(time.time()))
+        row['attempts'] = int(row['attempts']) + 1
+        done += 1
+    tmp = Path(str(shard_path) + '.tmp')
+    with tmp.open('w', newline='') as handle:
+        writer = csv.DictWriter(handle, fieldnames=FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
+    tmp.replace(shard_path)
+    remaining = sum(1 for r in rows if r['result_status'] == 'NOT_EXECUTED')
+    print(json.dumps({'shard_file': str(shard_path), 'done_this_wave': done,
+                      'remaining_not_executed': remaining, 'total': len(rows)}))
+    return remaining
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['preregister', 'execute'])
+    parser.add_argument('mode', choices=['preregister', 'execute', 'execute_shard_file'])
     parser.add_argument('--out', type=Path, default=OUT)
     parser.add_argument('--shard-index', type=int, default=0)
     parser.add_argument('--shard-count', type=int, default=1)
-    parser.add_argument('--node-budget', type=int, default=200000)
+    parser.add_argument('--node-budget', type=int, default=10000)
     parser.add_argument('--limit', type=int, default=None)
+    parser.add_argument('--wall-budget', type=float, default=None)
+    parser.add_argument('--constraint-budget', type=int, default=None)
+    parser.add_argument('--shard-file', type=Path, default=None)
     args = parser.parse_args()
     if args.mode == 'preregister':
         preregister(args.out)
+    elif args.mode == 'execute_shard_file':
+        execute_shard_file(args.shard_file, args.node_budget, args.wall_budget or 240,
+                           args.constraint_budget)
     else:
-        execute_shard(args.out, args.shard_index, args.shard_count, args.node_budget, args.limit)
+        execute_shard(args.out, args.shard_index, args.shard_count, args.node_budget, args.limit,
+                      args.wall_budget, args.constraint_budget)

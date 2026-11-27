@@ -1,0 +1,63 @@
+name: E3-E full domain wave
+on:
+  workflow_dispatch:
+    inputs:
+      wall_budget:
+        description: Per-shard wall budget seconds
+        default: '240'
+permissions:
+  contents: write
+concurrency:
+  group: e3-full-serial
+  cancel-in-progress: false
+jobs:
+  wave:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Unpack frozen E2 workspace
+        run: |
+          unzip -q baseline_readonly/inputs/R6_E2_complete_workspace.zip -d baseline_readonly
+          mv baseline_readonly/R6_E2 baseline_readonly/e2
+          chmod -R u+w baseline_readonly/e2
+          printf '%s  %s\n' 'bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715' baseline_readonly/inputs/R6_E2_complete_workspace.zip | sha256sum -c -
+      - name: Download current shard ledger
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          mkdir -p work
+          gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
+            --pattern e3_shards_init.tar.gz --dir work --clobber
+          tar -xzf work/e3_shards_init.tar.gz -C work "shard_$(printf '%03d' "$SHARD").csv"
+      - name: Execute shard wave
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          python3 -B tests/run_e3_07_matrix.py execute_shard_file \
+            --shard-file "work/shard_$(printf '%03d' "$SHARD").csv" \
+            --node-budget 10000 --constraint-budget 50000 \
+            --wall-budget '${{ inputs.wall_budget }}' | tee wave_result.json
+      - name: Upload updated shard ledger
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          cp "work/shard_$(printf '%03d' "$SHARD").csv" "work/shard_$(printf '%03d' "$SHARD").csv.upload"
+          mv "work/shard_$(printf '%03d' "$SHARD").csv.upload" "work/shard_$(printf '%03d' "$SHARD").csv"
+          gh release upload e3-full-ledger "work/shard_$(printf '%03d' "$SHARD").csv" \
+            --repo Lucas-cs11/R6-E3-experiments --clobber
+      - name: Upload wave evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-full-wave-${{ matrix.shard }}
+          path: wave_result.json
+          if-no-files-found: ignore

@@ -35,9 +35,16 @@ jobs:
           SHARD: ${{ matrix.shard }}
         run: |
           mkdir -p work
-          gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
-            --pattern e3_shards_init.tar.gz --dir work --clobber
-          tar -xzf work/e3_shards_init.tar.gz -C work "shard_$(printf '%03d' "$SHARD").csv"
+          NAME="shard_$(printf '%03d' "$SHARD").csv"
+          if gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
+              --pattern "$NAME" --dir work --clobber 2>/dev/null; then
+            echo "resuming $NAME from release"
+          else
+            gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
+              --pattern e3_shards_init.tar.gz --dir work --clobber
+            tar -xzf work/e3_shards_init.tar.gz -C work "$NAME"
+            echo "initial $NAME from tarball"
+          fi
       - name: Execute shard wave
         env:
           SHARD: ${{ matrix.shard }}

@@ -32,9 +32,12 @@ jobs:
           chmod -R u+w baseline_readonly/e2
           printf '%s  %s\n' 'bb72a68af34c852213e96588b4e29ecc602b0de428d406bbd30e8300a8656715' baseline_readonly/inputs/R6_E2_complete_workspace.zip | sha256sum -c -
       - name: Run pilot shard
+        env:
+          PILOT_WALL_BUDGET_SECONDS: '150'
         run: |
           python3 -B tests/run_e3_07_pilot.py --sample '${{ inputs.sample }}' \
-            --shard-index ${{ matrix.shard }} --shard-count '${{ inputs.shard_count }}'
+            --shard-index ${{ matrix.shard }} --shard-count '${{ inputs.shard_count }}' \
+            --node-budget 20000
       - name: Upload pilot shard
         uses: actions/upload-artifact@v4
         with:

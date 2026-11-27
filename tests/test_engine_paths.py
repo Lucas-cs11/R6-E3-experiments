@@ -112,3 +112,19 @@ class EnginePathTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ConstraintBudgetTests(unittest.TestCase):
+    def test_heavy_model_returns_unresolved_fast_with_constraint_budget(self):
+        import time
+        net, L, H = generate_rmt_fms(n_machines=3, n_parts=2, ops_per_part=4, wip_bound=2,
+                                     unobservable_ratio=0.3, fault_locations=2,
+                                     interval_width_factor=1.0, adjustable_ratio=0.25,
+                                     seed=0, machine_capacity=1, n_configs=2,
+                                     repair_domain='standard')
+        model = from_generator_net(net, L, H)
+        start = time.perf_counter()
+        result = run_path(model, 'MAIN', 2000, constraint_budget=50000)
+        elapsed = time.perf_counter() - start
+        self.assertEqual(result['status'], 'UNRESOLVED')
+        self.assertLess(elapsed, 30)

@@ -88,7 +88,7 @@ def _diagnose(exploration, rows, deadline, use_envelope):
     return 'PERP'
 
 
-def _execute(model, method, node_budget):
+def _execute(model, method, node_budget, constraint_budget=None):
     applicability = check_applicability(model)
     if not applicability['supported']:
         return dict(status='UNSUPPORTED', verdict='PERP', reasons=applicability['reasons'],
@@ -103,7 +103,7 @@ def _execute(model, method, node_budget):
         base_classes = exploration['visited']
         call_sequence = ['PARSE', 'EXPLORE_FULL', 'EXACT_LP']
     else:
-        exploration = explore_merged(adapted, node_budget)
+        exploration = explore_merged(adapted, node_budget, constraint_budget=constraint_budget)
         rows = merged_completion_intervals(adapted, exploration)
         expansions = exploration['expansions']
         base_classes = exploration['abstract_states']
@@ -147,14 +147,14 @@ def _execute(model, method, node_budget):
                 call_sequence=call_sequence, reasons=[])
 
 
-def run_path(model, method, node_budget):
+def run_path(model, method, node_budget, constraint_budget=None):
     """Run one real path and measure time, CPU and Python allocation peak."""
     if method not in METHODS:
         raise ValueError('unknown engine method')
     wall_start, cpu_start = time.perf_counter(), time.process_time()
     tracemalloc.start()
     try:
-        result = _execute(model, method, node_budget)
+        result = _execute(model, method, node_budget, constraint_budget)
     finally:
         _current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()

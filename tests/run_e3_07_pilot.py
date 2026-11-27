@@ -82,7 +82,7 @@ def main(sample_size, seed, node_budget, out_dir, shard_index=0, shard_count=1):
                 result = {'status': 'UNSUPPORTED', 'verdict': None, 'path_stats': {},
                           'resources': {'wall_seconds': 0, 'cpu_seconds': 0, 'peak_memory_bytes': 0}}
             else:
-                result = run_path(model, method, node_budget)
+                result = run_path(model, method, node_budget, constraint_budget=int(os.environ.get('PILOT_CONSTRAINT_BUDGET', '50000')))
             results.append({'candidate_id': r['candidate_id'], 'method': method,
                             'status': result['status'], 'verdict': result.get('verdict'),
                             'expansions': result['path_stats'].get('expansions'),

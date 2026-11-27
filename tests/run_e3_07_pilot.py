@@ -10,6 +10,7 @@ import csv
 import hashlib
 import json
 from pathlib import Path
+import os
 import random
 import sys
 import time
@@ -55,7 +56,16 @@ def main(sample_size, seed, node_budget, out_dir, shard_index=0, shard_count=1):
     (out_dir / 'pilot_sample.csv').write_text(
         'candidate_id\n' + '\n'.join(r['candidate_id'] for r in sample) + '\n')
     results = []
+    wall_start = time.perf_counter()
+    wall_budget = float(os.environ.get('PILOT_WALL_BUDGET_SECONDS', '150'))
     for index, r in enumerate(sample, 1):
+        if time.perf_counter() - wall_start > wall_budget:
+            for rest in sample[index - 1:]:
+                for method in METHODS:
+                    results.append({'candidate_id': rest['candidate_id'], 'method': method,
+                                    'status': 'NOT_EXECUTED_SHARD_WALL_BUDGET', 'verdict': None,
+                                    'expansions': None, 'wall_seconds': 0, 'peak_memory_bytes': 0})
+            break
         params = {'n_machines': int(r['machine_counts']), 'n_parts': int(r['part_type_counts']),
                   'ops_per_part': int(r['operations_per_part']), 'wip_bound': int(r['wip_bounds']),
                   'unobservable_ratio': float(r['unobservable_ratios']),

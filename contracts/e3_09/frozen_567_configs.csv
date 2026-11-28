@@ -1,0 +1,568 @@
+config_id,k,a4,family,x4_density,weight_scheme,weight_ratio,quantization,quantization_def,result_status,config_fingerprint
+P00_F1_W1_Q1,0,3,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,f1f778b75615f2b3
+P00_F1_W1_Q2,0,3,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,24514a4b2b7dd20d
+P00_F1_W1_Q3,0,3,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,79a9051064c7148d
+P00_F1_W2_Q1,0,3,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,832cc705485babed
+P00_F1_W2_Q2,0,3,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5a651bbb0bab6246
+P00_F1_W2_Q3,0,3,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,b141f6374970462f
+P00_F1_W3_Q1,0,3,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,091077b94a20c281
+P00_F1_W3_Q2,0,3,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f6a150323ad1972b
+P00_F1_W3_Q3,0,3,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,2e4a54b9ee47be29
+P00_F2_W1_Q1,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,80f52c24d103ce92
+P00_F2_W1_Q2,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b4369330d87158fd
+P00_F2_W1_Q3,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,94398b39bd3e82b3
+P00_F2_W2_Q1,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,e26fdf362cd59e14
+P00_F2_W2_Q2,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,45ee84b5c762333f
+P00_F2_W2_Q3,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,b21092fc64894aed
+P00_F2_W3_Q1,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,134c43c8a67fc236
+P00_F2_W3_Q2,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,186b51e92ea12763
+P00_F2_W3_Q3,0,3,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ea8f6ce8cd8064e0
+P00_F3_W1_Q1,0,3,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,7b12cfb4491f0567
+P00_F3_W1_Q2,0,3,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,60577d9162042dd1
+P00_F3_W1_Q3,0,3,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,9129b6e7a132700e
+P00_F3_W2_Q1,0,3,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,8c58121e0248afd6
+P00_F3_W2_Q2,0,3,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ab7b20def1c4c122
+P00_F3_W2_Q3,0,3,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,36285be7884f06dc
+P00_F3_W3_Q1,0,3,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,1561e8ae2a83d173
+P00_F3_W3_Q2,0,3,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d3ac3648429772d1
+P00_F3_W3_Q3,0,3,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,cb97628ee5c297e5
+P01_F1_W1_Q1,1,61/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,06393aaa94e474fa
+P01_F1_W1_Q2,1,61/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5e2b66630fb6bab1
+P01_F1_W1_Q3,1,61/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,489d3b8f867b325c
+P01_F1_W2_Q1,1,61/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,f684a3408ae2fefc
+P01_F1_W2_Q2,1,61/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ab937c9d63f251fc
+P01_F1_W2_Q3,1,61/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,29808c46238666de
+P01_F1_W3_Q1,1,61/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,cf3ab073e5e8a769
+P01_F1_W3_Q2,1,61/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,535d2772c527c303
+P01_F1_W3_Q3,1,61/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ec523d9810d6e669
+P01_F2_W1_Q1,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,147708faf5d7984f
+P01_F2_W1_Q2,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,22d099ac8c74ee54
+P01_F2_W1_Q3,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,5ffc1f21f6b56bcf
+P01_F2_W2_Q1,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,449c60c76676c5d2
+P01_F2_W2_Q2,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5242241abb14e6f2
+P01_F2_W2_Q3,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,ec5e48d79d07356f
+P01_F2_W3_Q1,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,f3e178474ad4cbac
+P01_F2_W3_Q2,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,6ba1a1500ebaaff7
+P01_F2_W3_Q3,1,61/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,f1ede8612c213c75
+P01_F3_W1_Q1,1,61/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,c3bf18234dbe1ccf
+P01_F3_W1_Q2,1,61/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,99e6db4c6542f1ec
+P01_F3_W1_Q3,1,61/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,0bb6e63f63b21972
+P01_F3_W2_Q1,1,61/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,85e758c55637b312
+P01_F3_W2_Q2,1,61/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a30b6ad811c63251
+P01_F3_W2_Q3,1,61/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,2a8915526e09d0ca
+P01_F3_W3_Q1,1,61/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,2c04dd1d3582e295
+P01_F3_W3_Q2,1,61/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,65af0ec1edbfa536
+P01_F3_W3_Q3,1,61/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,5a9406e51406ca51
+P02_F1_W1_Q1,2,31/10,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,9b082601609753e2
+P02_F1_W1_Q2,2,31/10,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,2106379ce53d2fa1
+P02_F1_W1_Q3,2,31/10,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,91a937d4a78baf67
+P02_F1_W2_Q1,2,31/10,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,b6ead82e692ce402
+P02_F1_W2_Q2,2,31/10,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,e3ad5bd6f9d014c0
+P02_F1_W2_Q3,2,31/10,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,066b9dd84ab0e3cc
+P02_F1_W3_Q1,2,31/10,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,f83095f894e2c9bd
+P02_F1_W3_Q2,2,31/10,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1f5163a65b44fe78
+P02_F1_W3_Q3,2,31/10,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,6e9fc8bf4d201bc9
+P02_F2_W1_Q1,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,f5a16038294aecee
+P02_F2_W1_Q2,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,fbbc18626e9f8fcc
+P02_F2_W1_Q3,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,1626da0e32455137
+P02_F2_W2_Q1,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,5a9a91a2268ab99a
+P02_F2_W2_Q2,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,e719bded91bec77f
+P02_F2_W2_Q3,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,f1d02f5517b9d932
+P02_F2_W3_Q1,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,ea7a41635549cab7
+P02_F2_W3_Q2,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,514e812dd4a469f4
+P02_F2_W3_Q3,2,31/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,a9653f90fc6844eb
+P02_F3_W1_Q1,2,31/10,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,870044af6c31ddbd
+P02_F3_W1_Q2,2,31/10,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f058a6f7b31915c2
+P02_F3_W1_Q3,2,31/10,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,965920bd9f207a3f
+P02_F3_W2_Q1,2,31/10,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,1b1c9fd6340b8513
+P02_F3_W2_Q2,2,31/10,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,06c5059f5486678a
+P02_F3_W2_Q3,2,31/10,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,48afb1bc567d2a34
+P02_F3_W3_Q1,2,31/10,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,d6ce062915971582
+P02_F3_W3_Q2,2,31/10,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,704a8b4ea177ad73
+P02_F3_W3_Q3,2,31/10,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ddae5fde31a8a9d4
+P03_F1_W1_Q1,3,63/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,b65f86069dd9b15b
+P03_F1_W1_Q2,3,63/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,2caf888d039867b0
+P03_F1_W1_Q3,3,63/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,bb66de7b4e90bc84
+P03_F1_W2_Q1,3,63/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,1dc52ef8e1f5b0ca
+P03_F1_W2_Q2,3,63/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,04912e0a3e83a098
+P03_F1_W2_Q3,3,63/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,af3371146992c33e
+P03_F1_W3_Q1,3,63/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,ab0f2076c35aa99b
+P03_F1_W3_Q2,3,63/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,41bbc0d7753deef9
+P03_F1_W3_Q3,3,63/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,bd26a1500fab50aa
+P03_F2_W1_Q1,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,be6d692eb3d55756
+P03_F2_W1_Q2,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,01d6103ac1ee6aa8
+P03_F2_W1_Q3,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,d0018f4c432d1129
+P03_F2_W2_Q1,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,44587151b7860882
+P03_F2_W2_Q2,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,613e1c2e13dcfe6b
+P03_F2_W2_Q3,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,7909b13b1b2c20f3
+P03_F2_W3_Q1,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,75c4e8dee25645de
+P03_F2_W3_Q2,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,60e0abdca20e3047
+P03_F2_W3_Q3,3,63/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,eeea2eee84f29952
+P03_F3_W1_Q1,3,63/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,fd574b99bde38ba0
+P03_F3_W1_Q2,3,63/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f2139fdf2b931705
+P03_F3_W1_Q3,3,63/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,2d3f33a6fc40d07c
+P03_F3_W2_Q1,3,63/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,f1d77e213f4119f4
+P03_F3_W2_Q2,3,63/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4ef2c94f05300bb8
+P03_F3_W2_Q3,3,63/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,0370a4cfdebc385a
+P03_F3_W3_Q1,3,63/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,20b3522bd9186cfd
+P03_F3_W3_Q2,3,63/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7ef4358ed388e770
+P03_F3_W3_Q3,3,63/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ed7321d9ba6cd13a
+P04_F1_W1_Q1,4,16/5,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,8e0a9a762e3e412b
+P04_F1_W1_Q2,4,16/5,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f920aa61a0f3fe34
+P04_F1_W1_Q3,4,16/5,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,7cc3510f83595782
+P04_F1_W2_Q1,4,16/5,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,e86386fcdbb4cdd9
+P04_F1_W2_Q2,4,16/5,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d52f29a6ca3bf79b
+P04_F1_W2_Q3,4,16/5,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,66a1504ff42b14fd
+P04_F1_W3_Q1,4,16/5,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,c2aa8ab060bfd280
+P04_F1_W3_Q2,4,16/5,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7406dba5d2f87ec2
+P04_F1_W3_Q3,4,16/5,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,009bc039885f24ce
+P04_F2_W1_Q1,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,11307a53bd26f899
+P04_F2_W1_Q2,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d917c02da28f861d
+P04_F2_W1_Q3,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,0efab7f089f124d5
+P04_F2_W2_Q1,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,218d6611f761d079
+P04_F2_W2_Q2,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,c8e0fbc47bd7e6ff
+P04_F2_W2_Q3,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,bc28b4f19f109c87
+P04_F2_W3_Q1,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,698897638848a0e2
+P04_F2_W3_Q2,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d9452a96f79f2748
+P04_F2_W3_Q3,4,16/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,f4bb4142206d3ef5
+P04_F3_W1_Q1,4,16/5,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,b2430145e4144097
+P04_F3_W1_Q2,4,16/5,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,6f75ba46ff054559
+P04_F3_W1_Q3,4,16/5,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,ae9e7aab7d1719a9
+P04_F3_W2_Q1,4,16/5,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,f142b50bd49ed5f7
+P04_F3_W2_Q2,4,16/5,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,50c2eb5f3472648a
+P04_F3_W2_Q3,4,16/5,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,4b66aa1115177539
+P04_F3_W3_Q1,4,16/5,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,bba4bb2659195405
+P04_F3_W3_Q2,4,16/5,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,270abb785883f113
+P04_F3_W3_Q3,4,16/5,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,d3016dd84a9c4262
+P05_F1_W1_Q1,5,13/4,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,f8213ac6dd1aa419
+P05_F1_W1_Q2,5,13/4,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,192174d98d62aa29
+P05_F1_W1_Q3,5,13/4,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,b32c6d291cac11f0
+P05_F1_W2_Q1,5,13/4,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,eb0eba21f4c0c42d
+P05_F1_W2_Q2,5,13/4,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b2fd21bffb2f1739
+P05_F1_W2_Q3,5,13/4,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,d6aba605c735d6f1
+P05_F1_W3_Q1,5,13/4,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,031bf50043799962
+P05_F1_W3_Q2,5,13/4,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5ee93e9f49a35df4
+P05_F1_W3_Q3,5,13/4,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,911061dc998ac6c2
+P05_F2_W1_Q1,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,486570cfed1b9d76
+P05_F2_W1_Q2,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,e3a7abfa960a836f
+P05_F2_W1_Q3,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,dd313d2c7987d2c0
+P05_F2_W2_Q1,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,719f0635dcf1f8c5
+P05_F2_W2_Q2,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,54781263bc673e46
+P05_F2_W2_Q3,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,148933581c05e3be
+P05_F2_W3_Q1,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,8375ffb630f4e123
+P05_F2_W3_Q2,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9cd1cbd52d7f3e65
+P05_F2_W3_Q3,5,13/4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,39715e57378e5411
+P05_F3_W1_Q1,5,13/4,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,fe788ad6265b0a94
+P05_F3_W1_Q2,5,13/4,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,88633e43678a9429
+P05_F3_W1_Q3,5,13/4,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,be2fd1418b837d57
+P05_F3_W2_Q1,5,13/4,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,6e8c17027ce3c889
+P05_F3_W2_Q2,5,13/4,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f3ca7e31d44fe1d9
+P05_F3_W2_Q3,5,13/4,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,f8e538c0b52b353d
+P05_F3_W3_Q1,5,13/4,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,d2bdf8f6466ab9a1
+P05_F3_W3_Q2,5,13/4,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,e159eeadb8964459
+P05_F3_W3_Q3,5,13/4,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,782c704970b8023e
+P06_F1_W1_Q1,6,33/10,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,791d1caca3a3e491
+P06_F1_W1_Q2,6,33/10,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,c88cfb740d4c7374
+P06_F1_W1_Q3,6,33/10,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,32168a699cca1713
+P06_F1_W2_Q1,6,33/10,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,832d9780ba6a3462
+P06_F1_W2_Q2,6,33/10,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4c291602c3564f0d
+P06_F1_W2_Q3,6,33/10,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,a5cf097fb60f3c90
+P06_F1_W3_Q1,6,33/10,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,860388f6e34885d2
+P06_F1_W3_Q2,6,33/10,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9cfca6bc96445577
+P06_F1_W3_Q3,6,33/10,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,fe5482687b73e890
+P06_F2_W1_Q1,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,9db105d03fb981f4
+P06_F2_W1_Q2,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b9da44fa07fecd06
+P06_F2_W1_Q3,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,9b8fd08649bc727a
+P06_F2_W2_Q1,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,a84fb866a6271359
+P06_F2_W2_Q2,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,2b72741a0c162435
+P06_F2_W2_Q3,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,b68c5c81fb898038
+P06_F2_W3_Q1,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,eabe52e8c394f846
+P06_F2_W3_Q2,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,c7438382d0e91c74
+P06_F2_W3_Q3,6,33/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,cc450679a89dc79d
+P06_F3_W1_Q1,6,33/10,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,ea0fdeeba7dc26a0
+P06_F3_W1_Q2,6,33/10,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,85cbdc499b0bb585
+P06_F3_W1_Q3,6,33/10,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,e58cd3a851dff7cb
+P06_F3_W2_Q1,6,33/10,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,574199a8d9d45dd9
+P06_F3_W2_Q2,6,33/10,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7e1d606e86c8a982
+P06_F3_W2_Q3,6,33/10,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,65112c0000aaf2df
+P06_F3_W3_Q1,6,33/10,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,45a5dd5e41b76bb6
+P06_F3_W3_Q2,6,33/10,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b10cbe7c6c6f715f
+P06_F3_W3_Q3,6,33/10,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,616ce12ede05fa0d
+P07_F1_W1_Q1,7,67/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,3b819489ec9dc60b
+P07_F1_W1_Q2,7,67/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,223360d56b7788b8
+P07_F1_W1_Q3,7,67/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,50c10146c1ddd6c5
+P07_F1_W2_Q1,7,67/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,ca59adb105700b60
+P07_F1_W2_Q2,7,67/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5cdb2d83058dc970
+P07_F1_W2_Q3,7,67/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,f6f0ba74b738e5e3
+P07_F1_W3_Q1,7,67/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,bfd4bea4ddaf9d0d
+P07_F1_W3_Q2,7,67/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,56c313d5eac3e055
+P07_F1_W3_Q3,7,67/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,2c950e45fa7a340a
+P07_F2_W1_Q1,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,61c2494f929de3b2
+P07_F2_W1_Q2,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7fe81c4fa101f7eb
+P07_F2_W1_Q3,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,03faa26e0f5e1581
+P07_F2_W2_Q1,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,c228676a3f0cd46f
+P07_F2_W2_Q2,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,fe9355d285268785
+P07_F2_W2_Q3,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,005b4fb6d70fa308
+P07_F2_W3_Q1,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,e0947cd2b32c60c2
+P07_F2_W3_Q2,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,53e410be0d7a7981
+P07_F2_W3_Q3,7,67/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,2659ed3396566424
+P07_F3_W1_Q1,7,67/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,fc6f96f422d5f585
+P07_F3_W1_Q2,7,67/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f731431272eb39de
+P07_F3_W1_Q3,7,67/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,f87938441a943231
+P07_F3_W2_Q1,7,67/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,e869413be441d69e
+P07_F3_W2_Q2,7,67/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b14e20a0ec1ff914
+P07_F3_W2_Q3,7,67/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,66a7fad2cf0a4e8c
+P07_F3_W3_Q1,7,67/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,2dc9fd0c93aab073
+P07_F3_W3_Q2,7,67/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,61c5156b8953875a
+P07_F3_W3_Q3,7,67/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ed7bfe1aa2988ad9
+P08_F1_W1_Q1,8,17/5,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,8ac8c2e1cd6e58d9
+P08_F1_W1_Q2,8,17/5,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a571a08f6a714cea
+P08_F1_W1_Q3,8,17/5,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,c8e8493ee15c5e0f
+P08_F1_W2_Q1,8,17/5,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,0b172feff703a927
+P08_F1_W2_Q2,8,17/5,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,2ba63d3b2daaae8b
+P08_F1_W2_Q3,8,17/5,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,5ffb8a78a54ff9e3
+P08_F1_W3_Q1,8,17/5,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,85de56d597a9e119
+P08_F1_W3_Q2,8,17/5,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a5afa675e68c59af
+P08_F1_W3_Q3,8,17/5,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,42562ec9d0c44272
+P08_F2_W1_Q1,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,f4ff6327de77378b
+P08_F2_W1_Q2,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,10919c85202bd976
+P08_F2_W1_Q3,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,8c38c3c536d6d6ed
+P08_F2_W2_Q1,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,57eb82f398e57fc0
+P08_F2_W2_Q2,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7b32257513f884d0
+P08_F2_W2_Q3,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,9c070509d3bd21c6
+P08_F2_W3_Q1,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,90a0f994c14a3038
+P08_F2_W3_Q2,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b37640f31bffcd78
+P08_F2_W3_Q3,8,17/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,3c7ba93cb60f6595
+P08_F3_W1_Q1,8,17/5,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,ed32f3fa1ca0dbf9
+P08_F3_W1_Q2,8,17/5,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,33e17dad8edcbd0c
+P08_F3_W1_Q3,8,17/5,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,d5a97e5c96532e9b
+P08_F3_W2_Q1,8,17/5,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,01db38c46093f97c
+P08_F3_W2_Q2,8,17/5,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,23c3d0b3cfe201b1
+P08_F3_W2_Q3,8,17/5,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,50ec7be7ed8dd211
+P08_F3_W3_Q1,8,17/5,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,1ba0eaf2222fe8f2
+P08_F3_W3_Q2,8,17/5,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,cd7cd6a3df9a2c00
+P08_F3_W3_Q3,8,17/5,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,a7a30ae5314a317c
+P09_F1_W1_Q1,9,69/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,b2336b6247593fb0
+P09_F1_W1_Q2,9,69/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,cbecb6358a6d157f
+P09_F1_W1_Q3,9,69/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,385905093221ef36
+P09_F1_W2_Q1,9,69/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,f12734e547dbd560
+P09_F1_W2_Q2,9,69/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,2445a3f7fc616378
+P09_F1_W2_Q3,9,69/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,d6416e795e9a97c4
+P09_F1_W3_Q1,9,69/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,55f49fba2498390e
+P09_F1_W3_Q2,9,69/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,01d9e7e12ed45292
+P09_F1_W3_Q3,9,69/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,eef42aa5daf64851
+P09_F2_W1_Q1,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,f1ae4699b4070b40
+P09_F2_W1_Q2,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,c320d2db58afa50e
+P09_F2_W1_Q3,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,85db8b973fa0208b
+P09_F2_W2_Q1,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,6338466673fb450f
+P09_F2_W2_Q2,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5693abc43763fdbe
+P09_F2_W2_Q3,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,a9081429a8f16b32
+P09_F2_W3_Q1,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,b6492dceefa04c9e
+P09_F2_W3_Q2,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9b5236a37c8cb39f
+P09_F2_W3_Q3,9,69/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,4bbf03ba6394ce40
+P09_F3_W1_Q1,9,69/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,a3c3ed5ebdef510e
+P09_F3_W1_Q2,9,69/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,c6162f9de43c9b8d
+P09_F3_W1_Q3,9,69/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,8a1b9290124941a3
+P09_F3_W2_Q1,9,69/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,c3c632d2229f4ba1
+P09_F3_W2_Q2,9,69/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f2fef09314429634
+P09_F3_W2_Q3,9,69/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,a9937b7f0c56b2e3
+P09_F3_W3_Q1,9,69/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,0602bd4b0d921a61
+P09_F3_W3_Q2,9,69/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,73dd86a2c12eff3c
+P09_F3_W3_Q3,9,69/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,5ce4e804e8cbfd3b
+P10_F1_W1_Q1,10,7/2,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,d38ae6109be50b9a
+P10_F1_W1_Q2,10,7/2,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4fb802408a8794a3
+P10_F1_W1_Q3,10,7/2,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,6db605fe03b0a879
+P10_F1_W2_Q1,10,7/2,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,8291c47bcd26fac9
+P10_F1_W2_Q2,10,7/2,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,6aca97ac710fff47
+P10_F1_W2_Q3,10,7/2,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,900b46d399930f6d
+P10_F1_W3_Q1,10,7/2,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,3252c1369e3cdb57
+P10_F1_W3_Q2,10,7/2,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1f5f2a2276d78fbe
+P10_F1_W3_Q3,10,7/2,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,d2397cdc464f4f73
+P10_F2_W1_Q1,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,b72ce20c961fb5a3
+P10_F2_W1_Q2,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9b6e72edde7ce817
+P10_F2_W1_Q3,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,4b25e587fb9ba2e0
+P10_F2_W2_Q1,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,d55b5b1bd0576c45
+P10_F2_W2_Q2,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,08ab2be8f58be094
+P10_F2_W2_Q3,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,261372e63ab6b4a2
+P10_F2_W3_Q1,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,973b84598e94237c
+P10_F2_W3_Q2,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,379eb1e8058a0b12
+P10_F2_W3_Q3,10,7/2,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,17753faf0cd5641a
+P10_F3_W1_Q1,10,7/2,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,1e35658de6f8ac2e
+P10_F3_W1_Q2,10,7/2,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,db959ecdc8258e6e
+P10_F3_W1_Q3,10,7/2,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,633938ac6fc85e61
+P10_F3_W2_Q1,10,7/2,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,1b0acce06f1ca99c
+P10_F3_W2_Q2,10,7/2,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,09f7a00c3c8a829e
+P10_F3_W2_Q3,10,7/2,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,b1fb2e0b0cd00f00
+P10_F3_W3_Q1,10,7/2,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,2ee33ca18ad594dc
+P10_F3_W3_Q2,10,7/2,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,cba9345492e0b692
+P10_F3_W3_Q3,10,7/2,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,d4835394e1e9f44a
+P11_F1_W1_Q1,11,71/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,9fef2d9e8e54d16d
+P11_F1_W1_Q2,11,71/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,bb6d0dd122c53bbb
+P11_F1_W1_Q3,11,71/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,e8a95e8f6964649f
+P11_F1_W2_Q1,11,71/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,33fa7c12fdc377bb
+P11_F1_W2_Q2,11,71/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,283b66acec8354de
+P11_F1_W2_Q3,11,71/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,1a13edbb9cbc3286
+P11_F1_W3_Q1,11,71/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,3e4a050b505ee807
+P11_F1_W3_Q2,11,71/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ced66c4b305997e1
+P11_F1_W3_Q3,11,71/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,b97310926e442074
+P11_F2_W1_Q1,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,e0350da84446d271
+P11_F2_W1_Q2,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a9ffa7d3046f487a
+P11_F2_W1_Q3,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,9821738b33cb98d0
+P11_F2_W2_Q1,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,bfe595b9b885c171
+P11_F2_W2_Q2,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9edeca9af0d30a4b
+P11_F2_W2_Q3,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,4592dfd9c2215367
+P11_F2_W3_Q1,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,727e82fe6c779e27
+P11_F2_W3_Q2,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f4f738aacadc5339
+P11_F2_W3_Q3,11,71/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,a9b0947607be9c63
+P11_F3_W1_Q1,11,71/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,926dd35da04d8eef
+P11_F3_W1_Q2,11,71/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,3551ae4fe938265d
+P11_F3_W1_Q3,11,71/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,b71fc67d2e0cf4bc
+P11_F3_W2_Q1,11,71/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,3defe7c4e638e102
+P11_F3_W2_Q2,11,71/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,0f660ad251b85663
+P11_F3_W2_Q3,11,71/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,42909fb63425f688
+P11_F3_W3_Q1,11,71/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,12c53d71a6f06c2e
+P11_F3_W3_Q2,11,71/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,8970ef13bd17afb2
+P11_F3_W3_Q3,11,71/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,864da36f0915337a
+P12_F1_W1_Q1,12,18/5,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,ef3c432d8279c07f
+P12_F1_W1_Q2,12,18/5,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ea86a8535a423e6c
+P12_F1_W1_Q3,12,18/5,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,f42e4f73fb960cd9
+P12_F1_W2_Q1,12,18/5,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,490e1d6b7a199f71
+P12_F1_W2_Q2,12,18/5,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4eb1553169cd86e8
+P12_F1_W2_Q3,12,18/5,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,616130c9242e3304
+P12_F1_W3_Q1,12,18/5,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,57f6d2e6ff10eacc
+P12_F1_W3_Q2,12,18/5,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9e7b4d06898d9c23
+P12_F1_W3_Q3,12,18/5,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,c4b0d86388f4da78
+P12_F2_W1_Q1,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,5a9d6c18ca872b7d
+P12_F2_W1_Q2,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,cc2d09c574c2c842
+P12_F2_W1_Q3,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,7f01b406f1c07f5f
+P12_F2_W2_Q1,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,dd978cf972244163
+P12_F2_W2_Q2,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9bfcd5930cca51f8
+P12_F2_W2_Q3,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,cdf3085c6ae0514d
+P12_F2_W3_Q1,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,5aa17b9ad41a767d
+P12_F2_W3_Q2,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,c4095ec61aaae670
+P12_F2_W3_Q3,12,18/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,5dd854283eded525
+P12_F3_W1_Q1,12,18/5,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,02d42044db0a5d8a
+P12_F3_W1_Q2,12,18/5,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7921efc5211b2de2
+P12_F3_W1_Q3,12,18/5,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,1003eb9f877f1241
+P12_F3_W2_Q1,12,18/5,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,a42992092a1e9cb6
+P12_F3_W2_Q2,12,18/5,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,5ed363a453ad7b11
+P12_F3_W2_Q3,12,18/5,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,7936cfbea7be7a78
+P12_F3_W3_Q1,12,18/5,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,905a134a93f224fe
+P12_F3_W3_Q2,12,18/5,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,70726c5f752770b0
+P12_F3_W3_Q3,12,18/5,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,4c8cd410f8933bbe
+P13_F1_W1_Q1,13,73/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,269654d19f697340
+P13_F1_W1_Q2,13,73/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,287ea419f3408978
+P13_F1_W1_Q3,13,73/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,6334f7a1a146d1ee
+P13_F1_W2_Q1,13,73/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,00e60aaa9c0eb56b
+P13_F1_W2_Q2,13,73/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9b70578a640515b2
+P13_F1_W2_Q3,13,73/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,1c8ca9431fd06418
+P13_F1_W3_Q1,13,73/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,fcc69e5c654dfb51
+P13_F1_W3_Q2,13,73/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ca27fef491555990
+P13_F1_W3_Q3,13,73/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,66360adcca9e8f61
+P13_F2_W1_Q1,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,96a4a81745770194
+P13_F2_W1_Q2,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7f1253ec9555794e
+P13_F2_W1_Q3,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,8c6a0a1720eb5c42
+P13_F2_W2_Q1,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,a19878f76fd635c0
+P13_F2_W2_Q2,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,6bdcea730579b9a3
+P13_F2_W2_Q3,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,adbaa5d8b5c39203
+P13_F2_W3_Q1,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,5f3b60545bca32cc
+P13_F2_W3_Q2,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ad19ce7c0c1d226b
+P13_F2_W3_Q3,13,73/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,36d47f2eba6cf9cf
+P13_F3_W1_Q1,13,73/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,1c33b48a92245c49
+P13_F3_W1_Q2,13,73/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1452ee05a6125ee0
+P13_F3_W1_Q3,13,73/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,a373da77b408255d
+P13_F3_W2_Q1,13,73/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,79bf4586af82dc65
+P13_F3_W2_Q2,13,73/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9c8813bb0e95000f
+P13_F3_W2_Q3,13,73/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,052b101ff563e2bf
+P13_F3_W3_Q1,13,73/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,ee4c867268d21777
+P13_F3_W3_Q2,13,73/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,213b97662f6bd996
+P13_F3_W3_Q3,13,73/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,bd790c8fb6c5287a
+P14_F1_W1_Q1,14,37/10,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,7886c2ca74d69094
+P14_F1_W1_Q2,14,37/10,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,8831a5891f576ce7
+P14_F1_W1_Q3,14,37/10,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,fa4356dcf5548f86
+P14_F1_W2_Q1,14,37/10,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,2cccc75e6f51fef0
+P14_F1_W2_Q2,14,37/10,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4872a7360ca5389d
+P14_F1_W2_Q3,14,37/10,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,669b34a51767ab93
+P14_F1_W3_Q1,14,37/10,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,738ce104f61a9eed
+P14_F1_W3_Q2,14,37/10,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a17cc27b704ffb7e
+P14_F1_W3_Q3,14,37/10,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,5059c405d7e58ee8
+P14_F2_W1_Q1,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,afa8d74195763f0c
+P14_F2_W1_Q2,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,070418c6da6d23f8
+P14_F2_W1_Q3,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,68fd2b74f4077deb
+P14_F2_W2_Q1,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,49a704526be4acad
+P14_F2_W2_Q2,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4a9bf288eff1dd90
+P14_F2_W2_Q3,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,e8f50a43c2b0bf55
+P14_F2_W3_Q1,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,7db17a074d91c427
+P14_F2_W3_Q2,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,550cad83ea3379b3
+P14_F2_W3_Q3,14,37/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,2a233d67f412fa26
+P14_F3_W1_Q1,14,37/10,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,759d154772f53d53
+P14_F3_W1_Q2,14,37/10,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,bed548ec3f55b422
+P14_F3_W1_Q3,14,37/10,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,482877fb76260b2a
+P14_F3_W2_Q1,14,37/10,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,e663bb9c275e3e2c
+P14_F3_W2_Q2,14,37/10,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d08fd829226eb918
+P14_F3_W2_Q3,14,37/10,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,ce277cfe65c202e3
+P14_F3_W3_Q1,14,37/10,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,898bcc7cd0f652c4
+P14_F3_W3_Q2,14,37/10,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1b628386ef6ffebd
+P14_F3_W3_Q3,14,37/10,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,35a65e7e94cb294f
+P15_F1_W1_Q1,15,15/4,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,8b58a2676a701cf3
+P15_F1_W1_Q2,15,15/4,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,56d77bfb09ac0c38
+P15_F1_W1_Q3,15,15/4,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,b00ffdfd5d8decdf
+P15_F1_W2_Q1,15,15/4,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,1f126ebe424f4209
+P15_F1_W2_Q2,15,15/4,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,67a97f604ec7f55e
+P15_F1_W2_Q3,15,15/4,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,f64d53f218dc87cc
+P15_F1_W3_Q1,15,15/4,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,8dee2f2811f2db52
+P15_F1_W3_Q2,15,15/4,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,2538342918da8c06
+P15_F1_W3_Q3,15,15/4,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,8432d76ff497f280
+P15_F2_W1_Q1,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,fe7ef1c1f5267379
+P15_F2_W1_Q2,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,46132153ed6742e4
+P15_F2_W1_Q3,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,540c7a289dae70da
+P15_F2_W2_Q1,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,63ffdbc6f4e77699
+P15_F2_W2_Q2,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,358f60c256e00b53
+P15_F2_W2_Q3,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,84a39271ae8f2e3f
+P15_F2_W3_Q1,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,c22cff895b68678c
+P15_F2_W3_Q2,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b5ac6efda92d9d47
+P15_F2_W3_Q3,15,15/4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,7a81be245c96d3c1
+P15_F3_W1_Q1,15,15/4,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,feb7dd9165af9662
+P15_F3_W1_Q2,15,15/4,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,abca09ef71099d31
+P15_F3_W1_Q3,15,15/4,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,041a8004fe344db6
+P15_F3_W2_Q1,15,15/4,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,786ee6f149631c54
+P15_F3_W2_Q2,15,15/4,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,e6b543b96c8c4635
+P15_F3_W2_Q3,15,15/4,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,df18f6f15c353841
+P15_F3_W3_Q1,15,15/4,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,011eb66b7cf50c8c
+P15_F3_W3_Q2,15,15/4,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,03d7cbed8d624844
+P15_F3_W3_Q3,15,15/4,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,684367648f426e45
+P16_F1_W1_Q1,16,19/5,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,7efae1f220e78793
+P16_F1_W1_Q2,16,19/5,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,45db2c98183c92d6
+P16_F1_W1_Q3,16,19/5,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,9f6b8dc6c2647f4b
+P16_F1_W2_Q1,16,19/5,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,4b89cf9537e89833
+P16_F1_W2_Q2,16,19/5,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,737c13d1c2e6e7a3
+P16_F1_W2_Q3,16,19/5,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,35f4b2cf5dc93ae0
+P16_F1_W3_Q1,16,19/5,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,759b3b66d7bec260
+P16_F1_W3_Q2,16,19/5,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9ab443e6f18ca3a0
+P16_F1_W3_Q3,16,19/5,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,bbffff9ada1e2a65
+P16_F2_W1_Q1,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,7fe482492cbf8687
+P16_F2_W1_Q2,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,58f58d4c305774d3
+P16_F2_W1_Q3,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,abec41667f0bfcda
+P16_F2_W2_Q1,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,d18a00989c4ed536
+P16_F2_W2_Q2,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,3c29781b8f84e3f3
+P16_F2_W2_Q3,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,60bf4e0d3101819e
+P16_F2_W3_Q1,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,a201227e924af6cf
+P16_F2_W3_Q2,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f36c04ac5322cdfd
+P16_F2_W3_Q3,16,19/5,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,074b3a9496fe50eb
+P16_F3_W1_Q1,16,19/5,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,224e8998916090e9
+P16_F3_W1_Q2,16,19/5,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ce4aa13aab31a6b4
+P16_F3_W1_Q3,16,19/5,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,050da5ac509c4fe5
+P16_F3_W2_Q1,16,19/5,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,e82aa204c2ca6af5
+P16_F3_W2_Q2,16,19/5,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,516d4849ee7635b3
+P16_F3_W2_Q3,16,19/5,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,1778b8d329af0ac3
+P16_F3_W3_Q1,16,19/5,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,6c6330e08ba47496
+P16_F3_W3_Q2,16,19/5,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,fc71bcc62a050b20
+P16_F3_W3_Q3,16,19/5,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,b4ab4f29e9400ae3
+P17_F1_W1_Q1,17,77/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,7c281033967b2f7a
+P17_F1_W1_Q2,17,77/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,717f11f3eac84402
+P17_F1_W1_Q3,17,77/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,c1378e46c775ee0c
+P17_F1_W2_Q1,17,77/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,0baf5c2c179e51ef
+P17_F1_W2_Q2,17,77/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d152519d963e602a
+P17_F1_W2_Q3,17,77/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,af1a8095e92622b3
+P17_F1_W3_Q1,17,77/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,ac9b0c29d7ee3aa9
+P17_F1_W3_Q2,17,77/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,339da2edd37cf83e
+P17_F1_W3_Q3,17,77/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ad7df12df2a45001
+P17_F2_W1_Q1,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,a4c8ba98ebc20a0a
+P17_F2_W1_Q2,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1732eda8fcdfcd69
+P17_F2_W1_Q3,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,10e1e092e02f3f69
+P17_F2_W2_Q1,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,9616d19c6a7ce499
+P17_F2_W2_Q2,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a3c2c9646e6e2606
+P17_F2_W2_Q3,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,7086eb4babb7fac2
+P17_F2_W3_Q1,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,0b3ece523a460290
+P17_F2_W3_Q2,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7a8fe22b5d243afb
+P17_F2_W3_Q3,17,77/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,f69f8b020d111bea
+P17_F3_W1_Q1,17,77/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,46a1ced7d562e834
+P17_F3_W1_Q2,17,77/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,bf974a631d382ce1
+P17_F3_W1_Q3,17,77/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,07f1b4cc6b0425c3
+P17_F3_W2_Q1,17,77/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,c246304f529f69ea
+P17_F3_W2_Q2,17,77/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,3b7c0aea655cd748
+P17_F3_W2_Q3,17,77/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,d6dac3dcfb62228e
+P17_F3_W3_Q1,17,77/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,1585e90e3561d811
+P17_F3_W3_Q2,17,77/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,0c5342d8568529a2
+P17_F3_W3_Q3,17,77/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,08e42caf8080154c
+P18_F1_W1_Q1,18,39/10,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,607ad10225c4086c
+P18_F1_W1_Q2,18,39/10,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,039a00aabf87ca15
+P18_F1_W1_Q3,18,39/10,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,0033decd7256a63c
+P18_F1_W2_Q1,18,39/10,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,6e093cc517320726
+P18_F1_W2_Q2,18,39/10,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d5cab3d13316da2a
+P18_F1_W2_Q3,18,39/10,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,adb0b8bd6cb15f0f
+P18_F1_W3_Q1,18,39/10,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,227d0a7e64ec1855
+P18_F1_W3_Q2,18,39/10,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,9fb4d29d2aec70ef
+P18_F1_W3_Q3,18,39/10,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,c0f26dc57c248348
+P18_F2_W1_Q1,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,d72404f9ac3e2132
+P18_F2_W1_Q2,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,94cfa9c8f170b8ae
+P18_F2_W1_Q3,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,0003954d821ab30b
+P18_F2_W2_Q1,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,7a0b323d6b838082
+P18_F2_W2_Q2,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b7fabb44b6aa9a19
+P18_F2_W2_Q3,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,d99573bfbc78438b
+P18_F2_W3_Q1,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,72362469859a37fa
+P18_F2_W3_Q2,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,34d105b7954c4e6e
+P18_F2_W3_Q3,18,39/10,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,c0166cc520aefca7
+P18_F3_W1_Q1,18,39/10,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,02fe89299ab1ed54
+P18_F3_W1_Q2,18,39/10,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,3a9798cae404dc2e
+P18_F3_W1_Q3,18,39/10,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,bc39fc93a9aee6d5
+P18_F3_W2_Q1,18,39/10,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,83a2b75eb8f36123
+P18_F3_W2_Q2,18,39/10,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ebf9067477a8e735
+P18_F3_W2_Q3,18,39/10,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,512884cbaf9928ef
+P18_F3_W3_Q1,18,39/10,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,fedced99d224a2ad
+P18_F3_W3_Q2,18,39/10,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,a47c50c3c3361d5d
+P18_F3_W3_Q3,18,39/10,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,f85b7adf889c97e8
+P19_F1_W1_Q1,19,79/20,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,3387253d574b748e
+P19_F1_W1_Q2,19,79/20,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1ccc3e37d5855b2a
+P19_F1_W1_Q3,19,79/20,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,508e44ad490bb44c
+P19_F1_W2_Q1,19,79/20,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,86cf2fa5af4adf36
+P19_F1_W2_Q2,19,79/20,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,32f6725368baedf7
+P19_F1_W2_Q3,19,79/20,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,215c1643c96c46bb
+P19_F1_W3_Q1,19,79/20,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,71dac9c0bdd35071
+P19_F1_W3_Q2,19,79/20,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7d3d96745253d7b1
+P19_F1_W3_Q3,19,79/20,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,6a20ca87c4f1020d
+P19_F2_W1_Q1,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,74ab4f505a425b3a
+P19_F2_W1_Q2,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,fa8d0aa3aefa9b39
+P19_F2_W1_Q3,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,75c040efe838ad19
+P19_F2_W2_Q1,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,a6958f0f79c54b49
+P19_F2_W2_Q2,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,7b664c5caf556aa8
+P19_F2_W2_Q3,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,7761d64cb71ad24a
+P19_F2_W3_Q1,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,b942c51bcc841157
+P19_F2_W3_Q2,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,1c78a8a46ca459b0
+P19_F2_W3_Q3,19,79/20,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,64cfeec247d5a9c7
+P19_F3_W1_Q1,19,79/20,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,c764fa4c60a5b388
+P19_F3_W1_Q2,19,79/20,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,bd9792a25002594f
+P19_F3_W1_Q3,19,79/20,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,ffceeb8e15698ea4
+P19_F3_W2_Q1,19,79/20,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,02a18a6a923dbac1
+P19_F3_W2_Q2,19,79/20,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,4d44f367632269e0
+P19_F3_W2_Q3,19,79/20,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,25d51c31d5de0ac7
+P19_F3_W3_Q1,19,79/20,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,5f6fb0a02fed0e47
+P19_F3_W3_Q2,19,79/20,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,8c876a8858749e54
+P19_F3_W3_Q3,19,79/20,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,ab5813e7b2788adc
+P20_F1_W1_Q1,20,4,F1,f1=1/(5-a4),W1,1:1,Q1,identity,NOT_EXECUTED,ea47a53703d0b652
+P20_F1_W1_Q2,20,4,F1,f1=1/(5-a4),W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,3b8797c047f77be3
+P20_F1_W1_Q3,20,4,F1,f1=1/(5-a4),W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,cf1a02f20e3aaaf1
+P20_F1_W2_Q1,20,4,F1,f1=1/(5-a4),W2,2:1,Q1,identity,NOT_EXECUTED,43e379865d2b82bf
+P20_F1_W2_Q2,20,4,F1,f1=1/(5-a4),W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,cb23d847a42b101e
+P20_F1_W2_Q3,20,4,F1,f1=1/(5-a4),W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,8e5a7b71a76076fe
+P20_F1_W3_Q1,20,4,F1,f1=1/(5-a4),W3,1:2,Q1,identity,NOT_EXECUTED,73dd80e433b95b34
+P20_F1_W3_Q2,20,4,F1,f1=1/(5-a4),W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,50b8f551c2900b89
+P20_F1_W3_Q3,20,4,F1,f1=1/(5-a4),W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,237dff76dc2c1aed
+P20_F2_W1_Q1,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q1,identity,NOT_EXECUTED,33eed908f25598ab
+P20_F2_W1_Q2,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,bfba604a50e02c79
+P20_F2_W1_Q3,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,5e83c4af0858b581
+P20_F2_W2_Q1,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q1,identity,NOT_EXECUTED,469740388d95f01d
+P20_F2_W2_Q2,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f69f49042014c1dd
+P20_F2_W2_Q3,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,982ff0e2afbb5e4b
+P20_F2_W3_Q1,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q1,identity,NOT_EXECUTED,a59cac37ea94c87f
+P20_F2_W3_Q2,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,d9cfbb197df4d757
+P20_F2_W3_Q3,20,4,F2,f4(t)=2(5-t)/(5-a4)^2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,8cb796d017383244
+P20_F3_W1_Q1,20,4,F3,breaks at (a4+5)/2,W1,1:1,Q1,identity,NOT_EXECUTED,f67d7ae6984f7d4d
+P20_F3_W1_Q2,20,4,F3,breaks at (a4+5)/2,W1,1:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,b594bfe701a31294
+P20_F3_W1_Q3,20,4,F3,breaks at (a4+5)/2,W1,1:1,Q3,floor(t)_unit,NOT_EXECUTED,2826d648d0bba816
+P20_F3_W2_Q1,20,4,F3,breaks at (a4+5)/2,W2,2:1,Q1,identity,NOT_EXECUTED,c91a89dda3a766cb
+P20_F3_W2_Q2,20,4,F3,breaks at (a4+5)/2,W2,2:1,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,f23103abfe9aad6f
+P20_F3_W2_Q3,20,4,F3,breaks at (a4+5)/2,W2,2:1,Q3,floor(t)_unit,NOT_EXECUTED,c055ea0aee23acb2
+P20_F3_W3_Q1,20,4,F3,breaks at (a4+5)/2,W3,1:2,Q1,identity,NOT_EXECUTED,7121a5aa54df5776
+P20_F3_W3_Q2,20,4,F3,breaks at (a4+5)/2,W3,1:2,Q2,floor(2t)/2_half_unit,NOT_EXECUTED,ff3b70104a95223f
+P20_F3_W3_Q3,20,4,F3,breaks at (a4+5)/2,W3,1:2,Q3,floor(t)_unit,NOT_EXECUTED,647128965b2e305c

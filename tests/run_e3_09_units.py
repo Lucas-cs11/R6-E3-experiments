@@ -18,8 +18,8 @@ def load(path):
 def main(out_dir=None):
     out_dir = Path(out_dir or ROOT / 'runs/e3_09')
     out_dir.mkdir(parents=True, exist_ok=True)
-    configs = load(ROOT / 'runs/e3_09/frozen_567_configs.csv')
-    specs = load(ROOT / 'runs/e3_09/frozen_135_specs.csv')
+    configs = load(ROOT / 'contracts/e3_09/frozen_567_configs.csv')
+    specs = load(ROOT / 'contracts/e3_09/frozen_135_specs.csv')
     rows = []
     t0 = time.perf_counter()
     for config in configs:

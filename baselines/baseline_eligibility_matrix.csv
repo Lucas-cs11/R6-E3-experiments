@@ -1,0 +1,5 @@
+baseline,native_problem,adapter_proof,executable_version,coverage,outputs,tier
+TINA_4.0.0,untimed P/T reachability and boundedness,timed projection (intervals removed; fault/completion places kept),4.0.0,107520 frozen ledger rows,bounded/timeout per configuration,SHARED_PROJECTION_ONLY
+PRISM_4.11,CTMC/DTMC probabilistic model checking,only for exponentialized reductions with faithful observation monitor,4.11,reduced subclasses only,probability queries,EXACT_REDUCED_ONLY
+Sirio_2.0.5,stochastic/deterministic timed Petri nets,pending interface verification (densities, resampling, completion marking),2.0.5 built from pinned commit,to be measured,decision outputs to be verified,PENDING
+sklearn_1.9.1,tabular classification,none (different mathematical object),1.9.1,industrial prediction context only,predictions/uncertainty,CONTEXT_ONLY

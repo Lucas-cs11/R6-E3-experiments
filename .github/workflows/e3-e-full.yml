@@ -31,11 +31,7 @@ jobs:
       - name: Count remaining
         id: count
         run: |
-          REMAINING=$(python3 -c "
-import csv, glob
-print(sum(1 for f in glob.glob('led/shard_*.csv')
-          for r in csv.DictReader(open(f, newline=''))
-          if r['result_status'] == 'NOT_EXECUTED'))")
+          REMAINING=$(python3 -c "import csv,glob;print(sum(1 for f in glob.glob('led/shard_*.csv') for r in csv.DictReader(open(f,newline='')) if r['result_status']=='NOT_EXECUTED'))")
           echo "remaining=$REMAINING" >> "$GITHUB_OUTPUT"
           echo "remaining=$REMAINING"
       - name: Upload ledgers snapshot for merge

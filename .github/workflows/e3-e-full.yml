@@ -4,16 +4,92 @@ on:
     inputs:
       wall_budget:
         description: Per-shard wall budget seconds
-        default: '240'
+        default: '480'
+  workflow_run:
+    workflows: ["E3-E full domain wave"]
+    types: [completed]
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: e3-full-serial
   cancel-in-progress: false
 jobs:
-  wave:
+  guard:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
+    outputs:
+      remaining: ${{ steps.count.outputs.remaining }}
+    steps:
+      - name: Download shard ledgers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p led
+          gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
+            --pattern "shard_*.csv" --dir led --clobber
+      - name: Count remaining
+        id: count
+        run: |
+          REMAINING=$(python3 -c "
+import csv, glob
+print(sum(1 for f in glob.glob('led/shard_*.csv')
+          for r in csv.DictReader(open(f, newline=''))
+          if r['result_status'] == 'NOT_EXECUTED'))")
+          echo "remaining=$REMAINING" >> "$GITHUB_OUTPUT"
+          echo "remaining=$REMAINING"
+      - name: Upload ledgers snapshot for merge
+        if: steps.count.outputs.remaining == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: e3-full-final-ledgers
+          path: led/
+          if-no-files-found: error
+      - name: Disable self when complete
+        if: steps.count.outputs.remaining == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PUT repos/Lucas-cs11/R6-E3-experiments/actions/workflows/e3-e-full.yml/disable || true
+          echo "workflow disabled; full run complete"
+  merge:
+    needs: guard
+    if: needs.guard.outputs.remaining == '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download ledgers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p led
+          gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
+            --pattern "shard_*.csv" --dir led --clobber
+      - name: Merge final ledger
+        run: |
+          python3 -c "
+          import csv, glob
+          rows, fields = [], None
+          for f in sorted(glob.glob('led/shard_*.csv')):
+              with open(f, newline='') as h:
+                  reader = csv.DictReader(h)
+                  fields = fields or reader.fieldnames
+                  rows.extend(reader)
+          with open('final_ledger.csv', 'w', newline='') as h:
+              writer = csv.DictWriter(h, fieldnames=fields)
+              writer.writeheader(); writer.writerows(rows)
+          print('merged', len(rows))
+          "
+          sha256sum final_ledger.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e3-full-final-merged-ledger
+          path: final_ledger.csv
+  wave:
+    needs: guard
+    if: needs.guard.outputs.remaining != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       max-parallel: 16
@@ -36,15 +112,8 @@ jobs:
         run: |
           mkdir -p work
           NAME="shard_$(printf '%03d' "$SHARD").csv"
-          if gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
-              --pattern "$NAME" --dir work --clobber 2>/dev/null; then
-            echo "resuming $NAME from release"
-          else
-            gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
-              --pattern e3_shards_init.tar.gz --dir work --clobber
-            tar -xzf work/e3_shards_init.tar.gz -C work "$NAME"
-            echo "initial $NAME from tarball"
-          fi
+          gh release download e3-full-ledger --repo Lucas-cs11/R6-E3-experiments \
+            --pattern "$NAME" --dir work --clobber
       - name: Execute shard wave
         env:
           SHARD: ${{ matrix.shard }}
@@ -52,14 +121,12 @@ jobs:
           python3 -B tests/run_e3_07_matrix.py execute_shard_file \
             --shard-file "work/shard_$(printf '%03d' "$SHARD").csv" \
             --node-budget 10000 --constraint-budget 50000 \
-            --wall-budget '${{ inputs.wall_budget }}' | tee wave_result.json
+            --wall-budget '${{ inputs.wall_budget || 480 }}' | tee wave_result.json
       - name: Upload updated shard ledger
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHARD: ${{ matrix.shard }}
         run: |
-          cp "work/shard_$(printf '%03d' "$SHARD").csv" "work/shard_$(printf '%03d' "$SHARD").csv.upload"
-          mv "work/shard_$(printf '%03d' "$SHARD").csv.upload" "work/shard_$(printf '%03d' "$SHARD").csv"
           gh release upload e3-full-ledger "work/shard_$(printf '%03d' "$SHARD").csv" \
             --repo Lucas-cs11/R6-E3-experiments --clobber
       - name: Upload wave evidence

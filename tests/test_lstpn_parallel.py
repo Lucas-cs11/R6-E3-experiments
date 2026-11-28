@@ -38,6 +38,10 @@ class ParallelLstpnTests(unittest.TestCase):
         self.assertEqual((rows[20]['pe_engine'], rows[20]['gamma_structural']),
                          (Fraction(0), Fraction(1)))
 
+    def test_posterior_coverage_equals_closed_form(self):
+        rows = twenty_one_points_exact()
+        self.assertTrue(all(r['gamma_posterior'] == r['gamma_closed'] for r in rows))
+
     def test_pe_monotone_decreasing(self):
         rows = twenty_one_points_exact()
         pes = [r['pe_engine'] for r in rows]

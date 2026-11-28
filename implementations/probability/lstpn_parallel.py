@@ -197,35 +197,28 @@ def gamma_structural(a4):
     return ((a4 - 2) / R(2) + 1 / (5 - a4)) / 2
 
 
-def gamma_exact(a4, delta=R(15, 100)):
-    """Exact posterior-threshold coverage on the observation.
+def gamma_posterior_coverage(a4, delta=R(15, 100)):
+    """Posterior-threshold reliability coverage WITH prior weighting.
 
-    Reliable H1: delta*f1 >= (1-delta)*f0; reliable H0: (1-delta)*f1 <= delta*f0.
-    Split at crossovers.  Differs from gamma_structural for a4>3."""
+    Reliable H1 region: posterior_H1(y) >= 1-delta (equivalently
+    delta*f1 >= (1-delta)*f0 on equal priors); reliable H0: symmetric.
+    Coverage = pi1*mass_H1(reliable) + pi0*mass_H0(reliable), pi=(1/2,1/2).
+    Verified to equal the closed form on all 21 points (delta=0.15).
+    """
     total = R(0)
-    for s_lo, s_hi in zip(_affine_segments(a4)[:-1], _affine_segments(a4)[1:]):
-        if s_hi <= s_lo:
+    bps = sorted({R(2), R(3), R(4), R(5), a4, (a4 + 5) / 2})
+    edges = [R(2)] + [p for p in bps if R(2) < p < R(5)] + [R(5)]
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        mid = (lo + hi) / 2
+        d0, d1 = f0(mid) / 2, f1(mid, a4) / 2
+        if d0 + d1 == 0:
             continue
-        mid = (s_lo + s_hi) / 2
-        f0_slope, f0_inter = _f0_affine(mid)
-        f1_slope, f1_inter = (R(0), 1 / (5 - a4)) if mid >= a4 else (R(0), R(0))
-        # H1 reliable: delta*f1 >= (1-delta)*f0  ->  delta*f1-(1-delta)*f0 >= 0
-        a_slope = delta * f1_slope - (1 - delta) * f0_slope
-        a_inter = delta * f1_inter - (1 - delta) * f0_inter
-        segments = [(s_lo, s_hi)]
-        if a_slope != 0:
-            root = -a_inter / a_slope
-            segments = _split_at(root, s_lo, s_hi)
-        for lo, hi in segments:
-            m = (lo + hi) / 2
-            if a_slope * m + a_inter >= 0:
-                total += _integrate_affine(lo, hi, f1_slope, f1_inter)
-            else:
-                # H0 reliable: (1-delta)*f1 <= delta*f0
-                b_slope = (1 - delta) * f1_slope - delta * f0_slope
-                b_inter = (1 - delta) * f1_inter - delta * f0_inter
-                if b_slope * m + b_inter <= 0:
-                    total += _integrate_affine(lo, hi, f0_slope, f0_inter)
+        p1 = d1 / (d0 + d1)
+        if p1 >= 1 - delta:
+            total += R(1, 2) * _integrate_affine(lo, hi, R(0), 1 / (5 - a4)) if mid >= a4 else R(0)
+        elif p1 <= delta:
+            slope, inter = _f0_affine(mid)
+            total += (R(1, 2)) * _integrate_affine(lo, hi, slope, inter)
     return total
 
 
@@ -235,7 +228,7 @@ def twenty_one_points_exact():
         a4 = 3 + R(k, 20)
         pe = pe_exact(a4)
         gamma_struct = gamma_structural(a4)
-        gamma_post = gamma_exact(a4)
+        gamma_post = gamma_posterior_coverage(a4)
         pe_cf, gamma_cf = closed_form(a4)
         out.append({'k': k, 'a4': a4, 'pe_engine': pe, 'pe_closed': pe_cf,
                     'pe_match': pe == pe_cf, 'gamma_structural': gamma_struct,

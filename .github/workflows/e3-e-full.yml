@@ -5,9 +5,6 @@ on:
       wall_budget:
         description: Per-shard wall budget seconds
         default: '480'
-  workflow_run:
-    workflows: ["E3-E full domain wave"]
-    types: [completed]
 permissions:
   contents: write
   actions: write

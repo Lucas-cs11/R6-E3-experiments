@@ -14,8 +14,8 @@ Ruling: `MATH_SIGNED_SCOPE`, A scheme approved with limitations, seed=0 only.
 
 References:
 
-- `reports/01_研究域_E3-05_主理论裁定附录.md`, SHA-256 `753e56a11a7f54e4fffb4fb1e0f1628f7b43932d7f3d0b7097c0f47d0d4b9a46`.
-- `reports/decision_trace.csv`, SHA-256 `668bedee62d5dbdbae458bd4be83e06f716648dab0b53767740a0260b3df2309`.
+- `reports/rulings/01_研究域_E3-05_主理论裁定附录.md`, SHA-256 `753e56a11a7f54e4fffb4fb1e0f1628f7b43932d7f3d0b7097c0f47d0d4b9a46`.
+- `reports/rulings/decision_trace.csv`, SHA-256 `668bedee62d5dbdbae458bd4be83e06f716648dab0b53767740a0260b3df2309`.
 - `contracts/frozen_full_domain.json`, SHA-256 `c3d3f966f4e16e40f94a56e82796b9b0ae879e58fde76cc52ea92324c5010c9c`.
 - `contracts/domain_index.csv`, SHA-256 `b39aad320ab11a78b92da19c1049e370133c22d7550104fc453df9a4bce29332`.
 

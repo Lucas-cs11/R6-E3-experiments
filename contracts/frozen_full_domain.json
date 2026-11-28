@@ -1,6 +1,6 @@
 {
   "candidates": 143360,
-  "decision_trace": "reports/decision_trace.csv",
+  "decision_trace": "reports/rulings/decision_trace.csv",
   "decision_trace_sha256": "668bedee62d5dbdbae458bd4be83e06f716648dab0b53767740a0260b3df2309",
   "declared_ledger": {
     "BOUNDED": 104052,

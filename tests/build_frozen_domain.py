@@ -13,8 +13,8 @@ from tina_raw_replay import classify_raw_record_detailed, replay
 OUT = ROOT / 'contracts'
 UNIVERSE = ROOT / 'baseline_readonly/e2/scope/generator_candidate_universe_full.csv'
 SATURATION = ROOT / 'runs/domain_audit/fault_saturation_3840.csv'
-APPENDIX = ROOT / 'reports/01_研究域_E3-05_主理论裁定附录.md'
-TRACE = ROOT / 'reports/decision_trace.csv'
+APPENDIX = ROOT / 'reports/rulings/01_研究域_E3-05_主理论裁定附录.md'
+TRACE = ROOT / 'reports/rulings/decision_trace.csv'
 
 
 def _sha(path):
@@ -128,8 +128,8 @@ Ruling: `MATH_SIGNED_SCOPE`, A scheme approved with limitations, seed=0 only.
 
 References:
 
-- `reports/01_研究域_E3-05_主理论裁定附录.md`, SHA-256 `{appendix_sha}`.
-- `reports/decision_trace.csv`, SHA-256 `{trace_sha}`.
+- `reports/rulings/01_研究域_E3-05_主理论裁定附录.md`, SHA-256 `{appendix_sha}`.
+- `reports/rulings/decision_trace.csv`, SHA-256 `{trace_sha}`.
 - `contracts/frozen_full_domain.json`, SHA-256 `{_sha(OUT / 'frozen_full_domain.json')}`.
 - `contracts/domain_index.csv`, SHA-256 `{result['domain_index_sha256']}`.
 

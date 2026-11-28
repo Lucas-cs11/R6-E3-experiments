@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3（标准库 + fractions 精确有理数 + sklearn 1.9.1 仅 PyScrew 经验段）、GitHub Actions（托管 runner）、gh CLI、unittest。
 
-**Spec:** `reports/decision_trace.csv`（12 条签署口径）、`reports/01_研究域_E3-05_主理论裁定附录.md`、`reports/02_G2集成审签_主理论裁定附录.md`、`reports/03_B1B2同题定义_主理论裁定附录.md`、`reports/04_概率567定义_主理论裁定附录.md`、`reports/e3_08_lh_spec.md`、`reports/e3_09_21points_verification.md`、执行指令 `baseline_readonly/inputs/R6_E3_v3_..._执行指令.md`。
+**Spec:** `reports/rulings/decision_trace.csv`（12 条签署口径）、`reports/rulings/01_研究域_E3-05_主理论裁定附录.md`、`reports/rulings/02_G2集成审签_主理论裁定附录.md`、`reports/rulings/03_B1B2同题定义_主理论裁定附录.md`、`reports/rulings/04_概率567定义_主理论裁定附录.md`、`reports/verifications/e3_08_lh_spec.md`、`reports/verifications/e3_09_21points_verification.md`、执行指令 `baseline_readonly/inputs/R6_E3_v3_..._执行指令.md`。
 
 ## Global Constraints
 
@@ -85,7 +85,7 @@
 - Create: `.github/workflows/e3-08-sensitivity.yml`
 
 **Interfaces:**
-- Consumes: `reports/e3_08_lh_spec.md` §一（L∈{2,6,10}、H∈{19.5,33,39} 或按 j 分档备选）
+- Consumes: `reports/verifications/e3_08_lh_spec.md` §一（L∈{2,6,10}、H∈{19.5,33,39} 或按 j 分档备选）
 - Produces: `runs/e3_08/sensitivity_results.csv`（含 VACUOUS_WINDOW 单列）
 
 - [ ] Step 1: 写失败测试：真空配置（j=2 且 H=19.5）的窗口 R^c=∅ 时 result_status=VACUOUS_WINDOW 且不进 PASS 计数。

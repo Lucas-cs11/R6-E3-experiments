@@ -52,8 +52,8 @@ class FrozenDomainTests(unittest.TestCase):
         self.assertEqual(saturated['actual_fault_transition_count'], '4')
         self.assertEqual(saturated['n_configs'], '2')
         decision = (ROOT / 'contracts/domain_signed_decision.md').read_text()
-        appendix = ROOT / 'reports/01_研究域_E3-05_主理论裁定附录.md'
-        trace = ROOT / 'reports/decision_trace.csv'
+        appendix = ROOT / 'reports/rulings/01_研究域_E3-05_主理论裁定附录.md'
+        trace = ROOT / 'reports/rulings/decision_trace.csv'
         self.assertIn(hashlib.sha256(appendix.read_bytes()).hexdigest(), decision)
         self.assertIn(hashlib.sha256(trace.read_bytes()).hexdigest(), decision)
         self.assertIn('MATH_SIGNED_SCOPE', decision)

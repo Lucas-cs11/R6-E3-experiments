@@ -5,6 +5,8 @@ on:
       wall_budget:
         description: Per-shard wall budget seconds
         default: '480'
+  schedule:
+    - cron: '*/20 * * * *'
 permissions:
   contents: write
   actions: write

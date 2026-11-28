@@ -1,0 +1,91 @@
+{
+  "sample": 200,
+  "in_legacy": 21,
+  "legacy_source": "tina_all_107520.csv (raw parse; merged file retracted and excluded)",
+  "replay_aggregate": {
+    "raw_verdict_status_counts": {
+      "BOUNDED": 104212,
+      "TIMEOUT": 3308
+    },
+    "recoverable_examples": [
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w0.5_a0.1",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w0.5_a0.25",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w0.5_a0.5",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w0.5_a0.75",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w1.0_a0.1",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w1.0_a0.25",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w1.0_a0.5",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w1.5_a0.1",
+      "RMT_m10_j6_ops4_wip4_u0.1_f4_w1.5_a0.25",
+      "RMT_m10_j6_ops4_wip4_u0.3_f4_w0.5_a0.1"
+    ],
+    "recoverable_timeout_with_verdict": 160,
+    "rows": 107520,
+    "status_counts": {
+      "BOUNDED": 104052,
+      "TIMEOUT": 3468
+    },
+    "strict_merged_exact_match": true,
+    "strict_merged_sha256": "a614e8074b944890b82d7b0672f96e48a022d12a315b119f4ad6dd305153c682",
+    "unique_candidate_ids": 107520
+  },
+  "tina_bounded": 21,
+  "tina_timeout": 0,
+  "engine_executed": 0,
+  "missing": 179,
+  "coverage": {
+    "machine_counts": {
+      "2": 22,
+      "10": 42,
+      "3": 18,
+      "4": 29,
+      "8": 31,
+      "5": 31,
+      "6": 27
+    },
+    "part_type_counts": {
+      "1": 41,
+      "2": 39,
+      "6": 35,
+      "4": 44,
+      "3": 41
+    },
+    "operations_per_part": {
+      "4": 51,
+      "6": 51,
+      "2": 39,
+      "8": 59
+    },
+    "wip_bounds": {
+      "3": 49,
+      "1": 49,
+      "2": 56,
+      "4": 46
+    },
+    "unobservable_ratios": {
+      "0.1": 54,
+      "0.7": 42,
+      "0.5": 54,
+      "0.3": 50
+    },
+    "fault_locations": {
+      "2": 69,
+      "1": 77,
+      "8": 12,
+      "4": 42
+    },
+    "interval_width_factors": {
+      "2.0": 60,
+      "1.5": 50,
+      "1.0": 55,
+      "0.5": 35
+    },
+    "adjustable_ratios": {
+      "0.75": 53,
+      "0.25": 56,
+      "0.5": 45,
+      "0.1": 46
+    }
+  },
+  "tier": "SHARED_PROJECTION_ONLY"
+}
